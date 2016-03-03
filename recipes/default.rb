@@ -10,12 +10,12 @@ require 'pry'
 ::Chef::Recipe.send(:include, RestAPI::Helper)
 ::Chef::Recipe.send(:include, ILOINFO)
 
- iLOResourceProvider_ilo_user 'user reset password' do
-   username 'pappu'
-   password 'password12'
-   ilo_names ["ILO-02"]
-   action :changePassword
- end
+ # iLOResourceProvider_ilo_user 'user reset password' do
+ #   username 'pappu'
+ #   password 'password12'
+ #   ilo_names ["ILO-02"]
+ #   action :changePassword
+ # end
 
  # iLOResourceProvider_ilo_user 'user delete' do
  #   username 'test'
@@ -32,24 +32,19 @@ require 'pry'
  # end
 
 
-
-#ilono.each do |ilo, machine|
-# iLOResourceProvider_ilo_powermgmt 'power on' do
-#   machine machine
-#   action :poweron
-# end
-#end
-
-#ilono.each do |ilo, machine|
-# iLOResourceProvider_ilo_powermgmt 'power off' do
-#   machine machine
-#   action :poweron
-# end
-#end
-
-ilono.each do |ilo, machine|
- iLOResourceProvider_ilo_powermgmt 'resetsys' do
-   machine machine
-   action :poweron
- end
+iLOResourceProvider_ilo_powermgmt 'power off' do
+  ilo_names :all
+  action :poweroff
 end
+
+iLOResourceProvider_ilo_powermgmt 'power on' do
+  ilo_names :all
+  action :poweron
+end
+
+
+
+#  iLOResourceProvider_ilo_powermgmt 'resetsys' do
+#    ilo_names :all
+#    action :resetsys
+#  end

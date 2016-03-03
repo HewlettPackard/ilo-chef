@@ -67,13 +67,30 @@ module RestAPI
       rest_api(:delete, minhref, machine)
     end
 
-    def resetServer(machine)
+    def reset_server(machine)
       newAction = {"Action"=> "Reset", "ResetType"=> "ForceRestart"}
       options = {'body' => newAction}
       sysget = rest_api(:get, '/rest/v1/systems', machine)
       sysuri = sysget["links"]["Member"][0]["href"]
-      rest_api(:post, sysuri , options, machine )
+      rest_api(:post, sysuri, machine, options)
     end
+
+    def power_on(machine)
+      newAction = {"Action"=> "Reset", "ResetType"=> "On"}
+      options = {'body' => newAction}
+      sysget = rest_api(:get, '/rest/v1/systems', machine)
+      sysuri = sysget["links"]["Member"][0]["href"]
+      rest_api(:post, sysuri, machine, options)
+    end
+
+    def power_off(machine)
+      newAction = {"Action"=> "Reset", "ResetType"=> "ForceOff"}
+      options = {'body' => newAction}
+      sysget = rest_api(:get, '/rest/v1/systems', machine)
+      sysuri = sysget["links"]["Member"][0]["href"]
+      rest_api(:post, sysuri, machine, options)
+    end
+
 
     def findILOMacAddr(machine)
       iloget = rest_api(:get, '/rest/v1/Managers/1/NICs', machine)

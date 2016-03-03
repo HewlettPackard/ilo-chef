@@ -2,22 +2,43 @@ use_inline_resources
 include RestAPI::Helper
 
 action :poweron do
-  newAction = {"Action"=> "Reset", "ResetType"=> "On"}
-  options = {'body' => newAction}
-  machine = new_resource.machine
-  rest_api(:post, '/rest/v1/systems/1', machine, options )
+  ilos = new_resource.ilo_names
+  if ilos.class == Array
+		get_ilos.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+      power_on(machine)
+    end
+  else
+    ilono.each do |name,site|
+      power_on(site)
+    end
+  end
 end
 
 action :poweroff do
-  newAction = {"Action"=> "Reset", "ResetType"=> "ForceOff"}
-  options = {'body' => newAction}
-  machine = new_resource.machine
-  rest_api(:post, '/rest/v1/systems/1', machine, options )
+  ilos = new_resource.ilo_names
+  if ilos.class == Array
+    get_ilos.each do |ilo|
+      machine  = ilono.select{|k,v| k == ilo}[ilo]
+      power_off(machine)
+    end
+  else
+    ilono.each do |name,site|
+      power_off(site)
+    end
+  end
 end
 
 action :resetsys do
-  newAction = {"Action"=> "Reset", "ResetType"=> "ForceRestart"}
-  options = {'body' => newAction}
-  machine = new_resource.machine
-  rest_api(:post, '/rest/v1/systems/1', machine, options )
+  ilos = new_resource.ilo_names
+  if ilos.class == Array
+		get_ilos.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+      reset_server(machine)
+    end
+  else
+    ilono.each do |name,site|
+      reset_server(site)
+    end
+  end
 end
