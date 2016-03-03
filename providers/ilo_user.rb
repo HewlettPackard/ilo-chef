@@ -7,31 +7,45 @@ action :createUser do
 	username = new_resource.username
 	password = new_resource.password
 	get_ilos = new_resource.ilo_names
-	get_ilos.each do |ilo|
-		machine  = ilono.select{|k,v| k == ilo}
-		rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-		newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
-		options = {'body' => newUser}
-		rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
+	if get_ilos.class == Array
+		get_ilos.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+			create_user(machine,username,password)
+		end
+	else
+		ilono.each do |name,site|
+			create_user(site, username, password)
+	  end
 	end
 end
 
 action :deleteUser do
 	username = new_resource.username
-	machine = new_resource.machine
-	accountget = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-	minhref = adminhref(accountget, username)
-	rest_api(:delete,minhref,machine)
+	ilos = new_resource.ilo_names
+	if ilos.class == Array
+		ilos.each do |ilo|
+			machine = ilono.select{|k,v| k == ilo}[ilo]
+		  delete_user(username,machine)
+		end
+	else
+		ilono.each do |name,site|
+			delete_user(username,site)
+		end
+	end
 end
 
 action :changePassword do
 	username = new_resource.username
 	newpassword = new_resource.password
-	machine = new_resource.machine
-	rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-	newPassword = {"Password" => newpassword }
-	options = {'body' => newPassword}
-	uad = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-	minhref = adminhref(uad, username )
-	rest_api(:patch, minhref, machine, options)
+	ilos = new_resource.ilo_names
+	if ilos.class == Array
+		ilos.each do |ilo|
+			machine = ilono.select{|k,v| k == ilo}[ilo]
+			reset_user_password(machine,username,newpassword)
+		end
+	else
+		ilono.each do |name,site|
+			reset_user_password(site, username, newpassword)
+	  end
+	end
 end

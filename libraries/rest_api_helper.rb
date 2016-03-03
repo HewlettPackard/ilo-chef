@@ -50,7 +50,7 @@ module RestAPI
       JSON.parse(response.body) rescue response
     end
 
-    def resetUserPassword(modUserName, modPassword, machine)
+    def reset_user_password(machine, modUserName, modPassword)
       #User account information
       uad = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
       #User account url
@@ -61,8 +61,8 @@ module RestAPI
       rest_api(:patch, userhref, machine, options)
     end
 
-    def deleteUser(deleteUserName, machine)
-      uad = rest_api(:get, '/rest/v1/AccountService/Accounts')
+    def delete_user(deleteUserName, machine)
+      uad = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
       minhref = adminhref(uad, deleteUserName )
       rest_api(:delete, minhref, machine)
     end
@@ -80,13 +80,6 @@ module RestAPI
       iloget["Items"][0]["MacAddress"]
     end
 
-    def createUserAccount(userName, password, machine)
-      rest_api(:get, '/rest/v1/AccountService/Accounts')
-      newUser = {"UserName" => userName, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => userName} }}
-      options = {'body' => newUser}
-      rest_api(:post, '/rest/v1/AccountService/Accounts',machine,  options, )
-    end
-
     def resetILO(machine)
       newAction = {"Action"=> "Reset"}
       options = {'body' => newAction}
@@ -95,8 +88,11 @@ module RestAPI
       rest_api(:post, mgruri ,machine ,options )
     end
 
-    def get_ilos ilo_names
-      binding.pry
+    def create_user(machine,username,password)
+      rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
+  		newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
+  		options = {'body' => newUser}
+  		rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
     end
   end
 end
