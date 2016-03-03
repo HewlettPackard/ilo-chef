@@ -16,7 +16,7 @@
 ###1. User Delete
 #####  iLOResourceProvider_ilo_user 'user delete' do
 #####    username 'test'
-#####    machine machine
+#####     ilo_names ["ILO-02"]
 #####    action :deleteUser
 #####  end
 
