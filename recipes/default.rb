@@ -5,7 +5,7 @@
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 require 'pry'
 #Chef::Resource::Execute.send(:include, RestAPI::Helper)
-#To Add user on all the 
+#To Add user on all the
 #
 ::Chef::Recipe.send(:include, RestAPI::Helper)
 ::Chef::Recipe.send(:include, ILOINFO)
@@ -27,14 +27,13 @@ require 'pry'
 #  end
 #end
 
-#ilono.each do |ilo, machine|
-#  iLOResourceProvider_ilo_user 'user create' do
-#    username 'test'
-#    password 'password123'
-#    machine machine
-#    ilo_names ["test12"]
-#  end
-#end
+
+ # iLOResourceProvider_ilo_user 'user create' do
+ #   username 'test'
+ #   password 'password123'
+ #   ilo_names ["ILO-02"]
+ # end
+
 
 
 #ilono.each do |ilo, machine|

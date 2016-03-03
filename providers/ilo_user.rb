@@ -1,16 +1,19 @@
 use_inline_resources
 include RestAPI::Helper
+::Chef::Provider.send(:include, ILOINFO)
 
 
 action :createUser do
 	username = new_resource.username
 	password = new_resource.password
-	machine  = new_resource.machine
-	get_ilos new_resource.ilo_names
-	rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-	newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
-	options = {'body' => newUser}
-	rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options, )
+	get_ilos = new_resource.ilo_names
+	get_ilos.each do |ilo|
+		machine  = ilono.select{|k,v| k == ilo}
+		rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
+		newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
+		options = {'body' => newUser}
+		rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
+	end
 end
 
 action :deleteUser do
