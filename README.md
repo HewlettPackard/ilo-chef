@@ -7,12 +7,13 @@
 #####Step4 - Update ilo_info.rb in iLOResourceProvider/libraries/ with the ILO details.
 #####Step5 - Update Recipe and start using it.
 
+
 ###Use-cases covered in this provider Cookbook
 ####A. User Addition/deletion/Changing Password
 
+
 ####Examples:
 ###1. User Delete
-
 #####  iLOResourceProvider_ilo_user 'user delete' do
 #####    username 'test'
 #####    machine machine
@@ -21,7 +22,6 @@
 
 
 ###2. User Addition
-
 ##### iLOResourceProvider_ilo_user 'user create' do
 #####    username 'test'
 #####    password 'password123'
@@ -30,9 +30,7 @@
 #####  end
 
 
-
 ###3. Change Password
-
 #####  iLOResourceProvider_ilo_user 'user reset password' do
 #####    username 'test'
 #####    password 'password12'
@@ -41,11 +39,11 @@
 #####  end
 
 
-
 ##B. Power On/Off/Reset
-###Examples:
-###1. Power On System
 
+###Examples:
+
+###1. Power On System
 ##### iLOResourceProvider_ilo_powermgmt 'power on' do
 #####   machine machine
 #####   action :poweron
@@ -53,14 +51,13 @@
 
 
 ###2. Power Off System1.
-
 ##### iLOResourceProvider_ilo_powermgmt 'power off' do
 #####   machine machine
 #####   action :poweron
 ##### end
 
-###3. Power Reset System
 
+###3. Power Reset System
 ##### iLOResourceProvider_ilo_powermgmt 'resetsys' do
 #####   machine machine
 #####   action :resetsys
