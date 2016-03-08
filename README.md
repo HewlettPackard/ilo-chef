@@ -5,7 +5,7 @@
 #####Step2 - Update knife.rb with the Chef Server details.
 #####Step3 - Download iLOResourceProvider Cookbook.
 #####Step4 - Update ilo_info.rb in iLOResourceProvider/libraries/ with the ILO details.
-#####Step5 - Update Recipe and start using it.
+#####Step5 - Update Recipe with below examples and start using it.
 
 
 ###Use-cases covered in this provider Cookbook
@@ -16,7 +16,7 @@
 ###1. User Delete
 #####  iLOResourceProvider_ilo_user 'user delete' do
 #####    username 'test'
-#####    machine machine
+#####     ilo_names ["ILO-02"]
 #####    action :deleteUser
 #####  end
 
