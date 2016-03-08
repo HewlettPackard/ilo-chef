@@ -1,17 +1,17 @@
 use_inline_resources
 include RestAPI::Helper
 
-action :fw_up do
+action :set_time_zone do
   ilos = new_resource.ilo_names
-  fw_uri = new_resource.fw_uri
+  time_zone_index = new_resource.time_zone_index
   if ilos.class == Array
     ilos.each do |ilo|
       machine  = ilono.select{|k,v| k == ilo}[ilo]
-      fw_upgrade(machine,fw_uri)
+      set_ilo_time_zone(machine,time_zone_index)
     end
   else
     ilono.each do |name,site|
-			fw_upgrade(site,fw_uri)
+			set_ilo_time_zone(site,time_zone_index)
 	  end
   end
 end

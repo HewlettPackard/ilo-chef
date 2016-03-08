@@ -4,7 +4,7 @@ include RestAPI::Helper
 action :poweron do
   ilos = new_resource.ilo_names
   if ilos.class == Array
-		get_ilos.each do |ilo|
+		ilos.each do |ilo|
 			machine  = ilono.select{|k,v| k == ilo}[ilo]
       power_on(machine)
     end
@@ -18,7 +18,7 @@ end
 action :poweroff do
   ilos = new_resource.ilo_names
   if ilos.class == Array
-    get_ilos.each do |ilo|
+    ilos.each do |ilo|
       machine  = ilono.select{|k,v| k == ilo}[ilo]
       power_off(machine)
     end
@@ -32,7 +32,7 @@ end
 action :resetsys do
   ilos = new_resource.ilo_names
   if ilos.class == Array
-		get_ilos.each do |ilo|
+		ilos.each do |ilo|
 			machine  = ilono.select{|k,v| k == ilo}[ilo]
       reset_server(machine)
     end

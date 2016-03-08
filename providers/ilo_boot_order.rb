@@ -7,11 +7,11 @@ action :fw_up do
   if ilos.class == Array
     ilos.each do |ilo|
       machine  = ilono.select{|k,v| k == ilo}[ilo]
-      fw_upgrade(machine,fw_uri)
+      reset_boot_order(machine)
     end
   else
     ilono.each do |name,site|
-			fw_upgrade(site,fw_uri)
+			reset_boot_order(site)
 	  end
   end
 end
