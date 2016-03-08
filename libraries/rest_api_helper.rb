@@ -199,5 +199,11 @@ module RestAPI
       rest_api(:patch, '/rest/v1/Managers/1/EthernetInterfaces/1',machine,options)
     end
 
+    def set_led_light(machine, state)
+      newAction = {"IndicatorLED" => "Lit"}
+      options = {'body' => newAction}
+      rest_api(:patch, '/rest/v1/Systems/1',machine,options)
+    end
+
   end
 end

@@ -65,14 +65,14 @@ require 'pry'
 #   action :clear
 # end
 
-iLOResourceProvider_ilo_logs 'dump iel logs' do
-  ilo_names ["ILO-02"]
-  log_type 'iml'
-  severity_level 'any'
-  duration_in_hours 24
-  filename "logs3"
-  action :dump
-end
+# iLOResourceProvider_ilo_logs 'dump iel logs' do
+#   ilo_names ["ILO-02"]
+#   log_type 'iml'
+#   severity_level 'any'
+#   duration_in_hours 24
+#   filename "logs3"
+#   action :dump
+# end
 
 # iLOResourceProvider_ilo_uefi 'secure boot' do
 #   ilo_names ["ILO-02"]
@@ -107,3 +107,9 @@ end
 #    time_zone_index 272
 #    action :set_time_zone
 #  end
+
+ iLOResourceProvider_ilo_indicator_led 'set led state' do
+   ilo_names ["ILO-02"]
+   led_state "Blinking"
+   action :set
+ end
