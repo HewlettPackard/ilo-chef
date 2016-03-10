@@ -2,6 +2,7 @@ require 'pry'
 require 'base64'
 require 'net/http'
 require 'time'
+require 'yaml'
 
 module RestAPI
   module Helper
@@ -108,15 +109,14 @@ module RestAPI
 
     def create_user(machine,username,password)
       rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-  		newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
-  		options = {'body' => newUser}
-  		rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
+      newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
+      options = {'body' => newUser}
+      rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
     end
 
     def fw_upgrade(machine,uri)
       newAction = {"Action"=> "InstallFromURI", "FirmwareURI"=> uri}
       options = {'body' => newAction}
-      binding.pry
       rest_api(:post, '/rest/v1/Managers/1/UpdateService', machine, options)
     end
 
@@ -205,5 +205,121 @@ module RestAPI
       rest_api(:patch, '/rest/v1/Systems/1',machine,options)
     end
 
+    def dump_computer_details(machine,file)
+      general_details = rest_api(:get, '/rest/v1/Systems/1',machine)
+      manufacturer = general_details["Manufacturer"]
+      model = general_details["Model"]
+      bios_version = general_details['Bios']['Current']['VersionString']
+      memory = general_details['Memory']['TotalSystemMemoryGB'].to_s + ' GB'
+      processors = general_details['Processors']['Count'].to_s + ' x ' + general_details['Processors']['ProcessorFamily'].to_s
+      details = {
+        "#{machine['ilo_site']}" => {
+          'manufacturer' => manufacturer,
+          'model' => model,
+          'bios_version' => bios_version,
+          'memory' => memory,
+          'processors' => processors}
+        }
+
+        network_adapters = []
+        networks =  rest_api(:get, rest_api(:get, '/rest/v1/Systems/1',machine)['Oem']['Hp']['links']['NetworkAdapters']['href'], machine)["links"]["Member"]
+        networks.each do |network|
+          network_detail = rest_api(:get, network["href"],machine)
+          physical_ports = []
+          network_detail['PhysicalPorts'].each do |port|
+            n = {
+              'Name' => port['Name'],
+              'StructuredName' => port['Oem']['Hp']['StructuredName'],
+              'MacAddress' => port['MacAddress'],
+              'State' => port['Status']['State']
+            }
+            physical_ports.push(n)
+          end
+          nets = {'Name' => network_detail['Name'],
+            'StructuredName' => network_detail['StructuredName'],
+            'PartNumber'  =>  network_detail['PartNumber'],
+            'State' => network_detail['Status']['State'],
+            'Health' => network_detail['Status']['Health'],
+            'PhysicalPorts' => physical_ports
+          }
+          network_adapters.push(nets)
+        end
+        net_adapters = {'NetworkAdapters' => network_adapters }
+
+
+        storages = rest_api(:get, rest_api(:get, '/rest/v1/Systems/1',machine)['Oem']['Hp']['links']['SmartStorage']['href'], machine)
+        array_controllers = []
+        array_ctrls = rest_api(:get, storages['links']['ArrayControllers']['href'],machine)
+        if array_ctrls["links"].has_key?("Member")
+          array_ctrls["links"]["Member"].each do |array_controller|
+            controller = rest_api(:get, array_controller["href"],machine)
+
+            storage_enclosures = []
+            rest_api(:get, controller["links"]["StorageEnclosures"]["href"], machine)["links"]["Member"].each do |enclosure|
+              enclsr = rest_api(:get, enclosure["href"], machine)
+              enc = {
+                'Model' => enclsr['Model'],
+                'SerialNumber' => enclsr['SerialNumber'],
+                'DriveBayCount' => enclsr['DriveBayCount'],
+                'State' => enclsr['Status']['State'],
+                'Health' => enclsr['Status']['Health'],
+                'Location' => enclsr['Location'].to_s + ' (' + enclsr['LocationFormat'].to_s + ')',
+                'FIrmwareVersion' => enclsr['FirmwareVersion']['Current']['VersionString']
+              }
+              storage_enclosures.push(enc)
+            end
+
+            logical_drives = []
+            rest_api(:get, controller["links"]["LogicalDrives"]["href"],machine)["links"]["Member"].each do |logicaldrive|
+              lds = rest_api(:get, logicaldrive["href"], machine)
+              data_drives = []
+              rest_api(:get, lds['links']['DataDrives']['href'],machine)["links"]["Member"].each do |datadrives|
+                disk_drive = rest_api(:get,datadrives["href"],machine)
+                dsk_drive = {
+                  'Model' => disk_drive['Model'],
+                  'Name' => disk_drive['Name'],
+                  'RotationalSpeedRpm' => disk_drive['RotationalSpeedRpm'],
+                  'SerialNumber' => disk_drive['SerialNumber'],
+                  'State' => disk_drive['Status']['State'],
+                  'Health' => disk_drive['Status']['Health'],
+                  'CapacityMiB' => disk_drive['CapacityMiB'],
+                  'CurrentTemperatureCelsius' => disk_drive['CurrentTemperatureCelsius']
+                }
+                data_drives.push(dsk_drive)
+              end
+              ld = {
+                'Size' => lds['CapacityMiB'],
+                'Raid' => lds['Raid'],
+                'Status' => lds['Status']['State'],
+                'Health' => lds['Status']['Health'],
+                'DataDrives' => data_drives
+              }
+              logical_drives.push(ld)
+            end
+            ac = {
+              'Model' => controller['Model'],
+              'SerialNumber' => controller['SerialNumber'],
+              'State' => controller['Status']['State'],
+              'Health' => controller['Status']['Health'],
+              'Location' => controller['Location'],
+              'FirmWareVersion' => controller['FirmwareVersion']['Current']['VersionString'],
+              'LogicalDrives' => logical_drives,
+              'Enclosures' => storage_enclosures
+            }
+            array_controllers.push(ac)
+          end
+        end
+
+        hp_smart_storage = {'HPSmartStorage' =>   {
+          'Health' => storages['Status']['Health'],
+          'ArrayControllers' => array_controllers
+        }
+      }
+
+      file = File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+')
+      file.write(details.merge(net_adapters).merge(hp_smart_storage).to_yaml)
+      file.write("\n")
+      file.close
+    end
   end
 end

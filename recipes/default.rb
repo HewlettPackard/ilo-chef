@@ -108,8 +108,14 @@ require 'pry'
 #    action :set_time_zone
 #  end
 
- iLOResourceProvider_ilo_indicator_led 'set led state' do
-   ilo_names ["ILO-02"]
-   led_state "Blinking"
-   action :set
+ # iLOResourceProvider_ilo_indicator_led 'set led state' do
+ #   ilo_names ["ILO-02"]
+ #   led_state "Blinking"
+ #   action :set
+ # end
+
+ iLOResourceProvider_ilo_computer_details 'dump computer details' do
+   ilo_names :all
+   filename 'comp_details1'
+   action :dump
  end
