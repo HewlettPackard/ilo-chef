@@ -333,5 +333,12 @@ module RestAPI
         rest_api(:patch,vm["href"],machine,options)
       end
     end
+
+    def set_asset_tag(machine,tag)
+      newAction = {"AssetTag" => tag}
+      options = {'body' => newAction}
+      binding.pry
+      rest_api(:patch,'/rest/v1/Systems/1',machine,options)
+    end
   end
 end

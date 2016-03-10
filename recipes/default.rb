@@ -120,9 +120,16 @@ require 'pry'
  #   action :dump
  # end
 
- iLOResourceProvider_ilo_virtual_media 'mount iso' do
-   ilo_names ['ILO-02']
-   iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
-   boot_on_next_server_reset false
-   action :mount
+ # iLOResourceProvider_ilo_virtual_media 'mount iso' do
+ #   ilo_names ['ILO-02']
+ #   iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
+ #   boot_on_next_server_reset false
+ #   action :mount
+ # end
+
+
+ iLOResourceProvider_ilo_asset_tag 'set asset tag' do
+   ilo_name 'ILO-02'
+   asset_tag 'HP007'
+   action :set
  end
