@@ -114,8 +114,15 @@ require 'pry'
  #   action :set
  # end
 
- iLOResourceProvider_ilo_computer_details 'dump computer details' do
-   ilo_names :all
-   filename 'comp_details1'
-   action :dump
+ # iLOResourceProvider_ilo_computer_details 'dump computer details' do
+ #   ilo_names :all
+ #   filename 'comp_details1'
+ #   action :dump
+ # end
+
+ iLOResourceProvider_ilo_virtual_media 'mount iso' do
+   ilo_names ['ILO-02']
+   iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
+   boot_on_next_server_reset false
+   action :mount
  end
