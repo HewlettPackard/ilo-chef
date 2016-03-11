@@ -25,16 +25,16 @@ require 'pry'
 
 
  # iLOResourceProvider_ilo_user 'user create' do
- #   username 'pappu1'
+ #   username 'ram'
  #   password 'password123'
  #   ilo_names ["ILO-02"]
  # end
 
 
-# iLOResourceProvider_ilo_powermgmt 'power off' do
-#   ilo_names :all
-#   action :poweroff
-# end
+iLOResourceProvider_ilo_powermgmt 'power off' do
+  ilo_names :all
+  action :poweroff
+end
 #
 # iLOResourceProvider_ilo_powermgmt 'power on' do
 #   ilo_names :all
@@ -128,8 +128,8 @@ require 'pry'
  # end
 
 
- iLOResourceProvider_ilo_asset_tag 'set asset tag' do
-   ilo_name 'ILO-02'
-   asset_tag 'HP007'
-   action :set
- end
+ # iLOResourceProvider_ilo_asset_tag 'set asset tag' do
+ #   ilo_name 'ILO-02'
+ #   asset_tag 'HP007'
+ #   action :set
+ # end

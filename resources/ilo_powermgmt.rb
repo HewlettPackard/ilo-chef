@@ -1,8 +1,45 @@
 actions :poweron, :poweroff, :resetsys
-default_action :createUser
+property :username, String
+property :password, String
+property :ilo_names, [Array,Symbol]
+include RestAPI::Helper
+::Chef::Provider.send(:include, ILOINFO)
 
-attribute :username, :kind_of => String
-attribute :password, :kind_of => String
-attribute :ilo_names, :kind_of => [Array,Symbol]
+action :poweron do
+  if ilo_names.class == Array
+		ilo_names.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+      power_on(machine)
+    end
+  else
+    ilono.each do |name,site|
+      power_on(site)
+    end
+  end
+end
 
-attr_accessor :exists
+action :poweroff do
+  if ilo_names.class == Array
+    ilos.each do |ilo|
+      machine  = ilono.select{|k,v| k == ilo}[ilo]
+      power_off(machine)
+    end
+  else
+    ilono.each do |name,site|
+      power_off(site)
+    end
+  end
+end
+
+action :resetsys do
+  if ilo_names.class == Array
+		ilos.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+      reset_server(machine)
+    end
+  else
+    ilono.each do |name,site|
+      reset_server(site)
+    end
+  end
+end

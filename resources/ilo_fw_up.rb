@@ -1,6 +1,19 @@
 actions :fw_up
 
-attribute :ilo_names, :kind_of => [Array,Symbol], :required => true
-attribute :fw_uri, :kind_of => String, :required => true
+property :ilo_names, [Array,Symbol], :required => true
+property :fw_uri, String, :required => true
 
-attr_accessor :exists
+include RestAPI::Helper
+::Chef::Provider.send(:include, ILOINFO)
+action :fw_up do
+  if ilo_names.class == Array
+    ilo_names.each do |ilo|
+      machine  = ilono.select{|k,v| k == ilo}[ilo]
+      fw_upgrade(machine,fw_uri)
+    end
+  else
+    ilono.each do |name,site|
+			fw_upgrade(site,fw_uri)
+	  end
+  end
+end

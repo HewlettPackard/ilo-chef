@@ -209,6 +209,7 @@ module RestAPI
       general_details = rest_api(:get, '/rest/v1/Systems/1',machine)
       manufacturer = general_details["Manufacturer"]
       model = general_details["Model"]
+      asset_tag = general_details['AssetTag']
       bios_version = general_details['Bios']['Current']['VersionString']
       memory = general_details['Memory']['TotalSystemMemoryGB'].to_s + ' GB'
       processors = general_details['Processors']['Count'].to_s + ' x ' + general_details['Processors']['ProcessorFamily'].to_s
@@ -216,6 +217,7 @@ module RestAPI
         "#{machine['ilo_site']}" => {
           'manufacturer' => manufacturer,
           'model' => model,
+          'AssetTag' => asset_tag,
           'bios_version' => bios_version,
           'memory' => memory,
           'processors' => processors}
