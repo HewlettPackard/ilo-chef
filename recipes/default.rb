@@ -31,10 +31,10 @@ require 'pry'
  # end
 
 
-iLOResourceProvider_ilo_powermgmt 'power off' do
-  ilo_names :all
-  action :poweroff
-end
+# iLOResourceProvider_ilo_powermgmt 'power off' do
+#   ilo_names :all
+#   action :poweroff
+# end
 #
 # iLOResourceProvider_ilo_powermgmt 'power on' do
 #   ilo_names :all
@@ -65,14 +65,13 @@ end
 #   action :clear
 # end
 
-# iLOResourceProvider_ilo_logs 'dump iel logs' do
-#   ilo_names ["ILO-02"]
-#   log_type 'iml'
-#   severity_level 'any'
-#   duration_in_hours 24
-#   filename "logs3"
-#   action :dump
-# end
+iLOResourceProvider_ilo_logs 'dump iel logs' do
+  ilo_names ["ILO-02"]
+  log_type 'iml'
+  duration_in_hours 24
+  dump_file "iml_logs"
+  action :dump
+end
 
 # iLOResourceProvider_ilo_uefi 'secure boot' do
 #   ilo_names ["ILO-02"]
@@ -97,26 +96,27 @@ end
 #   action :use_ntp
 # end
 #
-#  iLOResourceProvider_ilo_powermgmt 'resetsys' do
-#    ilo_names ["ILO-02"]
-#    action :resetsys
-#  end
-#
-#  iLOResourceProvider_ilo_time_zone 'set time zone' do
-#    ilo_names ["ILO-02"]
-#    time_zone_index 272
-#    action :set_time_zone
-#  end
+
+ # iLOResourceProvider_ilo_time_zone 'set time zone' do
+ #   ilo_names ["ILO-02"]
+ #   time_zone "Asia/Kolkata"
+ #   action :set_time_zone
+ # end
+ #
+ #  iLOResourceProvider_ilo_powermgmt 'resetsys' do
+ #    ilo_names ["ILO-02"]
+ #    action :resetsys
+ #  end
 
  # iLOResourceProvider_ilo_indicator_led 'set led state' do
  #   ilo_names ["ILO-02"]
- #   led_state "Blinking"
+ #   led_state "Off"
  #   action :set
  # end
 
  # iLOResourceProvider_ilo_computer_details 'dump computer details' do
  #   ilo_names :all
- #   filename 'comp_details1'
+ #   dump_file 'comp_details1'
  #   action :dump
  # end
 
@@ -130,6 +130,6 @@ end
 
  # iLOResourceProvider_ilo_asset_tag 'set asset tag' do
  #   ilo_name 'ILO-02'
- #   asset_tag 'HP007'
+ #   asset_tag 'HP001'
  #   action :set
  # end

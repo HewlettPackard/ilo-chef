@@ -54,7 +54,7 @@ module RestAPI
 
     def reset_user_password(machine, modUserName, modPassword)
       #User account information
-      uad = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
+      uad = rest_api(:get, '/redfish/v1/AccountService/Accounts/', machine)
       #User account url
       userhref = adminhref(uad, modUserName)
       options = {
@@ -64,7 +64,7 @@ module RestAPI
     end
 
     def delete_user(deleteUserName, machine)
-      uad = rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
+      uad = rest_api(:get, '/redfish/v1/AccountService/Accounts/', machine)
       minhref = adminhref(uad, deleteUserName )
       rest_api(:delete, minhref, machine)
     end
@@ -72,7 +72,7 @@ module RestAPI
     def reset_server(machine)
       newAction = {"Action"=> "Reset", "ResetType"=> "ForceRestart"}
       options = {'body' => newAction}
-      sysget = rest_api(:get, '/rest/v1/systems', machine)
+      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
       sysuri = sysget["links"]["Member"][0]["href"]
       rest_api(:post, sysuri, machine, options)
     end
@@ -80,7 +80,7 @@ module RestAPI
     def power_on(machine)
       newAction = {"Action"=> "Reset", "ResetType"=> "On"}
       options = {'body' => newAction}
-      sysget = rest_api(:get, '/rest/v1/systems', machine)
+      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
       sysuri = sysget["links"]["Member"][0]["href"]
       rest_api(:post, sysuri, machine, options)
     end
@@ -88,21 +88,21 @@ module RestAPI
     def power_off(machine)
       newAction = {"Action"=> "Reset", "ResetType"=> "ForceOff"}
       options = {'body' => newAction}
-      sysget = rest_api(:get, '/rest/v1/systems', machine)
+      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
       sysuri = sysget["links"]["Member"][0]["href"]
       rest_api(:post, sysuri, machine, options)
     end
 
 
     def findILOMacAddr(machine)
-      iloget = rest_api(:get, '/rest/v1/Managers/1/NICs', machine)
+      iloget = rest_api(:get, '/redfish/v1/Managers/1/NICs/', machine)
       iloget["Items"][0]["MacAddress"]
     end
 
     def resetILO(machine)
       newAction = {"Action"=> "Reset"}
       options = {'body' => newAction}
-      mgrget = rest_api(:get, '/rest/v1/Managers', machine)
+      mgrget = rest_api(:get, '/redfish/v1/Managers/', machine)
       mgruri = mgrget["links"]["Member"][0]["href"]
       rest_api(:post, mgruri ,machine ,options )
     end
@@ -111,13 +111,13 @@ module RestAPI
       rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
       newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
       options = {'body' => newUser}
-      rest_api(:post, '/rest/v1/AccountService/Accounts', machine,  options)
+      rest_api(:post, '/redfish/v1/AccountService/Accounts/', machine,  options)
     end
 
     def fw_upgrade(machine,uri)
       newAction = {"Action"=> "InstallFromURI", "FirmwareURI"=> uri}
       options = {'body' => newAction}
-      rest_api(:post, '/rest/v1/Managers/1/UpdateService', machine, options)
+      rest_api(:post, '/redfish/v1/Managers/1/UpdateService/', machine, options)
     end
 
     def apply_license(machine, license_key)
@@ -129,17 +129,17 @@ module RestAPI
     def clear_iel_logs(machine)
       newAction = {"Action"=> "ClearLog"}
       options = {'body' => newAction}
-      rest_api(:post, '/rest/v1/Managers/1/LogServices/IEL', machine, options)
+      rest_api(:post, '/redfish/v1/Managers/1/LogServices/IEL/', machine, options)
     end
 
     def clear_iml_logs(machine)
       newAction = {"Action"=> "ClearLog"}
       options = {'body' => newAction}
-      rest_api(:post, '/rest/v1/Systems/1/LogServices/IML', machine, options)
+      rest_api(:post, '/redfish/v1/Systems/1/LogServices/IML/', machine, options)
     end
 
     def dump_iel_logs(machine,ilo,severity_level,file,duration)
-      entries = rest_api(:get, '/rest/v1/Managers/1/LogServices/IEL/Entries', machine)["links"]["Member"]
+      entries = rest_api(:get, '/redfish/v1/Managers/1/LogServices/IEL/Entries/', machine)["links"]["Member"]
       severity_level = "OK" || "Warning" || "Critical" if severity_level == "any"
       entries.each do |e|
         logs = rest_api(:get, e["href"], machine)
@@ -152,14 +152,19 @@ module RestAPI
     end
 
     def dump_iml_logs(machine, ilo, severity_level,file,duration)
-      entries = rest_api(:get, '/rest/v1/Systems/1/LogServices/IML/Entries', machine)["links"]["Member"]
-      severity_level = "OK" || "Warning" || "Critical" if severity_level == "any"
+      entries = rest_api(:get, '/redfish/v1/Systems/1/LogServices/IML/Entries/', machine)["links"]["Member"]
       entries.each do |e|
         logs = rest_api(:get, e["href"], machine)
+        binding.pry
         severity = logs["Severity"]
         message = logs["Message"]
         created = logs["Created"]
-        ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if severity == severity_level and Time.parse(created) > (Time.parse(created) - (duration))
+        binding.pry
+        if severity_level.nil? and Time.parse(created) > (Time.now.utc - (duration*3600))
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level
+        else
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n"
+        end
         File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
       end
     end
@@ -167,53 +172,55 @@ module RestAPI
     def enable_uefi_secure_boot(machine, value)
       newAction = {"SecureBootEnable"=> value}
       options = {'body' => newAction}
-      rest_api(:patch, '/rest/v1/Systems/1/SecureBoot', machine, options)
+      rest_api(:patch, '/redfish/v1/Systems/1/SecureBoot/', machine, options)
     end
 
     def revert_bios_settings(machine)
       newAction = {"BaseConfig" => "default"}
       options = {'body' => newAction}
-      rest_api(:put, '/rest/v1/Systems/1/BIOS/Settings',machine,options)
+      rest_api(:put, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
     end
 
     def reset_boot_order(machine)
       newAction = {"RestoreManufacturingDefaults" => "yes"}
       options = {'body' => newAction}
-      rest_api(:patch, '/rest/v1/Systems/1/BIOS',machine,options)
+      rest_api(:patch, '/redfish/v1/Systems/1/BIOS/',machine,options)
     end
 
-    def set_ilo_time_zone(machine, time_zone_index)
-      timezone = rest_api(:get, '/rest/v1/Managers/1/DateTime',machine)
+    def set_ilo_time_zone(machine, time_zone)
+      timezone = rest_api(:get, '/redfish/v1/Managers/1/DateTime/',machine)
       puts "Current TimeZone is: " + timezone["TimeZone"]["Name"]
-      newAction = {"TimeZone" => {"Index" => time_zone_index}}
+      time_zone = rest_api(:get,'/redfish/v1/Managers/1/DateTime/',machine)['TimeZoneList'].select{|timezone| timezone["Name"] == time_zone}
+      newAction = {"TimeZone" => {"Index" => time_zone[0]["Index"]}}
       options = {'body' => newAction}
-      out = rest_api(:patch, '/rest/v1/Managers/1/DateTime', machine, options)
+      out = rest_api(:patch, '/redfish/v1/Managers/1/DateTime/', machine, options)
       raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
-      timezone = rest_api(:get, '/rest/v1/Managers/1/DateTime',machine)
+      timezone = rest_api(:get, '/redfish/v1/Managers/1/DateTime/',machine)
       puts "TimeZone set to: " + timezone["TimeZone"]["Name"]
     end
 
     def use_ntp_servers(machine,value)
       newAction = {"Oem" => {"Hp" => {"DHCPv4" => {"UseNTPServers" => value}}}}
       options = {'body' => newAction}
-      rest_api(:patch, '/rest/v1/Managers/1/EthernetInterfaces/1',machine,options)
+      rest_api(:patch, '/redfish/v1/Managers/1/EthernetInterfaces/1/',machine,options)
     end
 
     def set_led_light(machine, state)
-      newAction = {"IndicatorLED" => "Lit"}
+      newAction = {"IndicatorLED" => state}
       options = {'body' => newAction}
-      rest_api(:patch, '/rest/v1/Systems/1',machine,options)
+      binding.pry
+      rest_api(:patch, '/redfish/v1/Systems/1/',machine,options)
     end
 
-    def dump_computer_details(machine,file)
-      general_details = rest_api(:get, '/rest/v1/Systems/1',machine)
+    def gather_general_computer_details(machine)
+      general_details = rest_api(:get, '/redfish/v1/Systems/1/',machine)
       manufacturer = general_details["Manufacturer"]
       model = general_details["Model"]
       asset_tag = general_details['AssetTag']
       bios_version = general_details['Bios']['Current']['VersionString']
       memory = general_details['Memory']['TotalSystemMemoryGB'].to_s + ' GB'
       processors = general_details['Processors']['Count'].to_s + ' x ' + general_details['Processors']['ProcessorFamily'].to_s
-      details = {
+      {
         "#{machine['ilo_site']}" => {
           'manufacturer' => manufacturer,
           'model' => model,
@@ -222,9 +229,11 @@ module RestAPI
           'memory' => memory,
           'processors' => processors}
         }
+    end
 
+      def gather_computer_network_details(machine)
         network_adapters = []
-        networks =  rest_api(:get, rest_api(:get, '/rest/v1/Systems/1',machine)['Oem']['Hp']['links']['NetworkAdapters']['href'], machine)["links"]["Member"]
+        networks =  rest_api(:get, rest_api(:get, '/redfish/v1/Systems/1/',machine)['Oem']['Hp']['links']['NetworkAdapters']['href'], machine)["links"]["Member"]
         networks.each do |network|
           network_detail = rest_api(:get, network["href"],machine)
           physical_ports = []
@@ -246,16 +255,18 @@ module RestAPI
           }
           network_adapters.push(nets)
         end
-        net_adapters = {'NetworkAdapters' => network_adapters }
+        {
+          'NetworkAdapters' => network_adapters
+        }
+      end
 
-
-        storages = rest_api(:get, rest_api(:get, '/rest/v1/Systems/1',machine)['Oem']['Hp']['links']['SmartStorage']['href'], machine)
+      def gather_array_controller_details(machine)
+        storages = rest_api(:get, rest_api(:get, '/redfish/v1/Systems/1/',machine)['Oem']['Hp']['links']['SmartStorage']['href'], machine)
         array_controllers = []
         array_ctrls = rest_api(:get, storages['links']['ArrayControllers']['href'],machine)
         if array_ctrls["links"].has_key?("Member")
           array_ctrls["links"]["Member"].each do |array_controller|
             controller = rest_api(:get, array_controller["href"],machine)
-
             storage_enclosures = []
             rest_api(:get, controller["links"]["StorageEnclosures"]["href"], machine)["links"]["Member"].each do |enclosure|
               enclsr = rest_api(:get, enclosure["href"], machine)
@@ -311,36 +322,44 @@ module RestAPI
             array_controllers.push(ac)
           end
         end
-
-        hp_smart_storage = {'HPSmartStorage' =>   {
-          'Health' => storages['Status']['Health'],
-          'ArrayControllers' => array_controllers
+        {
+          'HPSmartStorage' =>   {
+            'Health' => storages['Status']['Health'],
+            'ArrayControllers' => array_controllers
+          }
         }
-      }
-
-      file = File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+')
-      file.write(details.merge(net_adapters).merge(hp_smart_storage).to_yaml)
-      file.write("\n")
-      file.close
-    end
-
-    def mount_virtual_media(machine, iso_uri, boot_on_next_server_reset)
-      rest_api(:get, '/rest/v1/Managers/1/VirtualMedia', machine)["links"]["Member"].each do |vm|
-        virtual_media = rest_api(:get,vm["href"],machine)
-        next if !(virtual_media["MediaTypes"].include?("CD") || virtual_media["MediaTypes"].include?("DVD"))
-        mount = {'Image' =>  iso_uri}
-        mount['Oem'] = {'Hp' =>  {'BootOnNextServerReset' =>  boot_on_next_server_reset}}
-        newAction = mount
-        options = {'body' => newAction}
-        rest_api(:patch,vm["href"],machine,options)
       end
-    end
 
-    def set_asset_tag(machine,tag)
-      newAction = {"AssetTag" => tag}
-      options = {'body' => newAction}
-      binding.pry
-      rest_api(:patch,'/rest/v1/Systems/1',machine,options)
-    end
+      def dump_computer_details(machine,dump_file)
+        general_computer_details = gather_general_computer_details(machine)
+        computer_network_details = gather_computer_network_details(machine)
+        array_controller_details = gather_array_controller_details(machine)
+        binding.pry
+        file = File.open("#{Chef::Config[:file_cache_path]}/#{dump_file}.txt", 'a+')
+        binding.pry
+        file.write(general_computer_details.merge(computer_network_details).merge(array_controller_details).to_yaml)
+        file.write("\n")
+        file.close
+      end
+
+      def mount_virtual_media(machine, iso_uri, boot_on_next_server_reset)
+        rest_api(:get, '/redfish/v1/Managers/1/VirtualMedia/', machine)["links"]["Member"].each do |vm|
+          virtual_media = rest_api(:get,vm["href"],machine)
+          next if !(virtual_media["MediaTypes"].include?("CD") || virtual_media["MediaTypes"].include?("DVD"))
+          mount = {'Image' =>  iso_uri}
+          mount['Oem'] = {'Hp' =>  {'BootOnNextServerReset' =>  boot_on_next_server_reset}}
+          newAction = mount
+          options = {'body' => newAction}
+          rest_api(:patch,vm["href"],machine,options)
+        end
+      end
+
+      def set_asset_tag(machine,tag)
+        newAction = {"AssetTag" => tag}
+        options = {'body' => newAction}
+        binding.pry
+        rest_api(:patch,'/redfish/v1/Systems/1/',machine,options)
+      end
+
   end
 end

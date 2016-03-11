@@ -33,7 +33,7 @@ end
 
 action :resetsys do
   if ilo_names.class == Array
-		ilos.each do |ilo|
+		ilo_names.each do |ilo|
 			machine  = ilono.select{|k,v| k == ilo}[ilo]
       reset_server(machine)
     end

@@ -1,7 +1,7 @@
 actions :set
 
 property :ilo_names, [Array,Symbol], :required => true
-property :led_state, String, :required => true, :default => "Lit", :equal_to => ["Lit", "Blinking"	,"Off"]
+property :led_state, String, :required => true, :default => "Lit", :equal_to => ["Lit","Off"]
 
 include RestAPI::Helper
 ::Chef::Provider.send(:include, ILOINFO)
