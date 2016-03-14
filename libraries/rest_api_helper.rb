@@ -140,13 +140,18 @@ module RestAPI
 
     def dump_iel_logs(machine,ilo,severity_level,file,duration)
       entries = rest_api(:get, '/redfish/v1/Managers/1/LogServices/IEL/Entries/', machine)["links"]["Member"]
-      severity_level = "OK" || "Warning" || "Critical" if severity_level == "any"
       entries.each do |e|
         logs = rest_api(:get, e["href"], machine)
         severity = logs["Severity"]
         message = logs["Message"]
         created = logs["Created"]
-        ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if severity == severity_level and Time.parse(created) > (Time.parse(created) - (duration*3600))
+        if !severity_level.nil?
+          binding.pry
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600))
+        else
+          binding.pry
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600))
+        end
         File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
       end
     end
@@ -155,15 +160,15 @@ module RestAPI
       entries = rest_api(:get, '/redfish/v1/Systems/1/LogServices/IML/Entries/', machine)["links"]["Member"]
       entries.each do |e|
         logs = rest_api(:get, e["href"], machine)
-        binding.pry
         severity = logs["Severity"]
         message = logs["Message"]
         created = logs["Created"]
-        binding.pry
-        if severity_level.nil? and Time.parse(created) > (Time.now.utc - (duration*3600))
-          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level
+        if !severity_level.nil?
+          binding.pry
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600))
         else
-          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n"
+          binding.pry
+          ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600))
         end
         File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
       end
@@ -360,6 +365,5 @@ module RestAPI
         binding.pry
         rest_api(:patch,'/redfish/v1/Systems/1/',machine,options)
       end
-
   end
 end
