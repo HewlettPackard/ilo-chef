@@ -25,8 +25,7 @@
 ##### iLOResourceProvider_ilo_user 'user create' do
 #####    username 'test'
 #####    password 'password123'
-#####    machine machine
-#####    ilo_names ["test12"]
+#####    ilo_names ["ILO-02"]
 #####  end
 
 
@@ -34,8 +33,8 @@
 #####  iLOResourceProvider_ilo_user 'user reset password' do
 #####    username 'test'
 #####    password 'password12'
-#####    machine machine
 #####    action :changePassword
+#####    ilo_names ["ILO-02"]
 #####  end
 
 
@@ -45,21 +44,27 @@
 
 ###1. Power On System
 ##### iLOResourceProvider_ilo_powermgmt 'power on' do
-#####   machine machine
 #####   action :poweron
+#####   ilo_names ["ILO-02"]
 ##### end
 
 
 ###2. Power Off System1.
 ##### iLOResourceProvider_ilo_powermgmt 'power off' do
-#####   machine machine
 #####   action :poweron
+#####    ilo_names ["ILO-02"]
 ##### end
 
 
 ###3. Power Reset System
 ##### iLOResourceProvider_ilo_powermgmt 'resetsys' do
-#####   machine machine
 #####   action :resetsys
+#####    ilo_names ["ILO-02"]
 #####  end
 
+##C: Firmware Upgrade
+##### iLOResourceProvider_ilo_fw_up 'fw_up' do
+#####   ilo_names ["ILO-02"]
+#####   fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
+#####   action :fw_up
+##### end
