@@ -99,7 +99,7 @@ module RestAPI
       iloget["Items"][0]["MacAddress"]
     end
 
-    def resetILO(machine)
+    def reset_ilo(machine)
       newAction = {"Action"=> "Reset"}
       options = {'body' => newAction}
       mgrget = rest_api(:get, '/redfish/v1/Managers/', machine)
