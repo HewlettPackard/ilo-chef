@@ -68,10 +68,3 @@
 #####   fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
 #####   action :fw_up
 ##### end
-
-##D: Apply License Key
-##### iLOResourceProvider_ilo_license 'fw_up' do
-#####   ilo_names ["ILO-02"]
-#####   license_key "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
-#####   action :apply
-##### end
