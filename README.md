@@ -72,6 +72,6 @@
 ##D: Apply License Key
 ##### iLOResourceProvider_ilo_license 'fw_up' do
 #####   ilo_names ["ILO-02"]
-#####   license_key "333TJ-XN732-5CRYY-RVXYH-KJDJR"
+#####   license_key "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
 #####   action :apply
 ##### end
