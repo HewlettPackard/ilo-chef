@@ -62,3 +62,16 @@
 #####    ilo_names ["ILO-02"]
 #####  end
 
+##C: Firmware Upgrade
+##### iLOResourceProvider_ilo_fw_up 'fw_up' do
+#####   ilo_names ["ILO-02"]
+#####   fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
+#####   action :fw_up
+##### end
+
+##D: Apply License Key
+##### iLOResourceProvider_ilo_license 'fw_up' do
+#####   ilo_names ["ILO-02"]
+#####   license_key "333TJ-XN732-5CRYY-RVXYH-KJDJR"
+#####   action :apply
+##### end
