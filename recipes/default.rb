@@ -103,10 +103,10 @@ require 'pry'
  #   action :set_time_zone
  # end
  #
-  iLOResourceProvider_ilo_powermgmt 'resetilo' do
-    ilo_names ["ILO-02"]
-    action :resetilo
-  end
+  # iLOResourceProvider_ilo_powermgmt 'resetilo' do
+  #   ilo_names ["ILO-02"]
+  #   action :resetilo
+  # end
 
  # iLOResourceProvider_ilo_indicator_led 'set led state' do
  #   ilo_names ["ILO-02"]
@@ -133,3 +133,10 @@ require 'pry'
  #   asset_tag 'HP001'
  #   action :set
  # end
+
+ iLOResourceProvider_ilo_snmp 'configure snmp' do
+   ilo_names ['ILO-01']
+   snmp_mode 'Agentless'
+   snmp_alerts false
+   action :configure
+ end

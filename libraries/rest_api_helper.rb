@@ -365,5 +365,19 @@ module RestAPI
         binding.pry
         rest_api(:patch,'/redfish/v1/Systems/1/',machine,options)
       end
+
+     def configure_snmp(machine, snmp_mode, snmp_alerts)
+       manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
+       network_service = rest_api(:get, manager, machine)['links']['NetworkService']['href']
+       snmp_service = rest_api(:get, network_service,machine)['links']['SNMPService']['href']
+       config = rest_api(:get, snmp_service, machine)
+       puts "Current SNMP Configuration for #{machine['ilo_site']}: Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
+       options = {'Mode' => snmp_mode, 'AlertsEnabled' =>  snmp_alerts}
+       binding.pry
+       rest_api(:patch, snmp_service, machine, options)
+       config = rest_api(:get, snmp_service, machine)
+       puts "SNMP configuration for #{machine['ilo_site']} changed to : Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
+     end
+
   end
 end
