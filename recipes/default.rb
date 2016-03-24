@@ -134,9 +134,24 @@ require 'pry'
  #   action :set
  # end
 
- iLOResourceProvider_ilo_snmp 'configure snmp' do
-   ilo_names ['ILO-01']
-   snmp_mode 'Agentless'
-   snmp_alerts false
-   action :configure
- end
+ # iLOResourceProvider_ilo_snmp 'configure snmp' do
+ #   ilo_names ['ILO-01']
+ #   snmp_mode 'Agentless'
+ #   snmp_alerts false
+ #   action :configure
+ # end
+
+ # iLOResourceProvider_ilo_registry 'get registry' do
+ #   ilo_name 'ILO-01'
+ #   registry_prefix 'iLO'
+ #   registry_file 'registry'
+ #   action :get_registry
+ # end
+
+
+ # iLOResourceProvider_ilo_schema 'get schema' do
+ #   ilo_name 'ILO-01'
+ #   schema_prefix 'ComputerSystem'
+ #   schema_file 'schema'
+ #   action :get_schema
+ # end

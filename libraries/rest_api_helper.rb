@@ -379,5 +379,25 @@ module RestAPI
        puts "SNMP configuration for #{machine['ilo_site']} changed to : Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
      end
 
+    def get_registry(machine, registry_prefix, registry_file)
+      registries = rest_api(:get, '/redfish/v1/Registries/', machine)["Items"]
+      registry = registries.select{|reg| reg["Schema"].start_with?(registry_prefix)}
+      registry.each do |reg|
+        registry_store = rest_api(:get, reg["Location"][0]["Uri"]["extref"], machine)
+        File.open("#{Chef::Config[:file_cache_path]}/#{registry_file}.txt", 'a+') {|f| f.write(registry_store.to_yaml)}
+      end
+    end
+
+    def get_schema(machine, schema_prefix, schema_file)
+      schemas = rest_api(:get, '/redfish/v1/Schemas/', machine)["Items"]
+      schema = schemas.select{|schema| schema["Schema"].start_with?(schema_prefix)}
+      raise "NO schema found with this schema prefix : #{schema_prefix}" if schema.empty?
+      schema.each do |sc|
+        binding.pry
+        schema_store = rest_api(:get, sc["Location"][0]["Uri"]["extref"], machine)
+        File.open("#{Chef::Config[:file_cache_path]}/#{schema_file}.txt", 'a+') {|f| f.write(schema_store.to_yaml)}
+      end
+    end
+
   end
 end
