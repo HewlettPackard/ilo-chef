@@ -1,4 +1,4 @@
-# iLOResourceProvider
+## iLOResourceProvider
 
 ###How to use iLOResourceProvider Cookbook?
 #####Step1 - Install Chefdk on Workstation
@@ -67,4 +67,12 @@
 #####   ilo_names ["ILO-02"]
 #####   fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
 #####   action :fw_up
+##### end
+
+##D: Mount ISO
+##### iLOResourceProvider_ilo_virtual_media 'mount iso' do
+#####   ilo_names ['ILO-02']
+#####    iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
+#####    boot_on_next_server_reset false
+#####   action :mount
 ##### end
