@@ -3,12 +3,9 @@
 # Recipe:: default
 #
 # Copyright (c) 2015 The Authors, All Rights Reserved.
-require 'pry'
 #Chef::Resource::Execute.send(:include, RestAPI::Helper)
 #To Add user on all the
 #
-::Chef::Recipe.send(:include, RestAPI::Helper)
-::Chef::Recipe.send(:include, ILOINFO)
 
  # iLOResourceProvider_ilo_user 'user reset password' do
  #   username 'pappu'
@@ -53,8 +50,8 @@ require 'pry'
 #   action :fw_up
 # end
 
-# iLOResourceProvider_ilo_license 'fw_up' do
-#   ilo_names ["ILO-02"]
+# iLOResourceProvider_ilo_license 'apply license' do
+#   ilo_names ["ILO-01"]
 #   license_key "333TJ-XN732-5CRYY-RVXYH-KJDJR"
 #   action :apply
 # end
@@ -155,3 +152,37 @@ require 'pry'
  #   schema_file 'schema'
  #   action :get_schema
  # end
+
+ # iLOResourceProvider_ilo_boot_order 'get  boot order' do
+ #   ilo_names ['ILO-01', 'ILO-02', 'ILO-03']
+ #   boot_order_file 'boot_order_1'
+ #   action :get
+ # end
+
+ # iLOResourceProvider_ilo_boot_order 'change to new boot order' do
+ #   ilo_name 'ILO-01'
+ #   new_boot_order ["HD.Emb.5.1", "Unknown.Unknown.1", "Unknown.Unknown.2", "Generic.USB.1.1", "NIC.LOM.1.1.IPv6", "NIC.LOM.1.1.IPv4", "NIC.Slot.1.1.IPv6", "NIC.Slot.1.1.IPv4", "NIC.FlexLOM.1.1.IPv4", "NIC.FlexLOM.1.1.IPv6", "CD.Emb.1.1", "HD.Emb.5.2"]
+ #   action :change
+ # end
+ #
+ #  iLOResourceProvider_ilo_powermgmt 'resetsys' do
+ #    ilo_names ['ILO-01']
+ #    action :resetsys
+ #  end
+
+ # iLOResourceProvider_ilo_boot_order 'change temporary boot order' do
+ #   ilo_names ['ILO-01']
+ #   boot_target 'Hdd'
+ #   action :temporary_change
+ # end
+
+ # iLOResourceProvider_ilo_bios 'get bios resource' do
+ #   ilo_names ['ILO-01']
+ #   action :get_bios
+ # end
+
+ iLOResourceProvider_ilo_time_zone 'set time zone' do
+   ilo_names ["ILO-01"]
+   ntp_servers ['192.168.0.1', '192.168.0.2']
+   action :set_ntp_servers
+ end
