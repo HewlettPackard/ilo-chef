@@ -53,9 +53,7 @@ module RestAPI
     end
 
     def reset_user_password(machine, modUserName, modPassword)
-      #User account information
       uad = rest_api(:get, '/redfish/v1/AccountService/Accounts/', machine)
-      #User account url
       userhref = adminhref(uad, modUserName)
       options = {
         'body' => modPassword
@@ -451,5 +449,7 @@ module RestAPI
      puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
      puts "Requires an ilo reset to become active"
    end
+
+
   end
 end

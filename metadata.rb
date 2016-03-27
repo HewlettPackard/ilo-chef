@@ -1,4 +1,4 @@
-name             'iLOResourceProvider'
+name             'iLO'
 maintainer       'The Authors'
 maintainer_email 'you@example.com'
 license          'all_rights'
