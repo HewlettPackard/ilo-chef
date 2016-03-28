@@ -81,11 +81,19 @@
 #   action :revert_bios
 # end
 #
-# iLO_boot_order 'revert bios' do
+# iLO_boot_order 'revert boot order' do
 #   ilo_names ["ILO-02"]
 #   action :reset
 # end
-
+#
+#  iLO_powermgmt 'resetsys' do
+#    ilo_names ["ILO-02"]
+#    action :resetsys
+#  end
+iLO_boot_order 'revert boot order' do
+  ilo_names ["ILO-02"]
+  action :revert
+end
 
 # iLO_time_zone 'use NTP servers' do
 #   ilo_names ["ILO-02"]
@@ -165,10 +173,10 @@
  #   action :change
  # end
  #
- #  iLO_powermgmt 'resetsys' do
- #    ilo_names ['ILO-01']
- #    action :resetsys
- #  end
+  # iLO_powermgmt 'resetsys' do
+  #   ilo_names ['ILO-01']
+  #   action :resetsys
+  # end
 
  # iLO_boot_order 'change temporary boot order' do
  #   ilo_names ['ILO-01']

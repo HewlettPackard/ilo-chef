@@ -178,17 +178,18 @@ module RestAPI
       rest_api(:patch, '/redfish/v1/Systems/1/SecureBoot/', machine, options)
     end
 
-    def revert_bios_settings(machine)
-      newAction = {"BaseConfig" => "default"}
-      options = {'body' => newAction}
-      rest_api(:put, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
-    end
-
-    def reset_boot_order(machine)
-      newAction = {"RestoreManufacturingDefaults" => "yes"}
-      options = {'body' => newAction}
-      rest_api(:patch, '/redfish/v1/Systems/1/BIOS/',machine,options)
-    end
+    # def revert_bios_settings(machine)
+    #   newAction = {"BaseConfig" => "default"}
+    #   options = {'body' => newAction}
+    #   rest_api(:put, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
+    # end
+    #
+    # def reset_boot_order(machine)
+    #   newAction = {"RestoreManufacturingDefaults" => "yes"}
+    #   options = {'body' => newAction}
+    #   binding.pry
+    #   rest_api(:patch, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
+    # end
 
     def set_ilo_time_zone(machine, time_zone)
       timezone = rest_api(:get, '/redfish/v1/Managers/1/DateTime/',machine)
@@ -448,6 +449,32 @@ module RestAPI
      datetime = rest_api(:get, datetime_service, machine)
      puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
      puts "Requires an ilo reset to become active"
+   end
+
+   def revert_boot_order(machine)
+     sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
+     bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
+     bios = rest_api(:get, bios_uri, machine)
+     boot_uri = bios['links']['Boot']['href']
+     boot = rest_api(:get, boot_uri, machine)
+     boot_baseconfigs_uri = boot['links']['BaseConfigs']['href']
+     default_boot_order = rest_api(:get, boot_baseconfigs_uri, machine)['BaseConfigs'][0]['default']['DefaultBootOrder']
+     puts "Default boot order for #{machine['ilo_site']} : #{default_boot_order}"
+     boot_settings_uri = boot['links']['Settings']['href'] ## "/rest/v1/systems/1/bios/Boot/Settings"
+     newAction = {"BaseConfig" => "default"}
+     options = {'body' => newAction}
+     rest_api(:patch, boot_settings_uri, machine, options)
+   end
+
+   def revert_bios(machine)
+     sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
+     bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
+     bios = rest_api(:get, bios_uri, machine)
+     bios_baseconfigs_uri = bios['links']['BaseConfigs']['href']
+     bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
+     newAction = {"BaseConfig" => "default"}
+     options = {'body' => newAction}
+     rest_api(:patch, bios_settings_uri, machine, options)
    end
 
 

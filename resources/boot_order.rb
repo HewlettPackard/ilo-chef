@@ -1,4 +1,4 @@
-actions :reset, :get, :change, :temporary_change
+actions :revert, :get, :change, :temporary_change
 property :ilo_names, [Array,Symbol]
 property :ilo_name, String
 property :boot_order_file, String
@@ -7,18 +7,6 @@ property :boot_target, String
 
 include RestAPI::Helper
 ::Chef::Provider.send(:include, ILOINFO)
-action :reset do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      reset_boot_order(machine)
-    end
-  else
-    ilono.each do |name,site|
-			reset_boot_order(site)
-	  end
-  end
-end
 
 action :get do
   if ilo_names.class == Array
@@ -47,6 +35,19 @@ action :temporary_change do
   else
     ilono.each do |name,site|
       change_temporary_boot_order(site, boot_target)
+    end
+  end
+end
+
+action :revert do
+  if ilo_names.class == Array
+    ilo_names.each do |ilo|
+      machine  = ilono.select{|k,v| k == ilo}[ilo]
+      revert_boot_order(machine)
+    end
+  else
+    ilono.each do |name,site|
+      revert_boot_order(site)
     end
   end
 end
