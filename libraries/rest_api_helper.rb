@@ -417,6 +417,8 @@ module RestAPI
       puts "Current boot order for #{machine['ilo_site']} : #{boot_order['PersistentBootConfigOrder']}"
       options = {'body' => {'PersistentBootConfigOrder' => new_boot_order}}
       rest_api(:patch, boot_order['links']['Settings']['href'], machine, options)
+      new_boot_order = rest_api(:get, bios['links']['Boot']['href'], machine)
+      puts "New boot order for #{machine['ilo_site']} : #{boot_order['PersistentBootConfigOrder']}"
     end
 
     def change_temporary_boot_order(machine, boot_target)

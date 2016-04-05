@@ -24,6 +24,7 @@ end
 action :change do
   machine  = ilono.select{|k,v| k == ilo_name}[ilo_name]
   change_boot_order(machine,new_boot_order)
+  reset_server(machine)
 end
 
 action :temporary_change do

@@ -153,16 +153,16 @@
  # end
 
  # iLO_boot_order 'get  boot order' do
- #   ilo_names ['ILO-01', 'ILO-02', 'ILO-03']
- #   boot_order_file 'boot_order_1'
+ #   ilo_names ['ILO-02']
+ #   boot_order_file 'boot_order_2'
  #   action :get
  # end
 
- # iLO_boot_order 'change to new boot order' do
- #   ilo_name 'ILO-01'
- #   new_boot_order ["HD.Emb.5.1", "Unknown.Unknown.1", "Unknown.Unknown.2", "Generic.USB.1.1", "NIC.LOM.1.1.IPv6", "NIC.LOM.1.1.IPv4", "NIC.Slot.1.1.IPv6", "NIC.Slot.1.1.IPv4", "NIC.FlexLOM.1.1.IPv4", "NIC.FlexLOM.1.1.IPv6", "CD.Emb.1.1", "HD.Emb.5.2"]
- #   action :change
- # end
+ iLO_boot_order 'change to new boot order' do
+   ilo_name 'ILO-02'
+   new_boot_order ["File.URL.1.1","HD.Emb.1.2", "Generic.USB.1.1","HD.Emb.1.1","NIC.LOM.1.1.IPv4","NIC.LOM.1.1.IPv6"]
+   action :change
+ end
  #
   # iLO_powermgmt 'resetsys' do
   #   ilo_names ['ILO-01']
@@ -229,8 +229,8 @@
  #   action :resetsys
  # end
 
- iLO_time_zone 'set ntp servers' do
-   ilo_names ["ILO-02"]
-   ntp_servers ['192.168.0.1', '192.168.0.2']
-   action :set_ntp_servers
- end
+ # iLO_time_zone 'set ntp servers' do
+ #   ilo_names ["ILO-02"]
+ #   ntp_servers ['192.168.0.1', '192.168.0.2']
+ #   action :set_ntp_servers
+ # end
