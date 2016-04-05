@@ -433,8 +433,8 @@ module RestAPI
     def get_bios_resource(machine)
       sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
       bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-      rest_api(:get, bios_uri, machine)
       binding.pry
+      rest_api(:get, bios_uri, machine)
     end
 
    def set_ntp_servers(machine, ntp_servers)
@@ -443,12 +443,12 @@ module RestAPI
      datetime = rest_api(:get, datetime_service, machine)
      puts "Current NTP servers for #{machine['ilo_site']} - #{datetime['NTPServers']}"
      options = {'body' => {'StaticNTPServers' => ntp_servers}}
-     rest_api(:patch, datetime_service, machine, options)
+     out = rest_api(:patch, datetime_service, machine, options)
      raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
      binding.pry
      datetime = rest_api(:get, datetime_service, machine)
      puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
-     puts "Requires an ilo reset to become active"
+     puts "May Require an ilo reset to become active"
    end
 
    def revert_boot_order(machine)
@@ -474,7 +474,43 @@ module RestAPI
      bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
      newAction = {"BaseConfig" => "default"}
      options = {'body' => newAction}
+     binding.pry
      rest_api(:patch, bios_settings_uri, machine, options)
+   end
+
+   def set_uefi_shell_startup(machine, value, location, url)
+     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
+     newAction = {"UefiShellStartup" => value, "UefiShellStartupLocation" => location, "UefiShellStartupUrl" => url}
+     options = {'body' => newAction}
+     rest_api(:patch, bios_settings, machine, options)
+   end
+
+   def set_bios_dhcp(machine, value, ipv4_address='', ipv4_primary_dns='', ipv4_secondary_dns='', ipv4_gateway='', ipv4_subnet_mask='')
+     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
+     newAction = {
+       'Dhcpv4' => value,
+       'Ipv4Address' => ipv4_address,
+       'Ipv4Gateway' => ipv4_gateway,
+       'Ipv4PrimaryDNS' => ipv4_primary_dns,
+       'Ipv4SecondaryDNS' => ipv4_secondary_dns,
+       'Ipv4SubnetMask' => ipv4_subnet_mask
+     }
+     options = {'body' => newAction}
+     rest_api(:patch, bios_settings, machine, options)
+   end
+
+   def set_url_boot_file(machine, url)
+     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
+     newAction = {'UrlBootFile' => url}
+     options = {'body' => newAction}
+     rest_api(:patch, bios_settings, machine, options)
+   end
+
+   def set_bios_service(machine, name, email)
+     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
+     newAction = {'ServiceName' => name, 'ServiceEmail' => email}
+     options = {'body' => newAction}
+     rest_api(:patch, bios_settings, machine, options)
    end
 
 

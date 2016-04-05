@@ -69,31 +69,22 @@
 #   dump_file "iml_logs"
 #   action :dump
 # end
-
+#
 # iLO_uefi 'secure boot' do
 #   ilo_names ["ILO-02"]
 #   enable true
 #   action :secure_boot
 # end
-#
-# iLO_uefi 'revert bios' do
-#   ilo_names ["ILO-02"]
-#   action :revert_bios
-# end
-#
+
+ # iLO_powermgmt 'resetsys' do
+ #   ilo_names ["ILO-02"]
+ #   action :resetsys
+ # end
+
 # iLO_boot_order 'revert boot order' do
 #   ilo_names ["ILO-02"]
-#   action :reset
+#   action :revert
 # end
-#
-#  iLO_powermgmt 'resetsys' do
-#    ilo_names ["ILO-02"]
-#    action :resetsys
-#  end
-iLO_boot_order 'revert boot order' do
-  ilo_names ["ILO-02"]
-  action :revert
-end
 
 # iLO_time_zone 'use NTP servers' do
 #   ilo_names ["ILO-02"]
@@ -184,13 +175,62 @@ end
  #   action :temporary_change
  # end
 
- # iLO_bios 'get bios resource' do
- #   ilo_names ['ILO-01']
- #   action :get_bios
+ # iLO_bios 'set uefi shell startup' do
+ #   ilo_names ['ILO-02']
+ #   value 'Enabled'
+ #   location 'Auto'
+ #   url 'http://hp.com/test.nsh'
+ #   action :uefi_shell_startup
+ # end
+ #
+ # iLO_powermgmt 'resetsys' do
+ #   ilo_names ['ILO-02']
+ #   action :resetsys
  # end
 
- # iLO_time_zone 'set time zone' do
- #   ilo_names ["ILO-01"]
- #   ntp_servers ['192.168.0.1', '192.168.0.2']
- #   action :set_ntp_servers
+ # iLO_bios 'disable dhcp' do
+ #   ilo_names ['ILO-02']
+ #   value 'Disabled'
+ #   ipv4_address '192.168.0.1'
+ #   ipv4_gateway '192.168.0.2'
+ #   ipv4_primary_dns '192.168.0.3'
+ #   ipv4_secondary_dns '192.168.0.4'
+ #   ipv4_subnet_mask '192.168.0.5'
+ #   action :set_dhcp
  # end
+
+ # iLO_powermgmt 'resetsys' do
+ #   ilo_names ['ILO-02']
+ #   action :resetsys
+ # end
+
+ # iLO_bios 'set bios url boot file' do
+ #   ilo_names ['ILO-02']
+ #   url_boot_file "http://hp.com/test.efi"
+ #   action :set_url_boot_file
+ # end
+
+ # iLO_bios 'set bios service' do
+ #   ilo_names ['ILO-02']
+ #   service_name "HPE"
+ #   service_email "anirudhg@hpe.com"
+ #   action :set_bios_service
+ # end
+
+ # iLO_bios 'revert bios settings' do
+ #   ilo_names ['ILO-02']
+ #   action :revert
+ # end
+
+
+
+ # iLO_powermgmt 'resetsys' do
+ #   ilo_names ['ILO-02']
+ #   action :resetsys
+ # end
+
+ iLO_time_zone 'set ntp servers' do
+   ilo_names ["ILO-02"]
+   ntp_servers ['192.168.0.1', '192.168.0.2']
+   action :set_ntp_servers
+ end

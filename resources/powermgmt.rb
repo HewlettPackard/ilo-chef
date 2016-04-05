@@ -1,4 +1,4 @@
-actions :poweron, :poweroff, :resetsys
+actions :poweron, :poweroff, :resetsys, :resetilo
 property :username, String
 property :password, String
 property :ilo_names, [Array,Symbol]
@@ -14,6 +14,19 @@ action :poweron do
   else
     ilono.each do |name,site|
       power_on(site)
+    end
+  end
+end
+
+action :poweroff do
+  if ilo_names.class == Array
+		ilo_names.each do |ilo|
+			machine  = ilono.select{|k,v| k == ilo}[ilo]
+      power_off(machine)
+    end
+  else
+    ilono.each do |name,site|
+      power_off(site)
     end
   end
 end
