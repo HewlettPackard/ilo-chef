@@ -5,4 +5,4 @@ license          'all_rights'
 description      'Installs/Configures iLORestCookbook'
 long_description 'Installs/Configures iLORestCookbook'
 version          '0.1.0'
-
+depends 'compat_resource'
