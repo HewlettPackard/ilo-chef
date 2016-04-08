@@ -203,6 +203,16 @@ module RestAPI
       puts "TimeZone set to: " + timezone["TimeZone"]["Name"]
     end
 
+    def set_ilo_timeout(machine, timeout)
+      originalTimeout = rest_api(:get, '/redfish/v1/Managers/1/NetworkService/',machine)
+      puts "Current Timeout is: " + originalTimeout["SessionTimeoutMinutes"].to_s + " minutes"
+      newAction = {"SessionTimeoutMinutes" => timeout}
+      options = {'body' => newAction}
+      out = rest_api(:patch, '/redfish/v1/Managers/1/NetworkService/', machine, options)
+      newTimeout = rest_api(:get, '/redfish/v1/Managers/1/NetworkService/',machine)
+      puts "Timeout is set to: " + newTimeout["SessionTimeoutMinutes"].to_s + " minutes"
+    end
+
     def use_ntp_servers(machine,value)
       newAction = {"Oem" => {"Hp" => {"DHCPv4" => {"UseNTPServers" => value}}}}
       options = {'body' => newAction}
