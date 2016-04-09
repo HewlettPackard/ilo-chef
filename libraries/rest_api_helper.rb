@@ -219,10 +219,13 @@ module RestAPI
       rest_api(:patch, '/redfish/v1/Managers/1/EthernetInterfaces/1/',machine,options)
     end
 
-    def set_led_light(machine, state)
+    def get_indicator_led(machine)
+      rest_api(:get, '/redfish/v1/Systems/1/', machine)['IndicatorLED']
+    end
+
+    def set_indicator_led(machine, state)
       newAction = {"IndicatorLED" => state}
       options = {'body' => newAction}
-      binding.pry
       rest_api(:patch, '/redfish/v1/Systems/1/',machine,options)
     end
 
