@@ -75,6 +75,12 @@ module RestAPI
       rest_api(:post, sysuri, machine, options)
     end
 
+    def get_power_state(machine)
+      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
+      sysuri = sysget["links"]["Member"][0]["href"]
+      rest_api(:get, sysuri, machine)["PowerState"]
+    end
+
     def power_on(machine)
       newAction = {"Action"=> "Reset", "ResetType"=> "On"}
       options = {'body' => newAction}
@@ -144,10 +150,8 @@ module RestAPI
         message = logs["Message"]
         created = logs["Created"]
         if !severity_level.nil?
-          binding.pry
           ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600))
         else
-          binding.pry
           ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600))
         end
         File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
@@ -162,10 +166,8 @@ module RestAPI
         message = logs["Message"]
         created = logs["Created"]
         if !severity_level.nil?
-          binding.pry
           ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600))
         else
-          binding.pry
           ilo_log_entry = "#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600))
         end
         File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
@@ -352,9 +354,7 @@ module RestAPI
         general_computer_details = gather_general_computer_details(machine)
         computer_network_details = gather_computer_network_details(machine)
         array_controller_details = gather_array_controller_details(machine)
-        binding.pry
         file = File.open("#{Chef::Config[:file_cache_path]}/#{dump_file}.txt", 'a+')
-        binding.pry
         file.write(general_computer_details.merge(computer_network_details).merge(array_controller_details).to_yaml)
         file.write("\n")
         file.close
@@ -372,10 +372,13 @@ module RestAPI
         end
       end
 
+      def get_asset_tag(machine)
+        rest_api(:get,'/redfish/v1/Systems/1/',machine)["AssetTag"]
+      end
+
       def set_asset_tag(machine,tag)
         newAction = {"AssetTag" => tag}
         options = {'body' => newAction}
-        binding.pry
         rest_api(:patch,'/redfish/v1/Systems/1/',machine,options)
       end
 
@@ -386,7 +389,6 @@ module RestAPI
        config = rest_api(:get, snmp_service, machine)
        puts "Current SNMP Configuration for #{machine['ilo_site']}: Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
        options = {'Mode' => snmp_mode, 'AlertsEnabled' =>  snmp_alerts}
-       binding.pry
        rest_api(:patch, snmp_service, machine, options)
        config = rest_api(:get, snmp_service, machine)
        puts "SNMP configuration for #{machine['ilo_site']} changed to : Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
@@ -406,7 +408,6 @@ module RestAPI
       schema = schemas.select{|schema| schema["Schema"].start_with?(schema_prefix)}
       raise "NO schema found with this schema prefix : #{schema_prefix}" if schema.empty?
       schema.each do |sc|
-        binding.pry
         schema_store = rest_api(:get, sc["Location"][0]["Uri"]["extref"], machine)
         File.open("#{Chef::Config[:file_cache_path]}/#{schema_file}.txt", 'a+') {|f| f.write(schema_store.to_yaml)}
       end
@@ -449,7 +450,6 @@ module RestAPI
     def get_bios_resource(machine)
       sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
       bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-      binding.pry
       rest_api(:get, bios_uri, machine)
     end
 
@@ -461,7 +461,6 @@ module RestAPI
      options = {'body' => {'StaticNTPServers' => ntp_servers}}
      out = rest_api(:patch, datetime_service, machine, options)
      raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
-     binding.pry
      datetime = rest_api(:get, datetime_service, machine)
      puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
      puts "May Require an ilo reset to become active"

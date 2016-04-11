@@ -3,30 +3,46 @@ property :username, String
 property :password, String
 property :ilo_names, [Array,Symbol]
 include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ::ILOINFO
 
 action :poweron do
   if ilo_names.class == Array
-		ilo_names.each do |ilo|
-			machine  = ilono.select{|k,v| k == ilo}[ilo]
-      power_on(machine)
+    ilo_names.each do |ilo|
+      machine  = ilono[ilo]
+      cur_val = get_power_state(machine)
+      next if cur_val == "On"
+      converge_by "Powering on #{ilo} ... " do
+        power_on(machine)
+      end
     end
   else
     ilono.each do |name,site|
-      power_on(site)
+      cur_val = get_power_state(site)
+      next if cur_val == "On"
+      converge_by "Powering on #{site} ... " do
+        power_on(site)
+      end
     end
   end
 end
 
 action :poweroff do
   if ilo_names.class == Array
-		ilo_names.each do |ilo|
-			machine  = ilono.select{|k,v| k == ilo}[ilo]
-      power_off(machine)
+    ilo_names.each do |ilo|
+      machine  = ilono[ilo]
+      cur_val = get_power_state(machine)
+      next if cur_val == "Off"
+      converge_by "Powering Off #{ilo} ... " do
+        power_off(machine)
+      end
     end
   else
     ilono.each do |name,site|
-      power_off(site)
+      cur_val = get_power_state(site)
+      next if cur_val == "Off"
+      converge_by "Powering Off #{site} ... " do
+        power_off(site)
+      end
     end
   end
 end

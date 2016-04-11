@@ -1,9 +1,14 @@
-property :ilo_name, String, :required => true
+property :ilo_name, String
 property :asset_tag, String, :required => true
 
 include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ::ILOINFO
+
 action :set do
-  machine  = ilono.select{|k,v| k == ilo_name}[ilo_name]
-  set_asset_tag(machine,asset_tag)
+    machine = ilono[ilo_name]
+    cur_val = get_asset_tag(machine)
+    return if cur_val == asset_tag
+    converge_by "Updating asset tag to #{asset_tag}" do
+      set_asset_tag(machine,asset_tag)
+    end
 end
