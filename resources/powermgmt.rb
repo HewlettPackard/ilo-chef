@@ -9,6 +9,7 @@ action :poweron do
   if ilo_names.class == Array
     ilo_names.each do |ilo|
       machine  = ilono[ilo]
+      fail "ilo #{ilo} not defined in configuration!" unless machine
       cur_val = get_power_state(machine)
       next if cur_val == "On"
       converge_by "Powering on #{ilo} ... " do
@@ -30,6 +31,7 @@ action :poweroff do
   if ilo_names.class == Array
     ilo_names.each do |ilo|
       machine  = ilono[ilo]
+      fail "ilo #{ilo} not defined in configuration!" unless machine
       cur_val = get_power_state(machine)
       next if cur_val == "Off"
       converge_by "Powering Off #{ilo} ... " do
@@ -51,12 +53,17 @@ end
 action :resetsys do
   if ilo_names.class == Array
 		ilo_names.each do |ilo|
-			machine  = ilono.select{|k,v| k == ilo}[ilo]
+			machine  = ilono[ilo]
+      fail "ilo #{ilo} not defined in configuration!" unless machine
+      converge_by "Resetting the server managed by #{ilo} - " do
       reset_server(machine)
+    end
     end
   else
     ilono.each do |name,site|
+      converge_by "Resetting the server managed by #{site} - " do
       reset_server(site)
+    end
     end
   end
 end
@@ -64,12 +71,17 @@ end
 action :resetilo do
   if ilo_names.class == Array
     ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
+      machine  = ilono[ilo]
+      fail "ilo #{ilo} not defined in configuration!" unless machine
+      converge_by "Resetting #{ilo} - " do
       reset_ilo(machine)
+    end
     end
   else
     ilono.each do |name,site|
+      converge_by "Resetting #{site} - " do
       reset_ilo(site)
+    end
     end
   end
 end

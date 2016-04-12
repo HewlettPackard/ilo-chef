@@ -6,6 +6,7 @@ include ::ILOINFO
 
 action :set do
     machine = ilono[ilo_name]
+    fail "ilo #{ilo} not defined in configuration!" unless machine
     cur_val = get_asset_tag(machine)
     return if cur_val == asset_tag
     converge_by "Updating asset tag to #{asset_tag}" do

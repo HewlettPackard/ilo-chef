@@ -111,11 +111,19 @@ module RestAPI
       rest_api(:post, mgruri ,machine ,options )
     end
 
+    def get_users(machine)
+      rest_api(:get, '/rest/v1/AccountService/Accounts', machine)["Items"].collect{|user| user["UserName"]}
+    end
+
     def create_user(machine,username,password)
       rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
       newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
       options = {'body' => newUser}
       rest_api(:post, '/redfish/v1/AccountService/Accounts/', machine,  options)
+    end
+
+    def get_fw_version(machine)
+      rest_api(:get, '/redfish/v1/Systems/1/FirmWareInventory/', machine)["Current"]["SystemBMC"][0]["VersionString"]
     end
 
     def fw_upgrade(machine,uri)

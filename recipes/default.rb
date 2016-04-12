@@ -45,7 +45,8 @@
 #  end
 
 # iLO_fw_up 'fw_up' do
-#   ilo_names ["ILO-02"]
+#   ilo_names ["ILO-03"]
+#   fw_version 2.3
 #   fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
 #   action :fw_up
 # end
