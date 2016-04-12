@@ -106,9 +106,8 @@
   # end
 
  # iLO_indicator_led 'set led state' do
- #   ilo_names ["ILO-02"]
+ #   ilos [ilo1]
  #   led_state "Off"
- #   action :set
  # end
 
  # iLO_computer_details 'dump computer details' do

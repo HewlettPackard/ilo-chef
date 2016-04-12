@@ -57,7 +57,7 @@ end
 ```
 
 
-### 2. Power Off System1.
+### 2. Power Off System
 
 ```ruby
 iLO_powermgmt 'power off' do
@@ -94,5 +94,15 @@ iLO_virtual_media 'mount iso' do
    iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
    boot_on_next_server_reset false
   action :mount
+end
+```
+
+## C: Other
+
+### Set UID Indicator LED
+```ruby
+iLO_indicator_led 'set led state' do
+  ilos [ilo1, ilo2]
+  led_state 'Off'
 end
 ```

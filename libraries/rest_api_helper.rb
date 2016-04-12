@@ -230,16 +230,6 @@ module RestAPI
       rest_api(:patch, '/redfish/v1/Managers/1/EthernetInterfaces/1/',machine,options)
     end
 
-    def get_indicator_led(machine)
-      rest_api(:get, '/redfish/v1/Systems/1/', machine)['IndicatorLED']
-    end
-
-    def set_indicator_led(machine, state)
-      newAction = {"IndicatorLED" => state}
-      options = {'body' => newAction}
-      rest_api(:patch, '/redfish/v1/Systems/1/',machine,options)
-    end
-
     def gather_general_computer_details(machine)
       general_details = rest_api(:get, '/redfish/v1/Systems/1/',machine)
       manufacturer = general_details["Manufacturer"]
