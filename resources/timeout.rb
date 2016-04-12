@@ -19,7 +19,7 @@ action :set_timeout do
     end
   else
     ilono.each do |name,site|
-      oldTimeout = get_ilo_timeout(machine)
+      oldTimeout = get_ilo_timeout(site)
       if oldTimeout != timeout
         converge_by "Setting iLO #{ilo} timeout from #{oldTimeout} to #{timeout} minutes" do
           set_ilo_timeout(site,timeout)
