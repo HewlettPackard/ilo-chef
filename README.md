@@ -57,7 +57,7 @@ end
 ```
 
 
-### 2. Power Off System1.
+### 2. Power Off System
 
 ```ruby
 iLO_powermgmt 'power off' do
@@ -94,5 +94,49 @@ iLO_virtual_media 'mount iso' do
    iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
    boot_on_next_server_reset false
   action :mount
+end
+```
+
+## E. Boot Order Get/Change/Revert
+
+### 1. Get Boot Order
+
+```ruby
+iLO_boot_order 'get boot order' do
+  ilos ["ILO-02"]
+  boot_order_file "save_me_here"
+  action :get
+end
+```
+
+
+### 2. Change Boot Order
+
+```ruby
+iLO_boot_order 'change boot order' do
+  ilos ["ILO-02"]
+  new_boot_order ["1st", "2nd", "3rd", "4th", "5th", "6th"]
+  action :change
+end
+```
+
+
+### 3. Change Boot Order Temporarily
+
+```ruby
+iLO_boot_order 'change boot order temporarily' do
+  ilos ["ILO-02"]
+  boot_target "Cd"
+  action :temporary_change
+end
+```
+
+
+### 4. Revert Boot Order to Default
+
+```ruby
+iLO_boot_order 'revert boot order' do
+  ilos ["ILO-02"]
+  action :revert
 end
 ```
