@@ -97,9 +97,54 @@ iLO_virtual_media 'mount iso' do
 end
 ```
 
-## C: Other
+## E. Boot Order Get/Change/Revert
+
+### 1. Get Boot Order
+
+```ruby
+iLO_boot_order 'get boot order' do
+  ilos ["ILO-02"]
+  boot_order_file "save_me_here"
+  action :get
+end
+```
+
+
+### 2. Change Boot Order
+
+```ruby
+iLO_boot_order 'change boot order' do
+  ilos ["ILO-02"]
+  new_boot_order ["1st", "2nd", "3rd", "4th", "5th", "6th"]
+  action :change
+end
+```
+
+
+### 3. Change Boot Order Temporarily
+
+```ruby
+iLO_boot_order 'change boot order temporarily' do
+  ilos ["ILO-02"]
+  boot_target "Cd"
+  action :temporary_change
+end
+```
+
+
+### 4. Revert Boot Order to Default
+
+```ruby
+iLO_boot_order 'revert boot order' do
+  ilos ["ILO-02"]
+  action :revert
+end
+```
+
+## F: Other
 
 ### Set UID Indicator LED
+
 ```ruby
 iLO_indicator_led 'set led state' do
   ilos [ilo1, ilo2]

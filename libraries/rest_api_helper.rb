@@ -420,9 +420,10 @@ module RestAPI
         machine['ilo_site'] => boot['PersistentBootConfigOrder']
       }
       File.open("#{Chef::Config[:file_cache_path]}/#{boot_order_file}.txt", 'a+') {|f| f.write(current_boot_order.to_yaml)}
+      return current_boot_order
     end
 
-    def change_boot_order(machine, new_boot_order)
+    def boot_order_change(machine, new_boot_order)
       sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
       bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
       bios = rest_api(:get, bios_uri, machine)
@@ -434,7 +435,12 @@ module RestAPI
       puts "New boot order for #{machine['ilo_site']} : #{boot_order['PersistentBootConfigOrder']}"
     end
 
-    def change_temporary_boot_order(machine, boot_target)
+    def get_temporary_boot_order(machine)
+      sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
+      bootSourceOverrideTarget = rest_api(:get, sys, machine)["Boot"]["BootSourceOverrideTarget"]
+    end
+
+    def boot_order_change_temporary(machine, boot_target)
       sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
       boottargets = rest_api(:get, sys, machine)["Boot"]["BootSourceOverrideSupported"]
       if boottargets.include?(boot_target)
@@ -445,26 +451,17 @@ module RestAPI
       end
     end
 
-    def get_bios_resource(machine)
-      sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
-      bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-      rest_api(:get, bios_uri, machine)
-    end
-
-   def set_ntp_servers(machine, ntp_servers)
-     manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
-     datetime_service = rest_api(:get, manager, machine)['Oem']['Hp']['links']['DateTimeService']['href']
-     datetime = rest_api(:get, datetime_service, machine)
-     puts "Current NTP servers for #{machine['ilo_site']} - #{datetime['NTPServers']}"
-     options = {'body' => {'StaticNTPServers' => ntp_servers}}
-     out = rest_api(:patch, datetime_service, machine, options)
-     raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
-     datetime = rest_api(:get, datetime_service, machine)
-     puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
-     puts "May Require an ilo reset to become active"
+   def get_boot_order_baseconfig(machine)
+     sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
+     bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
+     bios = rest_api(:get, bios_uri, machine)
+     boot_uri = bios['links']['Boot']['href']
+     boot = rest_api(:get, boot_uri, machine)
+     boot_settings_uri = boot['links']['Settings']['href']
+     rest_api(:get, boot_settings_uri, machine)["BaseConfig"]
    end
 
-   def revert_boot_order(machine)
+   def boot_order_revert(machine)
      sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
      bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
      bios = rest_api(:get, bios_uri, machine)
@@ -479,17 +476,36 @@ module RestAPI
      rest_api(:patch, boot_settings_uri, machine, options)
    end
 
-   def revert_bios(machine)
+   def get_bios_resource(machine)
      sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
      bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-     bios = rest_api(:get, bios_uri, machine)
-     bios_baseconfigs_uri = bios['links']['BaseConfigs']['href']
-     bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
-     newAction = {"BaseConfig" => "default"}
-     options = {'body' => newAction}
-     binding.pry
-     rest_api(:patch, bios_settings_uri, machine, options)
+     rest_api(:get, bios_uri, machine)
    end
+
+  def set_ntp_servers(machine, ntp_servers)
+    manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
+    datetime_service = rest_api(:get, manager, machine)['Oem']['Hp']['links']['DateTimeService']['href']
+    datetime = rest_api(:get, datetime_service, machine)
+    puts "Current NTP servers for #{machine['ilo_site']} - #{datetime['NTPServers']}"
+    options = {'body' => {'StaticNTPServers' => ntp_servers}}
+    out = rest_api(:patch, datetime_service, machine, options)
+    raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
+    datetime = rest_api(:get, datetime_service, machine)
+    puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
+    puts "May Require an ilo reset to become active"
+  end
+
+  def revert_bios(machine)
+    sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
+    bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
+    bios = rest_api(:get, bios_uri, machine)
+    bios_baseconfigs_uri = bios['links']['BaseConfigs']['href']
+    bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
+    newAction = {"BaseConfig" => "default"}
+    options = {'body' => newAction}
+    binding.pry
+    rest_api(:patch, bios_settings_uri, machine, options)
+  end
 
    def set_uefi_shell_startup(machine, value, location, url)
      bios_settings = get_bios_resource(machine)['links']['Settings']['href']
