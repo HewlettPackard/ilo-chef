@@ -1,30 +1,17 @@
-actions :set_timeout
+actions :set
 
-property :ilo_names, [Array,Symbol]
-property :timeout, Fixnum
+property :ilos, Array, :required => true
+property :timeout, Fixnum, :equal_to => [15, 30, 60, 120, 0]
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 
-action :set_timeout do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      oldTimeout = get_ilo_timeout(machine)
-      if oldTimeout != timeout
-        converge_by "Setting iLO #{ilo} timeout from #{oldTimeout} to #{timeout} minutes" do
-          set_ilo_timeout(machine,timeout)
-        end
-      end
+action :set do
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_timeout
+    next if cur_val == timeout
+    converge_by "Set ilo #{ilo} session timeout from '#{cur_val.to_s}' to '#{timeout.to_s}'" do
+      client.set_timeout(timeout)
     end
-  else
-    ilono.each do |name,site|
-      oldTimeout = get_ilo_timeout(site)
-      if oldTimeout != timeout
-        converge_by "Setting iLO #{ilo} timeout from #{oldTimeout} to #{timeout} minutes" do
-          set_ilo_timeout(site,timeout)
-        end
-      end
-	  end
   end
 end
