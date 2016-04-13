@@ -38,5 +38,6 @@ module ILO_SDK
     include Indicator_LED_Helper
     include Timeout_Helper
     include Time_Zone_Helper
+    include Asset_Tag_Helper
   end
 end
