@@ -341,16 +341,6 @@ module RestAPI
         end
       end
 
-      def get_asset_tag(machine)
-        rest_api(:get,'/redfish/v1/Systems/1/',machine)["AssetTag"]
-      end
-
-      def set_asset_tag(machine,tag)
-        newAction = {"AssetTag" => tag}
-        options = {'body' => newAction}
-        rest_api(:patch,'/redfish/v1/Systems/1/',machine,options)
-      end
-
      def configure_snmp(machine, snmp_mode, snmp_alerts)
        manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
        network_service = rest_api(:get, manager, machine)['links']['NetworkService']['href']
