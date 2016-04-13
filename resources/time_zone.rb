@@ -1,49 +1,41 @@
-actions :set_time_zone, :set_ntp_servers, :use_ntp
+actions :set, :use_ntp, :set_ntp_servers
 
-property :ilo_names, [Array,Symbol]
+property :ilos, Array, :required => true
 property :time_zone, String
 property :ntp_servers, Array
 property :value, [TrueClass, FalseClass], :required => true
 
+include ClientHelper
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
-
-action :set_time_zone do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      set_ilo_time_zone(machine,time_zone)
+action :set do
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_time_zone
+    next if cur_val == time_zone
+    converge_by "Set ilo #{ilo} time zone from '#{cur_val.to_s}' to '#{time_zone.to_s}'" do
+      client.set_time_zone(time_zone)
     end
-  else
-    ilono.each do |name,site|
-			set_ilo_time_zone(site,time_zone)
-	  end
   end
 end
 
-action :use_ntp do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      use_ntp_servers(machine,value)
+action :set_ntp do
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_ntp
+    next if cur_val == value
+    converge_by "Set ilo #{ilo} NTP use to '#{value.to_s}'" do
+      client.set_ntp(value)
     end
-  else
-    ilono.each do |name,site|
-			use_ntp_servers(site,value)
-	  end
   end
 end
 
 action :set_ntp_servers do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      set_ntp_servers(machine,ntp_servers)
-    end
-  else
-    ilono.each do |name,site|
-      set_ntp_servers(site,ntp_servers)
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_ntp_servers
+    next if cur_val == ntp_servers
+    converge_by "Set ilo #{ilo} NTP Servers from '#{cur_val.to_s}' to '#{ntp_servers.to_s}'" do
+      client.set_ntp_servers(ntp_servers)
     end
   end
 end

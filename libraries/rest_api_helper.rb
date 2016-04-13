@@ -201,24 +201,6 @@ module RestAPI
     #   rest_api(:patch, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
     # end
 
-    def set_ilo_time_zone(machine, time_zone)
-      timezone = rest_api(:get, '/redfish/v1/Managers/1/DateTime/',machine)
-      puts "Current TimeZone is: " + timezone["TimeZone"]["Name"]
-      time_zone = rest_api(:get,'/redfish/v1/Managers/1/DateTime/',machine)['TimeZoneList'].select{|timezone| timezone["Name"] == time_zone}
-      newAction = {"TimeZone" => {"Index" => time_zone[0]["Index"]}}
-      options = {'body' => newAction}
-      out = rest_api(:patch, '/redfish/v1/Managers/1/DateTime/', machine, options)
-      raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
-      timezone = rest_api(:get, '/redfish/v1/Managers/1/DateTime/',machine)
-      puts "TimeZone set to: " + timezone["TimeZone"]["Name"]
-    end
-
-    def use_ntp_servers(machine,value)
-      newAction = {"Oem" => {"Hp" => {"DHCPv4" => {"UseNTPServers" => value}}}}
-      options = {'body' => newAction}
-      rest_api(:patch, '/redfish/v1/Managers/1/EthernetInterfaces/1/',machine,options)
-    end
-
     def gather_general_computer_details(machine)
       general_details = rest_api(:get, '/redfish/v1/Systems/1/',machine)
       manufacturer = general_details["Manufacturer"]
@@ -470,19 +452,6 @@ module RestAPI
      bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
      rest_api(:get, bios_uri, machine)
    end
-
-  def set_ntp_servers(machine, ntp_servers)
-    manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
-    datetime_service = rest_api(:get, manager, machine)['Oem']['Hp']['links']['DateTimeService']['href']
-    datetime = rest_api(:get, datetime_service, machine)
-    puts "Current NTP servers for #{machine['ilo_site']} - #{datetime['NTPServers']}"
-    options = {'body' => {'StaticNTPServers' => ntp_servers}}
-    out = rest_api(:patch, datetime_service, machine, options)
-    raise "SNTP Configuration is managed by DHCP and is read only" if out["Messages"][0]["MessageID"] ==  "iLO.0.10.SNTPConfigurationManagedByDHCPAndIsReadOnly"
-    datetime = rest_api(:get, datetime_service, machine)
-    puts "NTP servers for #{machine['ilo_site']} set to : #{datetime['NTPServers']}"
-    puts "May Require an ilo reset to become active"
-  end
 
   def revert_bios(machine)
     sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
