@@ -37,5 +37,6 @@ module ILO_SDK
     # Include helper modules:
     include Indicator_LED_Helper
     include Timeout_Helper
+    include Time_Zone_Helper
   end
 end

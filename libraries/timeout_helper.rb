@@ -19,6 +19,5 @@ module ILO_SDK
       response_handler(response)
       true
     end
-
   end
 end
