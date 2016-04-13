@@ -140,3 +140,14 @@ iLO_boot_order 'revert boot order' do
   action :revert
 end
 ```
+
+## F: Other
+
+### Set UID Indicator LED
+
+```ruby
+iLO_indicator_led 'set led state' do
+  ilos [ilo1, ilo2]
+  led_state 'Off'
+end
+```
