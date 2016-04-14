@@ -1,19 +1,20 @@
 actions :dump
 
-property :ilo_names, [Array,Symbol], :required => true
+property :ilos, Array, :required => true
 property :dump_file, String, :required => true
+property :owner, [String, Integer], default: node['current_user']
+property :group, [String, Integer], default: node['current_user']
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
+
 action :dump do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      dump_computer_details(machine,dump_file)
-    end
-  else
-    ilono.each do |name,site|
-      dump_computer_details(site,dump_file)
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    dumpContent = client.get_computer_details.to_yaml + "\n"
+    file dump_file do
+      owner owner
+      group group
+      content dumpContent
     end
   end
 end

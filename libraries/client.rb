@@ -39,5 +39,6 @@ module ILO_SDK
     include Timeout_Helper
     include Time_Zone_Helper
     include Asset_Tag_Helper
+    include Computer_Details_Helper
   end
 end
