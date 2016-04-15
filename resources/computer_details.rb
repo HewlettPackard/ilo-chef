@@ -8,13 +8,14 @@ property :group, [String, Integer], default: node['current_user']
 include ClientHelper
 
 action :dump do
+  dumpContent = ""
   ilos.each do |ilo|
     client = build_client(ilo)
-    dumpContent = client.get_computer_details.to_yaml + "\n"
-    file dump_file do
-      owner owner
-      group group
-      content dumpContent
-    end
+    dumpContent = dumpContent + client.get_computer_details.to_yaml + "\n"
+  end
+  file dump_file do
+    owner owner
+    group group
+    content dumpContent
   end
 end
