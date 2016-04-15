@@ -1,5 +1,5 @@
 module ILO_SDK
-  # Contains helper methods for indicator LED actions
+  # Contains helper methods for computer details actions
   module Computer_Details_Helper
     # Get all of the computer details
     # @raise [RuntimeError] if the request failed
