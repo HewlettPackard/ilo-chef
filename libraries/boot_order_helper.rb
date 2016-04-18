@@ -1,5 +1,5 @@
 module ILO_SDK
-  # Contains helper methods for indicator LED actions
+  # Contains helper methods for boot order actions
   module Boot_Order_Helper
     # Dump the boot order
     # @raise [RuntimeError] if the request failed
