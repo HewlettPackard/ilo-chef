@@ -29,7 +29,7 @@ module ILO_SDK
       @logger.warn 'User option not set. Using default (Administrator)' unless options[:user]
       @user = options[:user] || 'Administrator'
       @password = options[:password]
-      fail 'Must set password option' unless @password
+      fail 'Must set the password option' unless @password
     end
 
     include Rest
