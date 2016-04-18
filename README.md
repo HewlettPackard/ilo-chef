@@ -21,7 +21,7 @@ Now you can use the resources this cookbook provides. See below for some example
 
 # iLO Authentication
 Each of the resources below requires you to pass in the info necessary to connect with the iLO API. 
-The basic structure is an array of hashes:
+The basic structure accepted by the `ilos` property is an array of hashes:
 
 ```ruby
 ilos = [
