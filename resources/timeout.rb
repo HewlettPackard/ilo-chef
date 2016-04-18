@@ -10,7 +10,7 @@ action :set do
     client = build_client(ilo)
     cur_val = client.get_timeout
     next if cur_val == timeout
-    converge_by "Set ilo #{ilo} session timeout from '#{cur_val.to_s}' to '#{timeout.to_s}'" do
+    converge_by "Set ilo #{client.host} session timeout from '#{cur_val.to_s}' to '#{timeout.to_s}'" do
       client.set_timeout(timeout)
     end
   end
