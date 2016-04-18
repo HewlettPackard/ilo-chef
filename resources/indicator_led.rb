@@ -10,7 +10,7 @@ action :set do
     client = build_client(ilo)
     cur_val = client.get_indicator_led
     next if cur_val == led_state.to_s
-    converge_by "Set ilo #{ilo} indicator LED to '#{led_state}'" do
+    converge_by "Set ilo #{client.host} indicator LED to '#{led_state}'" do
       client.set_indicator_led(led_state)
     end
   end
