@@ -9,7 +9,7 @@ property :group, [String, Integer], default: node['current_user']
 include ClientHelper
 
 action :dump do
-  raise 'Please specify dump_file or databag!' unless dump_file || data_bag
+  raise 'Please specify dump_file or data_bag!' unless dump_file || data_bag
   dumpContent = {}
   ilos.each do |ilo|
     client = build_client(ilo)
