@@ -16,7 +16,7 @@ module ILO_SDK
     # @raise [RuntimeError] if the request failed
     # @return [Fixnum] current_boot_order
     def get_boot_order
-      response = rest_get('/redfish/v1/systems/1/bios/Boot/')
+      response = rest_get('/redfish/v1/systems/1/bios/Boot/Settings/')
       boot = response_handler(response)['PersistentBootConfigOrder']
     end
 
@@ -26,7 +26,7 @@ module ILO_SDK
     # @return true
     def set_boot_order(boot_order)
       newAction = {'PersistentBootConfigOrder' => boot_order}
-      response = rest_patch('/redfish/v1/systems/1/bios/Boot/', body: newAction)
+      response = rest_patch('/redfish/v1/systems/1/bios/Boot/Settings/', body: newAction)
       response_handler(response)
       true
     end
