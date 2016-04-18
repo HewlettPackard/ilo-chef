@@ -18,7 +18,7 @@ module ILO_SDK
       response = rest_get('/redfish/v1/Systems/1/')
       details = response_handler(response)
       {
-        @host => {
+        'GeneralDetails' => {
         'manufacturer' => details["Manufacturer"],
         'model' => details["Model"],
         'AssetTag' => details['AssetTag'],
