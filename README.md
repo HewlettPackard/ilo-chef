@@ -10,13 +10,49 @@ Enables interraction with HPE iLO APIs.
 This cookbook is not intended to include any recipes. 
 Use it by creating a new cookbook and specifying a dependency on this cookbook.
 
-  ```ruby
-  # my_cookbook/metadata.rb
-  ...
-  depends 'iLO'
-  ```
+```ruby
+# my_cookbook/metadata.rb
+...
+depends 'iLO'
+```
 
 Now you can use the resources this cookbook provides. See below for some examples.
+
+
+# iLO Authentication
+Each of the resources below requires you to pass in the info necessary to connect with the iLO API. 
+The basic structure is an array of hashes:
+
+```ruby
+ilos = [
+  {
+    host: 'ilo1.example.com',  # Required. IP or hostname
+    user: 'Administrator',     # Optional. Defaults to 'Administrator'
+    password: 'secret123'      # Required
+    ssl_enabled: false         # Optional
+  },
+  {
+    host: '10.0.0.3',
+    user: 'User2',
+    password: 'secret456'
+  }
+]
+```
+
+This array can be built using a variety of different sources, including [encrypted] databags, attributes, or read from json or yaml files.
+For example:
+
+```ruby
+# Set directly in recipe:
+ilo_list1 = []
+ilo_list1.push { host: 'ilo1.example.com', user: 'Administrator', password: 'secret123' }
+
+# Read from data_bag:
+ilo_list2 = data_bag_item('ilo_secrets', 'data_center_1')
+
+# Load from yaml file:
+ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
+```
 
 
 # iLO Resources
