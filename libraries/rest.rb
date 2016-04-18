@@ -9,38 +9,16 @@ module ILO_SDK
     # @option options [String] :Content-Type ('application/json') Set to nil or :none to have this option removed
     # @return [NetHTTPResponse] The response object
     def rest_api(type, path, options = {})
-      @logger.debug "Making :#{type} rest call to #{@host}#{path}"
       fail 'Must specify path' unless path
+      fail 'Must specify type' unless type
+      @logger.debug "Making :#{type} rest call to #{@host}#{path}"
 
       uri = URI.parse(URI.escape("https://" + @host + path))
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE unless @ssl_enabled
 
-      case type.downcase
-      when 'get', :get
-        request = Net::HTTP::Get.new(uri.request_uri)
-      when 'post', :post
-        request = Net::HTTP::Post.new(uri.request_uri)
-      when 'put', :put
-        request = Net::HTTP::Put.new(uri.request_uri)
-      when 'patch', :patch
-        request = Net::HTTP::Patch.new(uri.request_uri)
-      when 'delete', :delete
-        request = Net::HTTP::Delete.new(uri.request_uri)
-      else
-        fail "Invalid rest call: #{type}"
-      end
-      options['Content-Type'] ||= 'application/json'
-      options.each do |key, val|
-        if key.to_s.downcase == 'body'
-          request.body = val.to_json rescue val
-        else
-          request[key] = val
-        end
-      end
-
-      request.basic_auth(@user, @password)
+      request = build_request(type, uri, options)
       response = http.request(request)
       @logger.debug "  Response: Code=#{response.code}. Headers=#{response.to_hash}\n  Body=#{response.body}"
       response
@@ -127,5 +105,47 @@ module ILO_SDK
         fail "#{response.code} #{response.body}"
       end
     end
+
+
+    private
+
+    def build_request(type, uri, options)
+      case type.downcase
+      when 'get', :get
+        request = Net::HTTP::Get.new(uri.request_uri)
+      when 'post', :post
+        request = Net::HTTP::Post.new(uri.request_uri)
+      when 'put', :put
+        request = Net::HTTP::Put.new(uri.request_uri)
+      when 'patch', :patch
+        request = Net::HTTP::Patch.new(uri.request_uri)
+      when 'delete', :delete
+        request = Net::HTTP::Delete.new(uri.request_uri)
+      else
+        fail "Invalid rest call: #{type}"
+      end
+      options['Content-Type'] ||= 'application/json'
+      options.delete('Content-Type')  if [:none, 'none', nil].include?(options['Content-Type'])
+      auth = true
+      if [:none, 'none'].include?(options['auth'])
+        options.delete('auth')
+        auth = false
+      end
+      options.each do |key, val|
+        if key.to_s.downcase == 'body'
+          request.body = val.to_json rescue val
+        else
+          request[key] = val
+        end
+      end
+
+      filtered_options = options.to_s
+      filtered_options.gsub!(@password, 'filtered') if @password
+      @logger.debug "  Options: #{filtered_options}"
+
+      request.basic_auth(@user, @password) if auth
+      request
+    end
+
   end
 end

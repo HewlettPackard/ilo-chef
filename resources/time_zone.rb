@@ -12,7 +12,7 @@ action :set do
     client = build_client(ilo)
     cur_val = client.get_time_zone
     next if cur_val == time_zone
-    converge_by "Set ilo #{ilo} time zone from '#{cur_val.to_s}' to '#{time_zone.to_s}'" do
+    converge_by "Set ilo #{client.host} time zone from '#{cur_val.to_s}' to '#{time_zone.to_s}'" do
       client.set_time_zone(time_zone)
     end
   end
@@ -23,7 +23,7 @@ action :set_ntp do
     client = build_client(ilo)
     cur_val = client.get_ntp
     next if cur_val == value
-    converge_by "Set ilo #{ilo} NTP use to '#{value.to_s}'" do
+    converge_by "Set ilo #{client.host} NTP use to '#{value.to_s}'" do
       client.set_ntp(value)
     end
   end
@@ -34,7 +34,7 @@ action :set_ntp_servers do
     client = build_client(ilo)
     cur_val = client.get_ntp_servers
     next if cur_val == ntp_servers
-    converge_by "Set ilo #{ilo} NTP Servers from '#{cur_val.to_s}' to '#{ntp_servers.to_s}'" do
+    converge_by "Set ilo #{client.host} NTP Servers from '#{cur_val.to_s}' to '#{ntp_servers.to_s}'" do
       client.set_ntp_servers(ntp_servers)
     end
   end

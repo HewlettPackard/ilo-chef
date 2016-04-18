@@ -10,7 +10,7 @@ action :set do
       client = build_client(ilo)
       cur_val = client.get_asset_tag
       next if cur_val == asset_tag
-      converge_by "Set ilo #{ilo} asset tag from '#{cur_val}' to '#{asset_tag}'" do
+      converge_by "Set ilo #{client.host} asset tag from '#{cur_val}' to '#{asset_tag}'" do
         client.set_asset_tag(asset_tag)
       end
     end

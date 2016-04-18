@@ -29,7 +29,7 @@ module ILO_SDK
       @logger.warn 'User option not set. Using default (Administrator)' unless options[:user]
       @user = options[:user] || 'Administrator'
       @password = options[:password]
-      fail 'Must set password option' unless @password
+      fail 'Must set the password option' unless @password
     end
 
     include Rest
@@ -40,5 +40,8 @@ module ILO_SDK
     include Time_Zone_Helper
     include Asset_Tag_Helper
     include Boot_Order_Helper
+    include Computer_Details_Helper
+    include Power_Metrics_Helper
+    include Thermal_Metrics_Helper
   end
 end
