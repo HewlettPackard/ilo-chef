@@ -39,6 +39,7 @@ module ILO_SDK
     include Timeout_Helper
     include Time_Zone_Helper
     include Asset_Tag_Helper
+    include Boot_Order_Helper
     include Computer_Details_Helper
     include Power_Metrics_Helper
     include Thermal_Metrics_Helper
