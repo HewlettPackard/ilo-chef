@@ -44,6 +44,15 @@ module ILO_SDK
     #  options = {'body' => newUser}
     #  rest_api(:post, '/redfish/v1/AccountService/Accounts/', machine,  options)
     #end
+    def userhref(uri, username)
+      response = rest_get(uri)
+      items = response_handler(response)['Items']
+      items.each do |it|
+        if it['UserName'] == username
+          return it['links']['self']['href']
+        end
+      end
+    end
 
     def get_users
       response = rest_get('/redfish/v1/AccountService/Accounts/')
@@ -57,17 +66,14 @@ module ILO_SDK
     end
 
     def reset_user_password(username, password)
-      response = rest_get('/redfish/v1/AccountService/Accounts/')
-      items = response_handler(response)['Items']
-      href = ''
-      items.each do |it|
-        if it['UserName'] == username
-          href = it['links']['self']['href']
-        end
-      end
+      userhref = userhref('/redfish/v1/AccountService/Accounts/', username)
+      newAction = {}
+      response = rest_patch(userhref, body: newAction)
+      true
     end
 
     def delete_user(username)
+
     end
   end
 end
