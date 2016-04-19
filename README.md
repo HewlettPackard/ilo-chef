@@ -1,153 +1,204 @@
-## iLO
+# iLO
+
+Enables interraction with HPE iLO APIs.
+
+### Requirements
+ - Chef 12+
+ - iLO 4
 
 ### How to use the iLO Cookbook:
- 1. Install Chefdk on your Workstation.
- 2. Update knife.rb with the Chef Server details.
- 3. Download the iLO Cookbook.
- 4. Update ilo_info.rb in iLO/libraries/ with the ILO details.
- 5. Update your recipe with below examples and start using it.
-
-
-# Use-cases covered in this provider Cookbook
-## A. User Addition/deletion/Changing Password
-
-### 1. User Delete
+This cookbook is not intended to include any recipes. 
+Use it by creating a new cookbook and specifying a dependency on this cookbook.
 
 ```ruby
-iLO_user 'user delete' do
-  username 'test'
-  ilo_names ["ILO-02"]
-  action :deleteUser
-end
+# my_cookbook/metadata.rb
+...
+depends 'iLO'
+```
+
+Now you can use the resources this cookbook provides. See below for some examples.
+
+
+# iLO Authentication
+Each of the resources below requires you to pass in the info necessary to connect with the iLO API. 
+The basic structure accepted by the `ilos` property is an array of hashes:
+
+```ruby
+ilos = [
+  {
+    host: 'ilo1.example.com',  # Required. IP or hostname
+    user: 'Administrator',     # Optional. Defaults to 'Administrator'
+    password: 'secret123'      # Required
+    ssl_enabled: false         # Optional
+  },
+  {
+    host: '10.0.0.3',
+    user: 'User2',
+    password: 'secret456'
+  }
+]
+```
+
+This array can be built using a variety of different sources, including [encrypted] databags, attributes, or read from json or yaml files.
+For example:
+
+```ruby
+# Set directly in recipe:
+ilo_list1 = []
+ilo_list1.push { host: 'ilo1.example.com', user: 'Administrator', password: 'secret123' }
+
+# Read from data_bag:
+ilo_list2 = data_bag_item('ilo_secrets', 'data_center_1')
+
+# Load from yaml file:
+ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
 ```
 
 
-### 2. User Addition
+# iLO Resources
+The following resources are available for usage in your recipes:
 
-```ruby
-iLO_user 'user create' do
-  username 'test'
-  password 'password123'
-  ilo_names ["ILO-02"]
-end
-```
+### iLO_user
 
+ - **Create User:**
 
-### 3. Change Password
+  ```ruby
+  iLO_user 'user create' do
+    username 'test'
+    password 'password123'
+    ilo_names ["ILO-02"]
+  end
+  ```
 
-```ruby
-iLO_user 'user reset password' do
-  username 'test'
-  password 'password12'
-  action :changePassword
-  ilo_names ["ILO-02"]
-end
-```
+ - **Delete User:**
 
-
-## B. Power On/Off/Reset
-
-### 1. Power On System
-
-```ruby
-iLO_powermgmt 'power on' do
-  action :poweron
-  ilo_names ["ILO-02"]
-end
-```
+  ```ruby
+  iLO_user 'user delete' do
+    username 'test'
+    ilo_names ["ILO-02"]
+    action :deleteUser
+  end
+  ```
 
 
-### 2. Power Off System
+ - **Update User Password:**
 
-```ruby
-iLO_powermgmt 'power off' do
-  action :poweron
-   ilo_names ["ILO-02"]
-end
-```
-
-
-### 3. Power Reset System
-
-```ruby
-iLO_powermgmt 'resetsys' do
-  action :resetsys
-   ilo_names ["ILO-02"]
- end
-```
-
-## C: Firmware Upgrade
-
-```ruby
-iLO_fw_up 'fw_up' do
-  ilo_names ["ILO-02"]
-  fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
-  action :fw_up
-end
-```
-
-## D: Mount ISO
-
-```ruby
-iLO_virtual_media 'mount iso' do
-  ilo_names ['ILO-02']
-   iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
-   boot_on_next_server_reset false
-  action :mount
-end
-```
-
-## E. Boot Order Get/Change/Revert
-
-### 1. Get Boot Order
-
-```ruby
-iLO_boot_order 'get boot order' do
-  ilos ["ILO-02"]
-  boot_order_file "save_me_here"
-  action :get
-end
-```
+  ```ruby
+  iLO_user 'user set password' do
+    username 'test'
+    password 'password12'
+    action :changePassword
+    ilo_names ["ILO-02"]
+  end
+  ```
 
 
-### 2. Change Boot Order
+### iLO_powermgmt
 
-```ruby
-iLO_boot_order 'change boot order' do
-  ilos ["ILO-02"]
-  new_boot_order ["1st", "2nd", "3rd", "4th", "5th", "6th"]
-  action :change
-end
-```
+ - **Power On System:**
+
+  ```ruby
+  iLO_powermgmt 'power on' do
+    action :poweron
+    ilo_names ["ILO-02"]
+  end
+  ```
+
+ - **Power Off System:**
+
+  ```ruby
+  iLO_powermgmt 'power off' do
+    action :poweron
+     ilo_names ["ILO-02"]
+  end
+  ```
+
+ - **Reset System:**
+
+  ```ruby
+  iLO_powermgmt 'resetsys' do
+    action :resetsys
+     ilo_names ["ILO-02"]
+   end
+  ```
 
 
-### 3. Change Boot Order Temporarily
+### iLO_fw_up
 
-```ruby
-iLO_boot_order 'change boot order temporarily' do
-  ilos ["ILO-02"]
-  boot_target "Cd"
-  action :temporary_change
-end
-```
+ - **Upgrade a system's firmware:**
+
+  ```ruby
+  iLO_fw_up 'fw_up' do
+    ilo_names ["ILO-02"]
+    fw_uri "http://10.254.224.38:8000/ilo4_240.bin"
+    action :fw_up
+  end
+  ```
 
 
-### 4. Revert Boot Order to Default
+### iLO_virtual_media
 
-```ruby
-iLO_boot_order 'revert boot order' do
-  ilos ["ILO-02"]
-  action :revert
-end
-```
+ - **Mount an ISO image:**
 
-## F: Other
+  ```ruby
+  iLO_virtual_media 'mount iso' do
+    ilo_names ['ILO-02']
+     iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
+     boot_on_next_server_reset false
+    action :mount
+  end
+  ```
 
-### Set UID Indicator LED
 
-```ruby
-iLO_indicator_led 'set led state' do
-  ilos [ilo1, ilo2]
-  led_state 'Off'
-end
-```
+### iLO_boot_order
+
+ - **Get Boot Order:**
+
+  ```ruby
+  iLO_boot_order 'get boot order' do
+    ilos ["ILO-02"]
+    boot_order_file "save_me_here"
+    action :get
+  end
+  ```
+
+ - **Change Boot Order:**
+
+  ```ruby
+  iLO_boot_order 'change boot order' do
+    ilos ["ILO-02"]
+    new_boot_order ["1st", "2nd", "3rd", "4th", "5th", "6th"]
+    action :change
+  end
+  ```
+
+ - **Change Boot Order Temporarily:**
+
+  ```ruby
+  iLO_boot_order 'change boot order temporarily' do
+    ilos ["ILO-02"]
+    boot_target "Cd"
+    action :temporary_change
+  end
+  ```
+
+ - **Revert Boot Order to Default:**
+
+  ```ruby
+  iLO_boot_order 'revert boot order' do
+    ilos ["ILO-02"]
+    action :revert
+  end
+  ```
+
+
+### iLO_indicator_led
+
+ - **Set UID Indicator LED:**
+
+  ```ruby
+  iLO_indicator_led 'set led state' do
+    ilos [ilo1, ilo2]
+    led_state 'Off'
+  end
+  ```

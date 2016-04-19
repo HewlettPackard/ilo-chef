@@ -43,5 +43,6 @@ module ILO_SDK
     include Computer_Details_Helper
     include Power_Metrics_Helper
     include Thermal_Metrics_Helper
+    include SNMP_Helper
   end
 end

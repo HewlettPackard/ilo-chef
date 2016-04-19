@@ -200,7 +200,7 @@ module RestAPI
     #   binding.pry
     #   rest_api(:patch, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
     # end
-    
+
       def mount_virtual_media(machine, iso_uri, boot_on_next_server_reset)
         rest_api(:get, '/redfish/v1/Managers/1/VirtualMedia/', machine)["links"]["Member"].each do |vm|
           virtual_media = rest_api(:get,vm["href"],machine)
@@ -212,18 +212,6 @@ module RestAPI
           rest_api(:patch,vm["href"],machine,options)
         end
       end
-
-     def configure_snmp(machine, snmp_mode, snmp_alerts)
-       manager = rest_api(:get, '/redfish/v1/Managers/', machine)["links"]["Member"][0]["href"]
-       network_service = rest_api(:get, manager, machine)['links']['NetworkService']['href']
-       snmp_service = rest_api(:get, network_service,machine)['links']['SNMPService']['href']
-       config = rest_api(:get, snmp_service, machine)
-       puts "Current SNMP Configuration for #{machine['ilo_site']}: Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
-       options = {'Mode' => snmp_mode, 'AlertsEnabled' =>  snmp_alerts}
-       rest_api(:patch, snmp_service, machine, options)
-       config = rest_api(:get, snmp_service, machine)
-       puts "SNMP configuration for #{machine['ilo_site']} changed to : Mode - #{config["Mode"]}, AlertsEnabled - #{config["AlertsEnabled"]}"
-     end
 
     def get_registry(machine, registry_prefix, registry_file)
       registries = rest_api(:get, '/redfish/v1/Registries/', machine)["Items"]
