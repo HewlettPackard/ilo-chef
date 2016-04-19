@@ -73,7 +73,6 @@ module ILO_SDK
     end
 
     def delete_user(username)
-
     end
   end
 end
