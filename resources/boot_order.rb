@@ -1,53 +1,56 @@
-actions :revert, :get, :change, :temporary_change
+actions :dump, :set, :set_temporary, :revert
+
 property :ilos, Array, :required => true
-property :boot_order_file, String
-property :new_boot_order, Array
+property :dump_file, String
+property :boot_order, Array
 property :boot_target, String
+property :owner, [String, Integer], default: node['current_user']
+property :group, [String, Integer], default: node['current_user']
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 
-action :get do
+action :dump do
+  dumpContent = ""
   ilos.each do |ilo|
-    machine  = ilono.select{|k,v| k == ilo}[ilo]
-    converge_by "Getting boot order and placing in #{boot_order_file}" do
-      get_boot_order(machine, boot_order_file)
+    client = build_client(ilo)
+    dumpContent = dumpContent + client.get_all_boot_order.to_yaml + "\n"
+  end
+  file dump_file do
+    owner owner
+    group group
+    content dumpContent
+  end
+end
+
+action :set do
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_boot_order
+    next if cur_val == boot_order
+    converge_by "Set ilo #{ilo} boot order from '#{cur_val.to_s}' to '#{boot_order.to_s}'" do
+      client.set_boot_order(boot_order)
     end
   end
 end
 
-action :change do
+action :set_temporary do
   ilos.each do |ilo|
-    machine  = ilono.select{|k,v| k == ilo}[ilo]
-    old_boot_order = get_boot_order(machine, boot_order_file)[machine["ilo_site"]]
-    if not old_boot_order == new_boot_order
-      converge_by "Setting boot order from #{old_boot_order.to_s} to #{new_boot_order.to_s}" do
-        boot_order_change(machine, new_boot_order)
-        reset_server(machine)
-      end
-    end
-  end
-end
-
-action :temporary_change do
-  ilos.each do |ilo|
-    machine  = ilono.select{|k,v| k == ilo}[ilo]
-    old_target = get_temporary_boot_order(machine)
-    if not old_target == boot_target
-      converge_by "Setting temporary boot order from #{old_target} to #{boot_target}" do
-        boot_order_change_temporary(machine, boot_target)
-      end
+    client = build_client(ilo)
+    cur_val = client.get_temporary_boot_order
+    next if cur_val == boot_target
+    converge_by "Set ilo #{ilo} temporary boot order from '#{cur_val.to_s}' to '#{boot_target.to_s}'" do
+      client.set_temporary_boot_order(boot_target)
     end
   end
 end
 
 action :revert do
   ilos.each do |ilo|
-    machine  = ilono.select{|k,v| k == ilo}[ilo]
-    if not get_boot_order_baseconfig(machine) == "default"
-      converge_by "Reverting boot order to default" do
-        boot_order_revert(machine)
-      end
+    client = build_client(ilo)
+    cur_val = client.get_boot_order_baseconfig
+    next if cur_val == 'default'
+    converge_by "Reverting ilo #{ilo} to default base configuration" do
+      client.revert_boot_order
     end
   end
 end
