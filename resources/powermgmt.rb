@@ -1,4 +1,4 @@
-actions :poweron, :poweroff, :resetsys, :resetilo\
+actions :poweron, :poweroff, :resetsys, :resetilo
 
 property :ilos, Array, :required => true
 
