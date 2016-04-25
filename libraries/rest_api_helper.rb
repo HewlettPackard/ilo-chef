@@ -67,50 +67,6 @@ module RestAPI
       rest_api(:delete, minhref, machine)
     end
 
-    def reset_server(machine)
-      newAction = {"Action"=> "Reset", "ResetType"=> "ForceRestart"}
-      options = {'body' => newAction}
-      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
-      sysuri = sysget["links"]["Member"][0]["href"]
-      rest_api(:post, sysuri, machine, options)
-    end
-
-    def get_power_state(machine)
-      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
-      sysuri = sysget["links"]["Member"][0]["href"]
-      rest_api(:get, sysuri, machine)["PowerState"]
-    end
-
-    def power_on(machine)
-      newAction = {"Action"=> "Reset", "ResetType"=> "On"}
-      options = {'body' => newAction}
-      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
-      sysuri = sysget["links"]["Member"][0]["href"]
-      rest_api(:post, sysuri, machine, options)
-    end
-
-    def power_off(machine)
-      newAction = {"Action"=> "Reset", "ResetType"=> "ForceOff"}
-      options = {'body' => newAction}
-      sysget = rest_api(:get, '/redfish/v1/systems/', machine)
-      sysuri = sysget["links"]["Member"][0]["href"]
-      rest_api(:post, sysuri, machine, options)
-    end
-
-
-    def findILOMacAddr(machine)
-      iloget = rest_api(:get, '/redfish/v1/Managers/1/NICs/', machine)
-      iloget["Items"][0]["MacAddress"]
-    end
-
-    def reset_ilo(machine)
-      newAction = {"Action"=> "Reset"}
-      options = {'body' => newAction}
-      mgrget = rest_api(:get, '/redfish/v1/Managers/', machine)
-      mgruri = mgrget["links"]["Member"][0]["href"]
-      rest_api(:post, mgruri ,machine ,options )
-    end
-
     def get_users(machine)
       rest_api(:get, '/rest/v1/AccountService/Accounts', machine)["Items"].collect{|user| user["UserName"]}
     end

@@ -44,5 +44,6 @@ module ILO_SDK
     include Power_Metrics_Helper
     include Thermal_Metrics_Helper
     include SNMP_Helper
+    include Powermgmt_Helper
   end
 end
