@@ -46,5 +46,6 @@ module ILO_SDK
     include SNMP_Helper
     include Powermgmt_Helper
     include User_Helper
+    include Registry_Helper
   end
 end
