@@ -45,5 +45,6 @@ module ILO_SDK
     include Thermal_Metrics_Helper
     include SNMP_Helper
     include User_Helper
+    include Registry_Helper
   end
 end

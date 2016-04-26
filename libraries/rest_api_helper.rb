@@ -187,15 +187,6 @@ module RestAPI
         end
       end
 
-    def get_registry(machine, registry_prefix, registry_file)
-      registries = rest_api(:get, '/redfish/v1/Registries/', machine)["Items"]
-      registry = registries.select{|reg| reg["Schema"].start_with?(registry_prefix)}
-      registry.each do |reg|
-        registry_store = rest_api(:get, reg["Location"][0]["Uri"]["extref"], machine)
-        File.open("#{Chef::Config[:file_cache_path]}/#{registry_file}.txt", 'a+') {|f| f.write(registry_store.to_yaml)}
-      end
-    end
-
     def get_schema(machine, schema_prefix, schema_file)
       schemas = rest_api(:get, '/redfish/v1/Schemas/', machine)["Items"]
       schema = schemas.select{|schema| schema["Schema"].start_with?(schema_prefix)}

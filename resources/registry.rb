@@ -1,13 +1,54 @@
-actions  :get_registry
+actions :dump
 
-property :ilo_name, String, :required => true
+property :ilos, Array, :required => true
+property :dump_file, String
+property :data_bag, String
 property :registry_prefix, String
-property :registry_file, String
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 
-action :get_registry do
-  machine  = ilono.select{|k,v| k == ilo_name}[ilo_name]
-  get_registry(machine,registry_prefix,registry_file)
+action :dump do
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    puts
+    puts
+    puts client.get_registry(registry_prefix).to_yaml
+    puts
+    puts
+  end
 end
+
+#action :dump do
+#  raise 'Please specify dump_file or data_bag!' unless dump_file || data_bag
+#  dumpContent = {}
+#  ilos.each do |ilo|
+#    client = build_client(ilo)
+#    host = ilo[:host] || ilo['host']
+#    dumpContent[host.to_s] = client.get_computer_details
+#  end
+#  if dump_file
+#    file dump_file do
+#      owner owner
+#      group group
+#      content dumpContent.to_yaml
+#    end
+#  end
+#  if data_bag
+#    unless Chef::DataBag.list.key?(data_bag)
+#      new_data_bag = Chef::DataBag.new
+#      new_data_bag.name(data_bag)
+#      new_data_bag.save
+#    end
+#    dumpContent.each do |host, data|
+#      new_data = {'id' => host}.merge(data)
+#      begin
+#        item = data_bag_item(data_bag, host)
+#      rescue
+#        item = Chef::DataBagItem.new
+#        item.data_bag(data_bag)
+#      end
+#      item.raw_data = new_data
+#      item.save
+#    end
+#  end
+#end
