@@ -52,32 +52,6 @@ module RestAPI
       JSON.parse(response.body) rescue response
     end
 
-    def reset_user_password(machine, modUserName, modPassword)
-      uad = rest_api(:get, '/redfish/v1/AccountService/Accounts/', machine)
-      userhref = adminhref(uad, modUserName)
-      options = {
-        'body' => modPassword
-      }
-      rest_api(:patch, userhref, machine, options)
-    end
-
-    def delete_user(deleteUserName, machine)
-      uad = rest_api(:get, '/redfish/v1/AccountService/Accounts/', machine)
-      minhref = adminhref(uad, deleteUserName )
-      rest_api(:delete, minhref, machine)
-    end
-
-    def get_users(machine)
-      rest_api(:get, '/rest/v1/AccountService/Accounts', machine)["Items"].collect{|user| user["UserName"]}
-    end
-
-    def create_user(machine,username,password)
-      rest_api(:get, '/rest/v1/AccountService/Accounts', machine)
-      newUser = {"UserName" => username, "Password"=> password, "Oem" => {"Hp" => {"LoginName" => username} }}
-      options = {'body' => newUser}
-      rest_api(:post, '/redfish/v1/AccountService/Accounts/', machine,  options)
-    end
-
     def get_fw_version(machine)
       rest_api(:get, '/redfish/v1/Systems/1/FirmWareInventory/', machine)["Current"]["SystemBMC"][0]["VersionString"]
     end
