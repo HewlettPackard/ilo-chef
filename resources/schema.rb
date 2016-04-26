@@ -1,13 +1,23 @@
-actions  :get_schema
+actions  :dump
 
-property :ilo_name, String, :required => true
+property :ilos, Array, :required => true
 property :schema_prefix, String
-property :schema_file, String
+property :dump_file, String, :required => true
+property :owner, [String, Integer], default: node['current_user']
+property :group, [String, Integer], default: node['current_user']
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 
-action :get_schema do
-  machine  = ilono.select{|k,v| k == ilo_name}[ilo_name]
-  get_schema(machine,schema_prefix,schema_file)
+action :dump do
+  dumpContent = {}
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    host = ilo[:host] || ilo['host']
+    dumpContent[host.to_s] = client.get_schema(schema_prefix).to_yaml
+  end
+  file dump_file do
+    owner owner
+    group group
+    content dumpContent.to_yaml
+  end
 end

@@ -196,16 +196,6 @@ module RestAPI
       end
     end
 
-    def get_schema(machine, schema_prefix, schema_file)
-      schemas = rest_api(:get, '/redfish/v1/Schemas/', machine)["Items"]
-      schema = schemas.select{|schema| schema["Schema"].start_with?(schema_prefix)}
-      raise "NO schema found with this schema prefix : #{schema_prefix}" if schema.empty?
-      schema.each do |sc|
-        schema_store = rest_api(:get, sc["Location"][0]["Uri"]["extref"], machine)
-        File.open("#{Chef::Config[:file_cache_path]}/#{schema_file}.txt", 'a+') {|f| f.write(schema_store.to_yaml)}
-      end
-    end
-
    def get_bios_resource(machine)
      sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
      bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
