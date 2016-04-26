@@ -1,13 +1,23 @@
-actions  :get_registry
+actions :dump
 
-property :ilo_name, String, :required => true
+property :ilos, Array, :required => true
+property :dump_file, String, :required => true
+property :owner, [String, Integer], default: node['current_user']
+property :group, [String, Integer], default: node['current_user']
 property :registry_prefix, String
-property :registry_file, String
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 
-action :get_registry do
-  machine  = ilono.select{|k,v| k == ilo_name}[ilo_name]
-  get_registry(machine,registry_prefix,registry_file)
+action :dump do
+  dumpContent = {}
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    host = ilo[:host] || ilo['host']
+    dumpContent[host.to_s] = client.get_registry(registry_prefix).to_yaml
+  end
+  file dump_file do
+    owner owner
+    group group
+    content dumpContent.to_yaml
+  end
 end
