@@ -49,5 +49,6 @@ module ILO_SDK
     include Schema_Helper
     include Registry_Helper
     include UEFI_Helper
+    include Bios_Helper
   end
 end
