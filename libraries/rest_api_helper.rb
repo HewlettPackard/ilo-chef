@@ -68,12 +68,6 @@ module RestAPI
       rest_api(:post, '/redfish/v1/Managers/1/LicenseService/1', machine, options )
     end
 
-    def enable_uefi_secure_boot(machine, value)
-      newAction = {"SecureBootEnable"=> value}
-      options = {'body' => newAction}
-      rest_api(:patch, '/redfish/v1/Systems/1/SecureBoot/', machine, options)
-    end
-
     # def revert_bios_settings(machine)
     #   newAction = {"BaseConfig" => "default"}
     #   options = {'body' => newAction}
