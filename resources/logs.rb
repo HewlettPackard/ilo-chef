@@ -1,13 +1,13 @@
 actions :clear, :dump
 
-property :ilo_names, [Array,Symbol], :required => true
+pproperty :ilos, Array, :required => true
 property :log_type, String, :required => true
 property :severity_level, String, :equal_to => ["OK","Warning","Critical"]
 property :dump_file, String, :required => true
 property :duration_in_hours, Integer, :required => true, :default => 24
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
+
 action :clear do
   if ilo_names.class == Array
     ilo_names.each do |ilo|
