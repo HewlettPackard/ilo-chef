@@ -48,5 +48,6 @@ module ILO_SDK
     include User_Helper
     include Schema_Helper
     include Registry_Helper
+    include UEFI_Helper
   end
 end

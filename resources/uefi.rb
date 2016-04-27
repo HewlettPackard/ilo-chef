@@ -1,22 +1,19 @@
 actions :secure_boot
 
-property :ilo_names, [Array,Symbol]
+property :ilos, Array, :required => true
 property :enable, [TrueClass, FalseClass], default: false
 
-include RestAPI::Helper
-::Chef::Provider.send(:include, ILOINFO)
+include ClientHelper
 #The Unified Extensible Firmware Interface (UEFI) provides a higher level of security by protecting against unauthorized Operating Systems
 # and malware rootkit attacks, validating that only authenticated ROMs, pre-boot applications, and OS boot loaders that have been
 # digitally signed are run.
 action :secure_boot do
-  if ilo_names.class == Array
-    ilo_names.each do |ilo|
-      machine  = ilono.select{|k,v| k == ilo}[ilo]
-      enable_uefi_secure_boot(machine, enable)
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_uefi_secure_boot
+    next if cur_val == enable
+    converge_by "Set ilo #{client.host} secure boot to '#{enable.to_s}'" do
+      client.set_uefi_secure_boot(enable)
     end
-  else
-    ilono.each do |name,site|
-      enable_uefi_secure_boot(site, enable)
-	  end
   end
 end
