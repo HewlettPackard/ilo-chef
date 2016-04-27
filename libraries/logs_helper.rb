@@ -63,6 +63,57 @@ module ILO_SDK
     #    File.open("#{Chef::Config[:file_cache_path]}/#{file}.txt", 'a+') {|f| f.write(ilo_log_entry) }
     #  end
     #end
-    
+
+    def clear_logs(log_type)
+      newAction = {"Action" => "ClearLog"}
+      response = rest_post("/redfish/v1/Managers/1/LogServices/#{log_type}/", body: newAction)
+      response_handler(response)
+      true
+    end
+
+    def logs_empty?(dump_file)
+    end
+
+    def get_logs(severity_level, duration, log_type)
+      response = rest_get("/redfish/v1/Managers/1/LogServices/#{log_type}/Entries/")
+      entries = response_handler(response)['links']['Member']
+      log_entries = []
+      entries.each do |e|
+        if !severity_level.nil?
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600)))
+        else
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600)))
+        end
+        return log_entries
+      end
+    end
+
+    def get_iel_logs(severity_level, duration)
+      response = rest_get('/redfish/v1/Managers/1/LogServices/IEL/Entries/')
+      entries = response_handler(response)['links']['Member']
+      log_entries = []
+      entries.each do |e|
+        if !severity_level.nil?
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600)))
+        else
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600)))
+        end
+        return log_entries
+      end
+    end
+
+    def get_iml_logs(severity_level, duration)
+      response = rest_get('/redfish/v1/Managers/1/LogServices/IEL/Entries/')
+      entries = response_handler(response)['links']['Member']
+      log_entries = []
+      entries.each do |e|
+        if !severity_level.nil?
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if created == severity_level and Time.parse(created) > (Time.now.utc - (duration*3600)))
+        else
+          log_entries.insert("#{ilo} | #{severity} | #{message} | #{created} \n" if Time.parse(created) > (Time.now.utc - (duration*3600)))
+        end
+        return log_entries
+      end
+    end
   end
 end
