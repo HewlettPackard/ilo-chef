@@ -37,10 +37,10 @@ module ILO_SDK
    # binding.pry
    # rest_api(:patch, bios_settings_uri, machine, options)
    #end
-   
+
     def revert_bios
       newAction = {"BaseConfig" => "default"}
-      response = rest_patch('/rest/v1/systems/1/bios/Settings/', body: newAction)
+      response = rest_patch('/redfish/v1/systems/1/bios/Settings/', body: newAction)
       response_handler(response)
       true
     end
@@ -54,7 +54,7 @@ module ILO_SDK
 
     def get_uefi_shell_startup
       response = rest_get('/redfish/v1/Systems/1/bios/')
-      bios = response_handler('/redfish/v1/Systems/1/bios/')
+      bios = response_handler(response)
       {
         'UefiShellStartup' => bios['UefiShellStartup'],
         'UefiShellStartupLocation' => bios['UefiShellStartupLocation'],
@@ -126,8 +126,8 @@ module ILO_SDK
       response_handler('/redfish/v1/Systems/1/bios/')['UrlBootFile']
     end
 
-    def set_url_boot_file(url)
-      newAction = {'UrlBootFile' => url}
+    def set_url_boot_file(url_boot_file)
+      newAction = {'UrlBootFile' => url_boot_file}
       response = rest_patch('/redfish/v1/Systems/1/bios/', body: newAction)
       response_handler(response)
       true
