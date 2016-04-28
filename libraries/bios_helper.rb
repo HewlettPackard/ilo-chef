@@ -1,43 +1,9 @@
 module ILO_SDK
   # Contains helper methods for Bios actions
   module Bios_Helper
-    # Get the UID indicator LED state
-    # @raise [RuntimeError] if the request failed
-    # @return [String] state
-    #def get_indicator_led
-    #  response = rest_get('/redfish/v1/Systems/1/')
-    #  response_handler(response)['IndicatorLED']
-    #end
-
-    # Set the UID indicator LED
-    # @param [String, Symbol] State
+    # Revert the BIOS
     # @raise [RuntimeError] if the request failed
     # @return true
-    #def set_indicator_led(state)
-    #  newAction = { 'IndicatorLED' => state }
-    #  response = rest_patch('/redfish/v1/Systems/1/', body: newAction)
-    #  response_handler(response)
-    #  true
-    #end
-
-    #def get_bios_resource(machine)
-    #  sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
-    #  bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href'] #/redfish/v1/Systems/1/bios/
-    #  rest_api(:get, bios_uri, machine)
-    #end
-
-   #def revert_bios(machine)
-   # sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
-   # bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-   # bios = rest_api(:get, bios_uri, machine)
-   # bios_baseconfigs_uri = bios['links']['BaseConfigs']['href']
-   # bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
-   # newAction = {"BaseConfig" => "default"}
-   # options = {'body' => newAction}
-   # binding.pry
-   # rest_api(:patch, bios_settings_uri, machine, options)
-   #end
-
     def revert_bios
       newAction = {"BaseConfig" => "default"}
       response = rest_patch('/redfish/v1/systems/1/bios/Settings/', body: newAction)
@@ -45,13 +11,9 @@ module ILO_SDK
       true
     end
 
-    #def set_uefi_shell_startup(machine, value, location, url)
-      #bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-      #newAction = {"UefiShellStartup" => value, "UefiShellStartupLocation" => location, "UefiShellStartupUrl" => url}
-      #options = {'body' => newAction}
-      #rest_api(:patch, bios_settings, machine, options)
-    #end
-
+    # Get the UEFI shell start up
+    # @raise [RuntimeError] if the request failed
+    # @return [String] uefi_shell_startup
     def get_uefi_shell_startup
       response = rest_get('/redfish/v1/Systems/1/bios/')
       bios = response_handler(response)
@@ -62,6 +24,12 @@ module ILO_SDK
       }
     end
 
+    # Set the UEFI shell start up
+    # @param [String, Symbol] value
+    # @param [String, Symbol] location
+    # @param [String, Symbol] url
+    # @raise [RuntimeError] if the request failed
+    # @return true
     def set_uefi_shell_startup(value, location, url)
       newAction = {
         'UefiShellStartup' => value,
@@ -73,20 +41,9 @@ module ILO_SDK
       true
     end
 
-    #def set_bios_dhcp(machine, value, ipv4_address='', ipv4_primary_dns='', ipv4_secondary_dns='', ipv4_gateway='', ipv4_subnet_mask='')
-      #bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-      #newAction = {
-      #  'Dhcpv4' => value,
-      #  'Ipv4Address' => ipv4_address,
-      #  'Ipv4Gateway' => ipv4_gateway,
-      #  'Ipv4PrimaryDNS' => ipv4_primary_dns,
-      #  'Ipv4SecondaryDNS' => ipv4_secondary_dns,
-      #  'Ipv4SubnetMask' => ipv4_subnet_mask
-      #}
-      #options = {'body' => newAction}
-      #rest_api(:patch, bios_settings, machine, options)
-    #end
-
+    # Get the BIOS DHCP
+    # @raise [RuntimeError] if the request failed
+    # @return [String] uefi_bios_dhcp
     def get_bios_dhcp
       response = rest_get('/redfish/v1/Systems/1/bios/')
       bios = response_handler('/redfish/v1/Systems/1/bios/')
@@ -100,6 +57,15 @@ module ILO_SDK
       }
     end
 
+    # Set the UEFI shell start up
+    # @param [String, Symbol] value
+    # @param [String, Symbol] ipv4_address
+    # @param [String, Symbol] ipv4_gateway
+    # @param [String, Symbol] ipv4_primary_dns
+    # @param [String, Symbol] ipv4_secondary_dns
+    # @param [String, Symbol] ipv4_subnet_mask
+    # @raise [RuntimeError] if the request failed
+    # @return true
     def set_bios_dhcp(value, ipv4_address='', ipv4_gateway='', ipv4_primary_dns='', ipv4_secondary_dns='', ipv4_subnet_mask='')
       newAction = {
         'Dhcpv4' => value,
@@ -114,18 +80,18 @@ module ILO_SDK
       true
     end
 
-    #def set_url_boot_file(machine, url)
-    #  bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-    #  newAction = {'UrlBootFile' => url}
-    #  options = {'body' => newAction}
-    #  rest_api(:patch, bios_settings, machine, options)
-    #end
-
+    # Get the URL boot file
+    # @raise [RuntimeError] if the request failed
+    # @return [String] url_boot_file
     def get_url_boot_file
       response = rest_get('/redfish/v1/Systems/1/bios/')
-      response_handler('/redfish/v1/Systems/1/bios/')['UrlBootFile']
+      response_handler(response)['UrlBootFile']
     end
 
+    # Set the UEFI shell start up
+    # @param [String, Symbol] url_boot_file
+    # @raise [RuntimeError] if the request failed
+    # @return true
     def set_url_boot_file(url_boot_file)
       newAction = {'UrlBootFile' => url_boot_file}
       response = rest_patch('/redfish/v1/Systems/1/bios/', body: newAction)
@@ -133,22 +99,23 @@ module ILO_SDK
       true
     end
 
-    #def set_bios_service(machine, name, email)
-    #  bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-    #  newAction = {'ServiceName' => name, 'ServiceEmail' => email}
-    #  options = {'body' => newAction}
-    #  rest_api(:patch, bios_settings, machine, options)
-    #end
-
+    # Get the BIOS service
+    # @raise [RuntimeError] if the request failed
+    # @return [String] bios_service
     def get_bios_service
       response = rest_get('/redfish/v1/Systems/1/bios/')
-      bios = response_handler('/redfish/v1/Systems/1/bios/')
+      bios = response_handler(response)
       {
         'ServiceName' => bios['ServiceName'],
         'ServiceEmail' => bios['ServiceEmail']
       }
     end
 
+    # Set the BIOS service
+    # @param [String, Symbol] name
+    # @param [String, Symbol] email
+    # @raise [RuntimeError] if the request failed
+    # @return true
     def set_bios_service(name, email)
       newAction = {
         'ServiceName' => name,
