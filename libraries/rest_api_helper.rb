@@ -68,19 +68,6 @@ module RestAPI
       rest_api(:post, '/redfish/v1/Managers/1/LicenseService/1', machine, options )
     end
 
-    # def revert_bios_settings(machine)
-    #   newAction = {"BaseConfig" => "default"}
-    #   options = {'body' => newAction}
-    #   rest_api(:put, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
-    # end
-    #
-    # def reset_boot_order(machine)
-    #   newAction = {"RestoreManufacturingDefaults" => "yes"}
-    #   options = {'body' => newAction}
-    #   binding.pry
-    #   rest_api(:patch, '/redfish/v1/Systems/1/BIOS/Settings/',machine,options)
-    # end
-
       def mount_virtual_media(machine, iso_uri, boot_on_next_server_reset)
         rest_api(:get, '/redfish/v1/Managers/1/VirtualMedia/', machine)["links"]["Member"].each do |vm|
           virtual_media = rest_api(:get,vm["href"],machine)
@@ -92,60 +79,5 @@ module RestAPI
           rest_api(:patch,vm["href"],machine,options)
         end
       end
-
-   def get_bios_resource(machine)
-     sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
-     bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-     rest_api(:get, bios_uri, machine)
-   end
-
-  def revert_bios(machine)
-    sys = rest_api(:get, '/redfish/v1/Systems/', machine)["links"]["Member"][0]["href"]
-    bios_uri = rest_api(:get, sys, machine)['Oem']['Hp']['links']['BIOS']['href']
-    bios = rest_api(:get, bios_uri, machine)
-    bios_baseconfigs_uri = bios['links']['BaseConfigs']['href']
-    bios_settings_uri = bios['links']['Settings']['href']  ##"/rest/v1/systems/1/bios/Settings"
-    newAction = {"BaseConfig" => "default"}
-    options = {'body' => newAction}
-    binding.pry
-    rest_api(:patch, bios_settings_uri, machine, options)
-  end
-
-   def set_uefi_shell_startup(machine, value, location, url)
-     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-     newAction = {"UefiShellStartup" => value, "UefiShellStartupLocation" => location, "UefiShellStartupUrl" => url}
-     options = {'body' => newAction}
-     rest_api(:patch, bios_settings, machine, options)
-   end
-
-   def set_bios_dhcp(machine, value, ipv4_address='', ipv4_primary_dns='', ipv4_secondary_dns='', ipv4_gateway='', ipv4_subnet_mask='')
-     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-     newAction = {
-       'Dhcpv4' => value,
-       'Ipv4Address' => ipv4_address,
-       'Ipv4Gateway' => ipv4_gateway,
-       'Ipv4PrimaryDNS' => ipv4_primary_dns,
-       'Ipv4SecondaryDNS' => ipv4_secondary_dns,
-       'Ipv4SubnetMask' => ipv4_subnet_mask
-     }
-     options = {'body' => newAction}
-     rest_api(:patch, bios_settings, machine, options)
-   end
-
-   def set_url_boot_file(machine, url)
-     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-     newAction = {'UrlBootFile' => url}
-     options = {'body' => newAction}
-     rest_api(:patch, bios_settings, machine, options)
-   end
-
-   def set_bios_service(machine, name, email)
-     bios_settings = get_bios_resource(machine)['links']['Settings']['href']
-     newAction = {'ServiceName' => name, 'ServiceEmail' => email}
-     options = {'body' => newAction}
-     rest_api(:patch, bios_settings, machine, options)
-   end
-
-
   end
 end

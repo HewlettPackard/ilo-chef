@@ -50,5 +50,6 @@ module ILO_SDK
     include Registry_Helper
     include Logs_Helper
     include UEFI_Helper
+    include Bios_Helper
   end
 end
