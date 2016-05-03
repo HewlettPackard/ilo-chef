@@ -51,5 +51,6 @@ module ILO_SDK
     include Logs_Helper
     include UEFI_Helper
     include Bios_Helper
+    include FW_Up_Helper
   end
 end

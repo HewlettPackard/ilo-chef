@@ -52,16 +52,6 @@ module RestAPI
       JSON.parse(response.body) rescue response
     end
 
-    def get_fw_version(machine)
-      rest_api(:get, '/redfish/v1/Systems/1/FirmWareInventory/', machine)["Current"]["SystemBMC"][0]["VersionString"]
-    end
-
-    def fw_upgrade(machine,uri)
-      newAction = {"Action"=> "InstallFromURI", "FirmwareURI"=> uri}
-      options = {'body' => newAction}
-      rest_api(:post, '/redfish/v1/Managers/1/UpdateService/', machine, options)
-    end
-
     def apply_license(machine, license_key)
       options = {"LicenseKey"=> license_key}
       binding.pry
