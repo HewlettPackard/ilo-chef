@@ -35,5 +35,31 @@ module ILO_SDK
       response_handler(response)
       true
     end
+
+    def is_virtual_media_inserted?(id)
+      response = rest_get('/redfish/v1/Managers/1/VirtualMedia/2/')
+      response_handler(response)['Inserted']
+    end
+
+    def insert_virtual_media(id, image)
+      newAction = {
+        "Action" => "InsertVirtualMedia",
+        "Target" => "/Oem/Hp",
+        "Image" => "http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso"
+      }
+      response = rest_post("/redfish/v1/Managers/1/VirtualMedia/#{id}/", body: newAction)
+      response_handler(response)
+      true
+    end
+
+    def eject_virtual_media(id)
+      newAction = {
+        "Action" => "EjectVirtualMedia",
+        "Target" => "/Oem/Hp"
+      }
+      response = rest_post("/redfish/v1/Managers/1/VirtualMedia/#{id}/", body: newAction)
+      response_handler(response)
+      true
+    end
   end
 end
