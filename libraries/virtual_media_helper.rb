@@ -13,7 +13,8 @@ module ILO_SDK
         media[virtual_media['Id']] =
         {
           'Image' => virtual_media['Image'],
-          'MediaTypes' => virtual_media['MediaTypes']
+          'MediaTypes' => virtual_media['MediaTypes'],
+          'BootOnNextServerReset' => virtual_media['Oem']['Hp']['BootOnNextServerReset']
         }
       end
       return media
