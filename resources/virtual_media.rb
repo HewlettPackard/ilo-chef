@@ -1,7 +1,7 @@
 actions :mount
 
 property :ilos, Array, :required => true
-property :iso_uri, String, :required => true
+property :iso_uri, String, :required => true, :regex => /^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso)$/
 property :boot_on_next_server_reset, [TrueClass,FalseClass], :default => false
 
 include ClientHelper
