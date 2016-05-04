@@ -67,17 +67,5 @@ module RestAPI
       binding.pry
       rest_api(:post, '/redfish/v1/Managers/1/LicenseService/1', machine, options )
     end
-
-      def mount_virtual_media(machine, iso_uri, boot_on_next_server_reset)
-        rest_api(:get, '/redfish/v1/Managers/1/VirtualMedia/', machine)["links"]["Member"].each do |vm|
-          virtual_media = rest_api(:get,vm["href"],machine)
-          next if !(virtual_media["MediaTypes"].include?("CD") || virtual_media["MediaTypes"].include?("DVD"))
-          mount = {'Image' =>  iso_uri}
-          mount['Oem'] = {'Hp' =>  {'BootOnNextServerReset' =>  boot_on_next_server_reset}}
-          newAction = mount
-          options = {'body' => newAction}
-          rest_api(:patch,vm["href"],machine,options)
-        end
-      end
   end
 end
