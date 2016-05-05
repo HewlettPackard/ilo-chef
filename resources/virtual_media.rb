@@ -11,7 +11,7 @@ action :insert do
     cur_val = client.get_virtual_media
     cur_val.each do |key, hash|
       if hash['MediaTypes'].include?('CD') || hash['MediaTypes'].include?('DVD')
-        next if client.is_virtual_media_inserted?(key)
+        next if client.virtual_media_inserted?(key)
         converge_by "Insert ilo #{client.host} Virtual Media Image from '#{iso_uri}'" do
           client.insert_virtual_media(key, iso_uri)
         end
@@ -26,7 +26,7 @@ action :eject do
     cur_val = client.get_virtual_media
     cur_val.each do |key, hash|
       if hash['MediaTypes'].include?('CD') || hash['MediaTypes'].include?('DVD')
-        next unless client.is_virtual_media_inserted?(key)
+        next unless client.virtual_media_inserted?(key)
         converge_by "Eject ilo #{client.host} Virtual Media" do
           client.eject_virtual_media(key)
         end

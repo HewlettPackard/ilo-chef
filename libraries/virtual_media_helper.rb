@@ -22,7 +22,7 @@ module ILO_SDK
     # Return whether Virtual Media is inserted
     # @raise [RuntimeError] if the request failed
     # @return [TrueClass, FalseClass] inserted
-    def is_virtual_media_inserted?(id)
+    def virtual_media_inserted?(id)
       response = rest_get('/redfish/v1/Managers/1/VirtualMedia/2/')
       response_handler(response)['Inserted']
     end
