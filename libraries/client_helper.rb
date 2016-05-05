@@ -1,4 +1,4 @@
-require_relative 'ilo_sdk'
+require 'ilo-sdk'
 
 module ClientHelper
   # Makes it easy to build a ILO_SDK::Client object
