@@ -5,10 +5,10 @@ property :power_metrics_file, String, :required => true
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include ClientHelper
+include IloHelper
 
 action :get do
-
+  load_sdk(self)
   power_metrics = ""
   ilos.each do |ilo|
     client = build_client(ilo)

@@ -6,9 +6,10 @@ property :dump_file, String, :required => true
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include ClientHelper
+include IloHelper
 
 action :dump do
+  load_sdk(self)
   dumpContent = {}
   ilos.each do |ilo|
     client = build_client(ilo)

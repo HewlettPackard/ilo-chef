@@ -2,9 +2,10 @@ actions :poweron, :poweroff, :resetsys, :resetilo
 
 property :ilos, Array, :required => true
 
-include ClientHelper
+include IloHelper
 
 action :poweron do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_power_state
@@ -16,6 +17,7 @@ action :poweron do
 end
 
 action :poweroff do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_power_state
@@ -28,6 +30,7 @@ end
 
 
 action :resetsys do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     converge_by "Set ilo #{client.host} power ForceRestart" do
@@ -37,6 +40,7 @@ action :resetsys do
 end
 
 action :resetilo do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     converge_by "Set ilo #{client.host} power Reset" do

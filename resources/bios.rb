@@ -15,9 +15,10 @@ property :url_boot_file, String, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*
 property :service_name, String
 property :service_email, String
 
-include ClientHelper
+include IloHelper
 
 action :revert do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     converge_by "Revert ilo #{client.host} bios and reset server" do
@@ -28,6 +29,7 @@ action :revert do
 end
 
 action :uefi_shell_startup do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_uefi_shell_startup
@@ -44,6 +46,7 @@ action :uefi_shell_startup do
 end
 
 action :set_dhcp do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_bios_dhcp
@@ -63,6 +66,7 @@ action :set_dhcp do
 end
 
 action :set_url_boot_file do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_url_boot_file
@@ -75,6 +79,7 @@ action :set_url_boot_file do
 end
 
 action :set_bios_service do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_bios_service

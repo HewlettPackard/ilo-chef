@@ -8,9 +8,10 @@ property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 property :duration, Integer, :default => 24
 
-include ClientHelper
+include IloHelper
 
 action :clear do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     next if client.logs_empty?(log_type)
@@ -21,6 +22,7 @@ action :clear do
 end
 
 action :dump do
+  load_sdk(self)
   dumpContent = {}
   ilos.each do |ilo|
     client = build_client(ilo)
