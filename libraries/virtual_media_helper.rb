@@ -35,7 +35,7 @@ module ILO_SDK
       newAction = {
         "Action" => "InsertVirtualMedia",
         "Target" => "/Oem/Hp",
-        "Image" => "http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso"
+        "Image" => image
       }
       response = rest_post("/redfish/v1/Managers/1/VirtualMedia/#{id}/", body: newAction)
       response_handler(response)
