@@ -7,9 +7,10 @@ property :boot_target, String
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include ClientHelper
+include IloHelper
 
 action :dump do
+  load_sdk(self)
   dumpContent = ""
   ilos.each do |ilo|
     client = build_client(ilo)
@@ -23,6 +24,7 @@ action :dump do
 end
 
 action :set do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_boot_order
@@ -34,6 +36,7 @@ action :set do
 end
 
 action :set_temporary do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_temporary_boot_order
@@ -45,6 +48,7 @@ action :set_temporary do
 end
 
 action :revert do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_boot_order_baseconfig

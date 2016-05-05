@@ -6,9 +6,10 @@ property :data_bag, String
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include ClientHelper
+include IloHelper
 
 action :dump do
+  load_sdk(self)
   raise 'Please specify dump_file or data_bag!' unless dump_file || data_bag
   dumpContent = {}
   ilos.each do |ilo|

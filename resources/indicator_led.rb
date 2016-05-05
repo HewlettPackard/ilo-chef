@@ -3,9 +3,10 @@ actions :set
 property :ilos, Array, :required => true
 property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', :Lit, :Off]
 
-include ClientHelper
+include IloHelper
 
 action :set do
+  load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_indicator_led
