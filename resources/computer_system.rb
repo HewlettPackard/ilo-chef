@@ -7,10 +7,10 @@ property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', 
 include IloHelper
 
 action :set do
+  raise "Please provide an asset_tag and/or led_state!" unless asset_tag || led_state
   load_sdk(self)
   ilos.each do |ilo|
     client = build_client(ilo)
-    raise "Please provide an asset_tag and/or led_state!" unless asset_tag || led_state
     cur_val_asset_tag = client.get_asset_tag
     cur_val_indicator_led = client.get_indicator_led
     unless cur_val_asset_tag == asset_tag
