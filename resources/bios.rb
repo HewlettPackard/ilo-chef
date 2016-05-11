@@ -30,7 +30,7 @@ action :revert do
     cur_val = client.get_bios_baseconfig
     next if cur_val == 'default'
     converge_by "Reverting ilo #{ilo} to default bios base configuration" do
-      client.revert_boot_order
+      client.revert_bios
     end
   end
 end
@@ -81,34 +81,34 @@ action :set do
     }
     configs.each do |key, value|
       next if value['current'] == value['new']
-      next if value['current'] == nil
-      if key == 'uefi_shell_startup' do
+      next if value['new'] == nil
+      if key == 'uefi_shell_startup'
         converge_by "" do
           client.set_uefi_shell_startup(uefi_shell_startup, uefi_shell_startup_location, uefi_shell_startup_url)
         end
       end
-      if key == 'bios_dhcp' do
+      if key == 'bios_dhcp'
         converge_by "Set ilo #{client.host} Bios DHCP from '#{value['current']}' to '#{value['new']}'" do
           client.set_bios_dhcp(dhcpv4, ipv4_address, ipv4_gateway, ipv4_primary_dns, ipv4_secondary_dns, ipv4_subnet_mask) if dhcpv4 == "Disabled"
           client.set_bios_dhcp(dhcpv4) if dhcpv4 == 'Enabled'
         end
       end
-      if key == 'url_boot_file' do
+      if key == 'url_boot_file'
         converge_by "Set ilo #{client.host} URL Boot File from '#{value['current']}' to '#{value['new']}'" do
           client.set_url_boot_file(url_boot_file)
         end
       end
-      if key == 'bios_service' do
+      if key == 'bios_service'
         converge_by "Set ilo #{client.host} Bios Service from '#{value['current']}' to '#{value['new']}'" do
           client.set_bios_service(service_name, service_email)
         end
       end
-      if key == 'boot_order' do
+      if key == 'boot_order'
         converge_by "Set ilo #{client.host} Boot Order from '#{value['current']}' to '#{value['new']}'" do
           client.set_boot_order(boot_order)
         end
       end
-      if key == 'temporary_boot_order' do
+      if key == 'temporary_boot_order'
         converge_by "Set ilo #{client.host} Temporary Boot Order from '#{value['current']}' to '#{value['new']}'" do
           client.set_temporary_boot_order(boot_target)
         end
