@@ -5,10 +5,12 @@ property :time_zone, String
 property :ntp_servers, Array
 property :value, [TrueClass, FalseClass], :required => true
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :set do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_time_zone
@@ -20,7 +22,7 @@ action :set do
 end
 
 action :set_ntp do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_ntp
@@ -32,7 +34,7 @@ action :set_ntp do
 end
 
 action :set_ntp_servers do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_ntp_servers

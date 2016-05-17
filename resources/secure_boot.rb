@@ -3,12 +3,14 @@ actions :secure_boot
 property :ilos, Array, :required => true
 property :enable, [TrueClass, FalseClass], default: false
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 #The Unified Extensible Firmware Interface (UEFI) provides a higher level of security by protecting against unauthorized Operating Systems
 # and malware rootkit attacks, validating that only authenticated ROMs, pre-boot applications, and OS boot loaders that have been
 # digitally signed are run.
 action :secure_boot do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_uefi_secure_boot

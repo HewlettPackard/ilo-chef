@@ -4,10 +4,12 @@ property :ilos, Array, :required => true
 property :username, String
 property :password, String
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :create do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_users = client.get_users
@@ -19,7 +21,7 @@ action :create do
 end
 
 action :delete do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_users = client.get_users
@@ -31,7 +33,7 @@ action :delete do
 end
 
 action :changePassword do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_users = client.get_users

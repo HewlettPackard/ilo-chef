@@ -3,10 +3,12 @@ actions :set
 property :ilos, Array, :required => true
 property :timeout, Fixnum, :equal_to => [15, 30, 60, 120, 0]
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :set do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_timeout

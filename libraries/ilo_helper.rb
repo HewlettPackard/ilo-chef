@@ -2,13 +2,13 @@ require 'ilo-sdk'
 
 module IloHelper
   # Load (and install if necessary) the ilo-sdk
-  def load_sdk(context)
+  def load_sdk
     gem 'ilo-sdk', node['ilo']['ruby_sdk_version']
     require 'ilo-sdk'
     Chef::Log.debug("Found gem ilo-sdk (version #{node['ilo']['ruby_sdk_version']})")
   rescue LoadError
     Chef::Log.info("Did not find gem ilo-sdk (version #{node['ilo']['ruby_sdk_version']}). Installing now")
-    context.chef_gem 'ilo-sdk' do
+    chef_gem 'ilo-sdk' do
       version node['ilo']['ruby_sdk_version']
       compile_time true if Chef::Resource::ChefGem.method_defined?(:compile_time)
     end

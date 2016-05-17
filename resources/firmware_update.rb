@@ -4,10 +4,12 @@ property :ilos, Array, :required => true
 property :fw_uri, String, :required => true
 property :fw_version, Float, :required => true
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :upgrade do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_fw_version.split(" ").first.to_f
