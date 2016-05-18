@@ -4,11 +4,13 @@ property :ilos, Array
 property :asset_tag, String
 property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', :Lit, :Off], :required => true
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :set do
   raise "Please provide an asset_tag and/or led_state!" unless asset_tag || led_state
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val_asset_tag = client.get_asset_tag

@@ -3,10 +3,12 @@ actions :mount, :insert, :eject
 property :ilos, Array, :required => true
 property :iso_uri, String, :required => true, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w:]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso)$/
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :insert do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_virtual_media
@@ -22,7 +24,7 @@ action :insert do
 end
 
 action :eject do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_virtual_media

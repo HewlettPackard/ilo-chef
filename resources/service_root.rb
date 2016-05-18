@@ -8,13 +8,15 @@ property :registry_file, String
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :dump do
   raise "Please provide a schema_file and/or registry_file!" unless schema_file || registry_file
   raise "Please provide a schema_prefix" if schema_file && !schema_prefix
   raise "Please provide a registry_prefix" if registry_file && !registry_prefix
-  load_sdk(self)
+  load_sdk
   schemaContent = {}
   registryContent = {}
   ilos.each do |ilo|

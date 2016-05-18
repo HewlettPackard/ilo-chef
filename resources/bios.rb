@@ -21,10 +21,12 @@ property :boot_target, String
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :revert do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_val = client.get_bios_baseconfig
@@ -36,7 +38,7 @@ action :revert do
 end
 
 action :set do
-  load_sdk(self)
+  load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)
     configs = {
@@ -118,7 +120,7 @@ action :set do
 end
 
 action :dump do
-  load_sdk(self)
+  load_sdk
   dumpContent = ""
   ilos.each do |ilo|
     client = build_client(ilo)

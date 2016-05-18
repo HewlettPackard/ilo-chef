@@ -6,11 +6,13 @@ property :thermal_metrics_file, String
 property :owner, [String, Integer], default: node['current_user']
 property :group, [String, Integer], default: node['current_user']
 
-include IloHelper
+action_class do
+  include IloHelper
+end
 
 action :dump do
   raise "Please provide a power_metrics_file and/or thermal_metrics_file!" unless power_metrics_file || thermal_metrics_file
-  load_sdk(self)
+  load_sdk
   power_metrics = ""
   thermal_metrics = ""
   ilos.each do |ilo|
