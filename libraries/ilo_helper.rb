@@ -1,5 +1,3 @@
-require 'ilo-sdk'
-
 module IloHelper
   # Load (and install if necessary) the ilo-sdk
   def load_sdk

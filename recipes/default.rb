@@ -158,11 +158,10 @@
  #   action :get
  # end
 
- iLO_boot_order 'change to new boot order' do
-   ilo_name 'ILO-02'
-   new_boot_order ["File.URL.1.1","HD.Emb.1.2", "Generic.USB.1.1","HD.Emb.1.1","NIC.LOM.1.1.IPv4","NIC.LOM.1.1.IPv6"]
-   action :change
- end
+ #iLO_boot_order 'change to new boot order' do   ilo_name 'ILO-02'
+   #new_boot_order ["File.URL.1.1","HD.Emb.1.2", "Generic.USB.1.1","HD.Emb.1.1","NIC.LOM.1.1.IPv4","NIC.LOM.1.1.IPv6"]
+  # action :change
+ #end
  #
   # iLO_powermgmt 'resetsys' do
   #   ilo_names ['ILO-01']
