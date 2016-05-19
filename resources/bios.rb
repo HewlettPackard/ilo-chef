@@ -124,7 +124,8 @@ action :dump do
   dumpContent = ""
   ilos.each do |ilo|
     client = build_client(ilo)
-    dumpContent = dumpContent + client.get_all_boot_order.to_yaml + "\n"
+    boot_order = {client.host => client.get_boot_order}
+    dumpContent = dumpContent + boot_order.to_yaml + "\n"
   end
   file dump_file do
     owner owner
