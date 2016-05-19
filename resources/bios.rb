@@ -1,6 +1,6 @@
 require 'resolv'
 
-actions :revert, :set, :dump
+actions :revert, :set
 
 property :ilos, Array, :required => true
 property :uefi_shell_startup, String, :equal_to => ['Enabled', 'Disabled']
@@ -15,11 +15,6 @@ property :ipv4_subnet_mask, String, :regex => Resolv::IPv4::Regex
 property :url_boot_file, String, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$/
 property :service_name, String
 property :service_email, String
-property :dump_file, String
-property :boot_order, Array
-property :boot_target, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
 
 action_class do
   include IloHelper
@@ -71,14 +66,6 @@ action :set do
           'ServiceName' => service_name,
           'ServiceEmail' => service_email
         }
-      },
-      'boot_order' => {
-        'current' => client.get_boot_order,
-        'new' => boot_order
-      },
-      'temporary_boot_order' => {
-        'current' => client.get_temporary_boot_order,
-        'new' => boot_target
       }
     }
     configs.each do |key, value|
@@ -105,31 +92,6 @@ action :set do
           client.set_bios_service(service_name, service_email)
         end
       end
-      if key == 'boot_order'
-        converge_by "Set ilo #{client.host} Boot Order from '#{value['current']}' to '#{value['new']}'" do
-          client.set_boot_order(boot_order)
-        end
-      end
-      if key == 'temporary_boot_order'
-        converge_by "Set ilo #{client.host} Temporary Boot Order from '#{value['current']}' to '#{value['new']}'" do
-          client.set_temporary_boot_order(boot_target)
-        end
-      end
     end
-  end
-end
-
-action :dump do
-  load_sdk
-  dumpContent = ""
-  ilos.each do |ilo|
-    client = build_client(ilo)
-    boot_order = {client.host => client.get_boot_order}
-    dumpContent = dumpContent + boot_order.to_yaml + "\n"
-  end
-  file dump_file do
-    owner owner
-    group group
-    content dumpContent
   end
 end
