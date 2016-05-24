@@ -3,7 +3,7 @@ actions :set
 property :ilos, Array, :required => true
 property :time_zone, String
 property :ntp_servers, Array
-property :use_ntp, [TrueClass, FalseClass], :required => true
+property :use_ntp, [TrueClass, FalseClass]
 
 action_class do
   include IloHelper

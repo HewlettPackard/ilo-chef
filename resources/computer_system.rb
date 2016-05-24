@@ -2,7 +2,7 @@ actions :set
 
 property :ilos, Array
 property :asset_tag, String
-property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', :Lit, :Off], :required => true
+property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', :Lit, :Off]
 
 action_class do
   include IloHelper
