@@ -1,6 +1,6 @@
 # iLO
 
-Enables interraction with HPE iLO APIs.
+Enables interaction with HPE iLO APIs.
 
 ### Requirements
  - Chef 12+
