@@ -2,17 +2,17 @@ require 'resolv'
 
 actions :revert, :set
 
-property :ilos, Array, :required => true
-property :uefi_shell_startup, String, :equal_to => ['Enabled', 'Disabled']
-property :uefi_shell_startup_location, String, :equal_to => ['Auto', 'NetworkLocation', 'AttachedMedia']
-property :uefi_shell_startup_url, String, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.nsh)$/
-property :dhcpv4, String, :equal_to => ['Enabled', 'Disabled']
-property :ipv4_address, String, :regex => Resolv::IPv4::Regex
-property :ipv4_gateway, String, :regex => Resolv::IPv4::Regex
-property :ipv4_primary_dns, String, :regex => Resolv::IPv4::Regex
-property :ipv4_secondary_dns, String, :regex => Resolv::IPv4::Regex
-property :ipv4_subnet_mask, String, :regex => Resolv::IPv4::Regex
-property :url_boot_file, String, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$/
+property :ilos, Array, required: true
+property :uefi_shell_startup, String, equal_to: ['Enabled', 'Disabled']
+property :uefi_shell_startup_location, String, equal_to: ['Auto', 'NetworkLocation', 'AttachedMedia']
+property :uefi_shell_startup_url, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.nsh)$}
+property :dhcpv4, String, equal_to: ['Enabled', 'Disabled']
+property :ipv4_address, String, regex: Resolv::IPv4::Regex
+property :ipv4_gateway, String, regex: Resolv::IPv4::Regex
+property :ipv4_primary_dns, String, regex: Resolv::IPv4::Regex
+property :ipv4_secondary_dns, String, regex: Resolv::IPv4::Regex
+property :ipv4_subnet_mask, String, regex: Resolv::IPv4::Regex
+property :url_boot_file, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$}
 property :service_name, String
 property :service_email, String
 
@@ -70,15 +70,15 @@ action :set do
     }
     configs.each do |key, value|
       next if value['current'] == value['new']
-      next if value['new'] == nil
+      next if value['new'].nil?
       if key == 'uefi_shell_startup'
-        converge_by "" do
+        converge_by "Set ilo #{client.host} UEFI Shell Startup from '#{value['current']}' to '#{value['new']}'" do
           client.set_uefi_shell_startup(uefi_shell_startup, uefi_shell_startup_location, uefi_shell_startup_url)
         end
       end
       if key == 'bios_dhcp'
         converge_by "Set ilo #{client.host} Bios DHCP from '#{value['current']}' to '#{value['new']}'" do
-          client.set_bios_dhcp(dhcpv4, ipv4_address, ipv4_gateway, ipv4_primary_dns, ipv4_secondary_dns, ipv4_subnet_mask) if dhcpv4 == "Disabled"
+          client.set_bios_dhcp(dhcpv4, ipv4_address, ipv4_gateway, ipv4_primary_dns, ipv4_secondary_dns, ipv4_subnet_mask) if dhcpv4 == 'Disabled'
           client.set_bios_dhcp(dhcpv4) if dhcpv4 == 'Enabled'
         end
       end

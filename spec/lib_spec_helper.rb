@@ -1,7 +1,5 @@
 require 'chefspec' # TODO: Remove
-require_relative '../libraries/client'
-require_relative '../libraries/client_helper'
-require_relative 'support/fake_response'
+require_relative '../libraries/ilo_helper'
 require 'pry'
 
 # General context for unit testing:

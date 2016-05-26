@@ -1,3 +1,4 @@
+# Module to load the ilo-ruby-sdk gem and build the client object
 module IloHelper
   # Load (and install if necessary) the ilo-sdk
   def load_sdk

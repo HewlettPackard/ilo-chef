@@ -21,3 +21,6 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
+
+# Test recipes
+recipes/*_test.rb

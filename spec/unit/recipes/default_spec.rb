@@ -6,7 +6,7 @@
 
 require 'spec_helper'
 
-describe 'iLORestCookbook::default' do
+describe 'iLO::default' do
 
   context 'When all attributes are default, on an unspecified platform' do
 

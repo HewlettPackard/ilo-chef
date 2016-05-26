@@ -1,6 +1,6 @@
 actions :create, :delete, :changePassword
 
-property :ilos, Array, :required => true
+property :ilos, Array, required: true
 property :username, String
 property :password, String
 
@@ -25,7 +25,7 @@ action :delete do
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_users = client.get_users
-    next if not cur_users.include? username
+    next unless cur_users.include? username
     converge_by "Delete user #{username} on ilo #{client.host}'" do
       client.delete_user(username)
     end
@@ -37,7 +37,7 @@ action :changePassword do
   ilos.each do |ilo|
     client = build_client(ilo)
     cur_users = client.get_users
-    next if not cur_users.include? username
+    next unless cur_users.include? username
     converge_by "Change password for user #{username} on ilo #{client.host}" do
       client.change_password(username, password)
     end
