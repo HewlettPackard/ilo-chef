@@ -4,7 +4,7 @@ action_class do
   include IloHelper
 end
 
-property :ilos, Array, :required => true
+property :ilos, Array, required: true
 property :dump_file, String
 property :boot_order, Array
 property :boot_target, String
@@ -39,7 +39,7 @@ action :set do
     }
     configs.each do |key, value|
       next if value['current'] == value['new']
-      next if value['new'] == nil
+      next if value['new'].nil?
       if key == 'boot_order'
         converge_by "Set ilo #{client.host} Boot Order from '#{value['current']}' to '#{value['new']}'" do
           client.set_boot_order(boot_order)
@@ -56,15 +56,15 @@ end
 
 action :dump do
   load_sdk
-  dumpContent = ""
+  dump_content = ''
   ilos.each do |ilo|
     client = build_client(ilo)
-    boot_order = {client.host => client.get_boot_order}
-    dumpContent = dumpContent + boot_order.to_yaml + "\n"
+    boot_order = { client.host => client.get_boot_order }
+    dump_content = dump_content + boot_order.to_yaml + "\n"
   end
   file dump_file do
     owner owner
     group group
-    content dumpContent
+    content dump_content
   end
 end

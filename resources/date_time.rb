@@ -1,6 +1,6 @@
 actions :set
 
-property :ilos, Array, :required => true
+property :ilos, Array, required: true
 property :time_zone, String
 property :ntp_servers, Array
 property :use_ntp, [TrueClass, FalseClass]
@@ -16,21 +16,21 @@ action :set do
     if time_zone
       cur_val = client.get_time_zone
       next if cur_val == time_zone
-      converge_by "Set ilo #{client.host} time zone from '#{cur_val.to_s}' to '#{time_zone.to_s}'" do
+      converge_by "Set ilo #{client.host} time zone from '#{cur_val}' to '#{time_zone}'" do
         client.set_time_zone(time_zone)
       end
     end
     if ntp_servers
       cur_val = client.get_ntp
       next if cur_val == use_ntp
-      converge_by "Set ilo #{client.host} NTP use from '#{cur_val.to_s}' to '#{use_ntp.to_s}'" do
+      converge_by "Set ilo #{client.host} NTP use from '#{cur_val}' to '#{use_ntp}'" do
         client.set_ntp(use_ntp)
       end
     end
     if use_ntp
       cur_val = client.get_ntp_servers
       next if cur_val == ntp_servers
-      converge_by "Set ilo #{client.host} NTP Servers from '#{cur_val.to_s}' to '#{ntp_servers.to_s}'" do
+      converge_by "Set ilo #{client.host} NTP Servers from '#{cur_val}' to '#{ntp_servers}'" do
         client.set_ntp_servers(ntp_servers)
       end
     end

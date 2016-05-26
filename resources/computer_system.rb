@@ -9,7 +9,7 @@ action_class do
 end
 
 action :set do
-  raise "Please provide an asset_tag and/or led_state!" unless asset_tag || led_state
+  raise 'Please provide an asset_tag and/or led_state!' unless asset_tag || led_state
   load_sdk
   ilos.each do |ilo|
     client = build_client(ilo)

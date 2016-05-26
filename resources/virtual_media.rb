@@ -1,7 +1,7 @@
 actions :insert, :eject
 
-property :ilos, Array, :required => true
-property :iso_uri, String, :required => true, :regex => /^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w:]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso)$/
+property :ilos, Array, required: true
+property :iso_uri, String, required: true, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w:]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso)$}
 
 action_class do
   include IloHelper

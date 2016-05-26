@@ -1,6 +1,6 @@
 actions :dump
 
-property :ilos, Array, :required => true
+property :ilos, Array, required: true
 property :power_metrics_file, String
 property :thermal_metrics_file, String
 property :owner, [String, Integer], default: node['current_user']
@@ -11,10 +11,10 @@ action_class do
 end
 
 action :dump do
-  raise "Please provide a power_metrics_file and/or thermal_metrics_file!" unless power_metrics_file || thermal_metrics_file
+  raise 'Please provide a power_metrics_file and/or thermal_metrics_file!' unless power_metrics_file || thermal_metrics_file
   load_sdk
-  power_metrics = ""
-  thermal_metrics = ""
+  power_metrics = ''
+  thermal_metrics = ''
   ilos.each do |ilo|
     client = build_client(ilo)
     power_metrics = power_metrics + client.get_power_metrics.to_yaml + "\n" if power_metrics_file
