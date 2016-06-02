@@ -230,7 +230,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   iLO_date_time 'use NTP' do
     ilos [ilo1, ilo2]
-    value true
+    use_ntp true
     action :set_ntp
   end
   ```
@@ -376,7 +376,7 @@ The following resources are available for usage in your recipes:
 ### iLO_snmp_service
 
  - **Configure SNMP service:**
- 
+
   ```ruby
   iLO_snmp_service 'set snmp mode and turn alerts on' do
     ilos [ilo1, ilo2]
@@ -390,7 +390,7 @@ The following resources are available for usage in your recipes:
 ### iLO_virtual_media
 
  - **Insert virtual media:**
- 
+
   ```ruby
   iLO_virtual_media 'insert virtual media' do
     ilos [ilo1, ilo2]
@@ -400,7 +400,7 @@ The following resources are available for usage in your recipes:
   ```
 
  - **Eject virtual media:**
- 
+
   ```ruby
   iLO_virtual_media 'eject virtual media' do
     ilos [ilo1, ilo2]
