@@ -13,7 +13,7 @@ Use it by creating a new cookbook and specifying a dependency on this cookbook.
 ```ruby
 # my_cookbook/metadata.rb
 ...
-depends 'iLO'
+depends 'ilo'
 ```
 
 Now you can use the resources this cookbook provides. See below for some examples.
@@ -58,12 +58,12 @@ ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
 # iLO Resources
 The following resources are available for usage in your recipes:
 
-### iLO_account_service
+### ilo_account_service
 
  - **Create User:**
 
   ```ruby
-  iLO_account_service 'user create' do
+  ilo_account_service 'user create' do
     ilos [ilo1, ilo2]
     username 'test'
     password 'password123'
@@ -74,7 +74,7 @@ The following resources are available for usage in your recipes:
  - **Delete User:**
 
   ```ruby
-  iLO_account_service 'user delete' do
+  ilo_account_service 'user delete' do
     ilos [ilo1, ilo2]
     username 'test'
     action :delete
@@ -84,7 +84,7 @@ The following resources are available for usage in your recipes:
  - **Update User Password:**
 
   ```ruby
-  iLO_account_service 'update user password' do
+  ilo_account_service 'update user password' do
     ilos [ilo1, ilo2]
     username 'test'
     password 'newpassword123'
@@ -93,12 +93,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_bios
+### ilo_bios
 
  - **Revert to default BIOS base configuration:**
 
   ```ruby
-  iLO_bios 'revert BIOS' do
+  ilo_bios 'revert BIOS' do
     ilos [ilo1, ilo2]
     action :revert
   end
@@ -107,7 +107,7 @@ The following resources are available for usage in your recipes:
  - **Set BIOS configuration:**
 
   ```ruby
-  iLO_bios 'set BIOS configuration' do
+  ilo_bios 'set BIOS configuration' do
     ilos [ilo1, ilo2]
     uefi_shell_startup 'Enabled'
     uefi_shell_startup_location 'Auto'
@@ -126,12 +126,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_boot_settings
+### ilo_boot_settings
 
  - **Revert to default Boot base configuration:**
 
   ```ruby
-  iLO_boot_settings 'revert boot' do
+  ilo_boot_settings 'revert boot' do
     ilos [ilo1, ilo2]
     action :revert
   end
@@ -140,7 +140,7 @@ The following resources are available for usage in your recipes:
  - **Set boot configuration:**
 
   ```ruby
-  iLO_boot_settings 'set boot configuration' do
+  ilo_boot_settings 'set boot configuration' do
     ilos [ilo1, ilo2]
     boot_order [
       "FD.Virtual.1.1",
@@ -158,7 +158,7 @@ The following resources are available for usage in your recipes:
  - **Dump the boot configuration to a file:**
 
   ```ruby
-  iLO_boot_settings 'dump boot configuration' do
+  ilo_boot_settings 'dump boot configuration' do
     ilos [ilo1, ilo2]
     owner 'JohnDoe'
     group 'Administrators'
@@ -167,12 +167,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_chassis
+### ilo_chassis
 
  - **Dump power metrics and thermal metrics information to a file:**
 
   ```ruby
-  iLO_chassis 'dump power metrics and thermal metrics' do
+  ilo_chassis 'dump power metrics and thermal metrics' do
     ilos [ilo1, ilo2]
     power_metrics_file 'power_metrics.txt'
     thermal_metrics_file 'thermal_metrics.txt'
@@ -183,12 +183,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_computer_details
+### ilo_computer_details
 
  - **Dump computer details to a file and data bag:**
 
   ```ruby
-  iLO_computer_details 'dump computer details' do
+  ilo_computer_details 'dump computer details' do
     ilos [ilo1, ilo2]
     dump_file 'computer_details.txt'
     data_bag 'computer_details_bag'
@@ -199,12 +199,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_computer_system
+### ilo_computer_system
 
  - **Set computer system information:**
 
   ```ruby
-  iLO_computer_system 'set computer system info' do
+  ilo_computer_system 'set computer system info' do
     ilos [ilo1, ilo2]
     asset_tag 'HPE001'
     led_state 'Lit'
@@ -213,12 +213,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_date_time
+### ilo_date_time
 
  - **Set the time zone:**
 
   ```ruby
-  iLO_date_time 'set time zone' do
+  ilo_date_time 'set time zone' do
     ilos [ilo1, ilo2]
     time_zone 'Africa/Abidjan'
     action :set
@@ -228,7 +228,7 @@ The following resources are available for usage in your recipes:
  - **Set whether or not to use NTP:**
 
   ```ruby
-  iLO_date_time 'use NTP' do
+  ilo_date_time 'use NTP' do
     ilos [ilo1, ilo2]
     use_ntp true
     action :set_ntp
@@ -238,7 +238,7 @@ The following resources are available for usage in your recipes:
  - **Set the NTP servers:**
 
   ```ruby
-  iLO_date_time 'set NTP servers' do
+  ilo_date_time 'set NTP servers' do
     ilos [ilo1, ilo2]
     ntp_servers [
       "10.168.0.2",
@@ -249,12 +249,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_firmware_update
+### ilo_firmware_update
 
  - **Upgrade firmware:**
 
   ```ruby
-  iLO_date_time 'upgrade firmware' do
+  ilo_date_time 'upgrade firmware' do
     ilos [ilo1, ilo2]
     fw_version '2.5'
     fw_uri 'www.firmwareuri.com'
@@ -263,12 +263,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_log_entry
+### ilo_log_entry
 
  - **Dump log entries to a file:**
 
   ```ruby
-  iLO_log_entry 'dump log entries' do
+  ilo_log_entry 'dump log entries' do
     ilos [ilo1, ilo2]
     log_type 'IEL'
     dump_file 'IEL_logs.txt'
@@ -282,7 +282,7 @@ The following resources are available for usage in your recipes:
  - **Clear log entries:**
 
   ```ruby
-  iLO_log_entry 'clear log entries' do
+  ilo_log_entry 'clear log entries' do
     ilos [ilo1, ilo2]
     log_type 'IEL'
     action :clear
@@ -290,12 +290,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_manager_network_protocol
+### ilo_manager_network_protocol
 
- - **Set iLO session timeout:**
+ - **Set ilo session timeout:**
 
   ```ruby
-  iLO_manager_network_protocol 'set timeout' do
+  ilo_manager_network_protocol 'set timeout' do
     ilos [ilo1, ilo2]
     timeout 60 # minutes
     action :set
@@ -303,12 +303,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_power
+### ilo_power
 
  - **Power on the system:**
 
   ```ruby
-  iLO_power 'power on' do
+  ilo_power 'power on' do
     ilos [ilo1, ilo2]
     action :poweron
   end
@@ -317,7 +317,7 @@ The following resources are available for usage in your recipes:
  - **Power off the system:**
 
   ```ruby
-  iLO_power 'power off' do
+  ilo_power 'power off' do
     ilos [ilo1, ilo2]
     action :poweroff
   end
@@ -326,28 +326,28 @@ The following resources are available for usage in your recipes:
  - **Reset the system:**
 
   ```ruby
-  iLO_power 'reset system' do
+  ilo_power 'reset system' do
     ilos [ilo1, ilo2]
     action :resetsys
   end
   ```
 
- - **Reset iLO:**
+ - **Reset ilo:**
 
   ```ruby
-  iLO_power 'reset iLO' do
+  ilo_power 'reset ilo' do
     ilos [ilo1, ilo2]
     action :resetilo
   end
   ```
 
 
-### iLO_secure_boot
+### ilo_secure_boot
 
  - **Set whether or not to enable UEFI secure boot:**
 
   ```ruby
-  iLO_secure_boot 'enable secure boot' do
+  ilo_secure_boot 'enable secure boot' do
     ilos [ilo1, ilo2]
     enable true
     action :secure_boot
@@ -355,12 +355,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_service_root
+### ilo_service_root
 
  - **Dump schema and registry information to a file:**
 
   ```ruby
-  iLO_service_root 'dump schema and registry' do
+  ilo_service_root 'dump schema and registry' do
     ilos [ilo1, ilo2]
     schema_prefix 'Account'
     schema_file 'schema.txt'
@@ -373,12 +373,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_snmp_service
+### ilo_snmp_service
 
  - **Configure SNMP service:**
 
   ```ruby
-  iLO_snmp_service 'set snmp mode and turn alerts on' do
+  ilo_snmp_service 'set snmp mode and turn alerts on' do
     ilos [ilo1, ilo2]
     snmp_mode 'Agentless'
     snmp_alerts true
@@ -387,12 +387,12 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### iLO_virtual_media
+### ilo_virtual_media
 
  - **Insert virtual media:**
 
   ```ruby
-  iLO_virtual_media 'insert virtual media' do
+  ilo_virtual_media 'insert virtual media' do
     ilos [ilo1, ilo2]
     iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
     action :insert
@@ -402,7 +402,7 @@ The following resources are available for usage in your recipes:
  - **Eject virtual media:**
 
   ```ruby
-  iLO_virtual_media 'eject virtual media' do
+  ilo_virtual_media 'eject virtual media' do
     ilos [ilo1, ilo2]
     action :eject
   end
