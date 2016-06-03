@@ -5,14 +5,14 @@ actions :revert, :set
 property :ilos, Array, required: true
 property :uefi_shell_startup, String, equal_to: ['Enabled', 'Disabled']
 property :uefi_shell_startup_location, String, equal_to: ['Auto', 'NetworkLocation', 'AttachedMedia']
-property :uefi_shell_startup_url, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.nsh)$}
+property :uefi_shell_startup_url, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.nsh)$}
 property :dhcpv4, String, equal_to: ['Enabled', 'Disabled']
 property :ipv4_address, String, regex: Resolv::IPv4::Regex
 property :ipv4_gateway, String, regex: Resolv::IPv4::Regex
 property :ipv4_primary_dns, String, regex: Resolv::IPv4::Regex
 property :ipv4_secondary_dns, String, regex: Resolv::IPv4::Regex
 property :ipv4_subnet_mask, String, regex: Resolv::IPv4::Regex
-property :url_boot_file, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([-.\w]*[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$}
+property :url_boot_file, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$}
 property :service_name, String
 property :service_email, String
 
