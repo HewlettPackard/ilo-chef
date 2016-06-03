@@ -1,4 +1,4 @@
-name             'iLO'
+name             'ilo'
 maintainer       'The Authors'
 maintainer_email 'you@example.com'
 license          'all_rights'
