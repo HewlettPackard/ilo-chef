@@ -1,4 +1,5 @@
 actions :clear, :dump
+default_action :dump
 
 property :ilos, Array, required: true
 property :log_type, String, required: true, equal_to: ['IEL', 'IML']

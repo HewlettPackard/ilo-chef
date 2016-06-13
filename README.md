@@ -1,14 +1,22 @@
-# iLO
+# iLO Cookbook
 
-Enables interaction with HPE iLO APIs.
+[![Cookbook Version](https://img.shields.io/cookbook/v/ilo.svg)](https://supermarket.chef.io/cookbooks/ilo)
+
+Enables configuration of HPE iLOs via their APIs.
 
 ### Requirements
+
  - Chef 12+
  - iLO 4
 
+### Cookbook Dependencies
+
+ - compat_resource
+
 ### How to use the iLO Cookbook:
+
 This cookbook is not intended to include any recipes.
-Use it by creating a new cookbook and specifying a dependency on this cookbook.
+Use it by specifying a dependency on this cookbook in your own cookbook.
 
 ```ruby
 # my_cookbook/metadata.rb
@@ -19,9 +27,10 @@ depends 'ilo'
 Now you can use the resources this cookbook provides. See below for some examples.
 
 
-# iLO Authentication
+## iLO Authentication
+
 Each of the resources below requires you to pass in the info necessary to connect with the iLO API.
-The basic structure accepted by the `ilos` property is an array of hashes:
+The basic structure accepted by the `ilos` property is an array of hashes (or `ILO_SDK::Client` objects):
 
 ```ruby
 ilos = [
@@ -55,7 +64,8 @@ ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
 ```
 
 
-# iLO Resources
+## iLO Resources
+
 The following resources are available for usage in your recipes:
 
 ### ilo_account_service
@@ -407,3 +417,26 @@ The following resources are available for usage in your recipes:
     action :eject
   end
   ```
+
+
+## Contributing & Feature Requests
+
+**Contributing:** Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
+
+**Feature Requests:** If you have a need that is not met by the current implementation, please let us know (via a new issue).
+This feedback is crucial for us to deliver a useful product. Do not assume we have already thought of everything, because we assure you that is not the case.
+
+### License
+
+This project is licensed under the Apache 2.0 license. Please see [LICENSE](LICENSE) for more info.
+
+### Testing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
+
+## Authors
+
+ - Anirudh Gupta - [@Anirudh-Gupta](https://github.com/Anirudh-Gupta)
+ - Bik Bajwa - [@bikbajwa](https://github.com/bikbajwa)
+ - Jared Smartt - [@jsmartt](https://github.com/jsmartt)
+ - Vivek Bhatia - [@vivekbhatia14] (https://github.com/vivekbhatia14)

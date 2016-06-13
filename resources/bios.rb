@@ -1,6 +1,7 @@
 require 'resolv'
 
 actions :revert, :set
+default_action :set
 
 property :ilos, Array, required: true
 property :uefi_shell_startup, String, equal_to: ['Enabled', 'Disabled']
@@ -71,23 +72,21 @@ action :set do
     configs.each do |key, value|
       next if value['current'] == value['new']
       next if value['new'].nil?
-      if key == 'uefi_shell_startup'
+      case key
+      when 'uefi_shell_startup'
         converge_by "Set ilo #{client.host} UEFI Shell Startup from '#{value['current']}' to '#{value['new']}'" do
           client.set_uefi_shell_startup(uefi_shell_startup, uefi_shell_startup_location, uefi_shell_startup_url)
         end
-      end
-      if key == 'bios_dhcp'
+      when 'bios_dhcp'
         converge_by "Set ilo #{client.host} Bios DHCP from '#{value['current']}' to '#{value['new']}'" do
           client.set_bios_dhcp(dhcpv4, ipv4_address, ipv4_gateway, ipv4_primary_dns, ipv4_secondary_dns, ipv4_subnet_mask) if dhcpv4 == 'Disabled'
           client.set_bios_dhcp(dhcpv4) if dhcpv4 == 'Enabled'
         end
-      end
-      if key == 'url_boot_file'
+      when 'url_boot_file'
         converge_by "Set ilo #{client.host} URL Boot File from '#{value['current']}' to '#{value['new']}'" do
           client.set_url_boot_file(url_boot_file)
         end
-      end
-      if key == 'bios_service'
+      when 'bios_service'
         converge_by "Set ilo #{client.host} Bios Service from '#{value['current']}' to '#{value['new']}'" do
           client.set_bios_service(service_name, service_email)
         end

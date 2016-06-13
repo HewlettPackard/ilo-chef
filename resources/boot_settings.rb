@@ -1,4 +1,5 @@
 actions :revert, :set, :dump
+default_action :set
 
 action_class do
   include IloHelper
@@ -40,12 +41,12 @@ action :set do
     configs.each do |key, value|
       next if value['current'] == value['new']
       next if value['new'].nil?
-      if key == 'boot_order'
+      case key
+      when 'boot_order'
         converge_by "Set ilo #{client.host} Boot Order from '#{value['current']}' to '#{value['new']}'" do
           client.set_boot_order(boot_order)
         end
-      end
-      if key == 'temporary_boot_order'
+      when 'temporary_boot_order'
         converge_by "Set ilo #{client.host} Temporary Boot Order from '#{value['current']}' to '#{value['new']}'" do
           client.set_temporary_boot_order(boot_target)
         end

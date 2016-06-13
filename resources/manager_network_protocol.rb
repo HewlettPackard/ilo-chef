@@ -1,4 +1,5 @@
 actions :set
+default_action :set
 
 property :ilos, Array, required: true
 property :timeout, Fixnum, equal_to: [15, 30, 60, 120, 0]

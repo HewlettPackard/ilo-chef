@@ -1,4 +1,5 @@
 actions :dump
+default_action :dump
 
 property :ilos, Array, required: true
 property :power_metrics_file, String

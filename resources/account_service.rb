@@ -1,4 +1,5 @@
 actions :create, :delete, :changePassword
+default_action :create
 
 property :ilos, Array, required: true
 property :username, String

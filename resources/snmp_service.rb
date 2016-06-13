@@ -1,4 +1,5 @@
 actions :configure
+default_action :configure
 
 property :ilos, Array, required: true
 property :snmp_mode, String, default: 'Agentless', equal_to: ['Agentless', 'Passthru']
