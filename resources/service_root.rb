@@ -1,4 +1,5 @@
-actions  :dump
+actions :dump
+default_action :dump
 
 property :ilos, Array, required: true
 property :schema_prefix, String

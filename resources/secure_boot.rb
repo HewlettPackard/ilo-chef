@@ -1,4 +1,5 @@
 actions :secure_boot
+default_action :secure_boot
 
 property :ilos, Array, required: true
 property :enable, [TrueClass, FalseClass], default: false

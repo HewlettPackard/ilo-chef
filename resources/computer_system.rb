@@ -1,4 +1,5 @@
 actions :set
+default_action :set
 
 property :ilos, Array
 property :asset_tag, String

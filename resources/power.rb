@@ -1,4 +1,5 @@
 actions :poweron, :poweroff, :resetsys, :resetilo
+default_action :poweron
 
 property :ilos, Array, required: true
 

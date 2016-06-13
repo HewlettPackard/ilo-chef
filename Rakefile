@@ -6,9 +6,15 @@ require 'foodcritic'
 
 task default: :test
 
-desc 'Run unit tests only'
+desc 'Run unit tests'
 RSpec::Core::RakeTask.new(:unit) do |spec|
   spec.pattern = 'spec/**/*_spec.rb'
+  spec.rspec_opts = '--color '
+end
+
+desc 'Run unit tests for helper libraries only'
+RSpec::Core::RakeTask.new('unit:libs') do |spec|
+  spec.pattern = 'spec/unit/libraries/**/*_spec.rb'
   spec.rspec_opts = '--color '
 end
 
