@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.1
+  - 2.2
+
+before_script:
+- eval "$(/opt/chefdk/bin/chef shell-init bash)"
+
+script:
+  - rake test
