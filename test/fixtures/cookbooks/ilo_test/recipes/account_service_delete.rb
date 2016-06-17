@@ -5,6 +5,7 @@ ilo =
     password: 'admin123',
     ssl_enabled: false
   }
+  
 ilo_account_service 'delete test account' do
   ilos [ilo]
   username 'test'
