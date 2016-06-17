@@ -34,7 +34,6 @@ describe 'ilo_test::account_service_changePassword' do
 
   it 'does not change test account password' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['user1', 'user2'])
-    expect_any_instance_of(ILO_SDK::Client).to receive(:change_password).with('test', 'newtest123').and_return(true)
     expect(real_chef_run).to changePassword_ilo_account_service('change test account password')
   end
 end
