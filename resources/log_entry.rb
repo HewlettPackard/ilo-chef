@@ -5,8 +5,8 @@ property :ilos, Array, required: true
 property :log_type, String, required: true, equal_to: ['IEL', 'IML']
 property :severity_level, String, equal_to: ['OK', 'Warning', 'Critical']
 property :dump_file, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
+property :owner, [String, Integer]#, default: node['current_user']
+property :group, [String, Integer]#, default: node['current_user']
 property :duration, Integer, default: 24
 
 action_class do

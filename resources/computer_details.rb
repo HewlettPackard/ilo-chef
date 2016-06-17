@@ -4,8 +4,8 @@ default_action :dump
 property :ilos, Array, required: true
 property :dump_file, String
 property :data_bag, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
+property :owner, [String, Integer]#, default: node['current_user']
+property :group, [String, Integer]#, default: node['current_user']
 
 action_class do
   include IloHelper

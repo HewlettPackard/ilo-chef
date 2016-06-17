@@ -9,8 +9,8 @@ property :ilos, Array, required: true
 property :dump_file, String
 property :boot_order, Array
 property :boot_target, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
+property :owner, [String, Integer]#, default: node['current_user']
+property :group, [String, Integer]#, default: node['current_user']
 
 action :revert do
   load_sdk

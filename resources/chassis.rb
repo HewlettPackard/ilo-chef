@@ -4,8 +4,8 @@ default_action :dump
 property :ilos, Array, required: true
 property :power_metrics_file, String
 property :thermal_metrics_file, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
+property :owner, [String, Integer]#, default: node['current_user']
+property :group, [String, Integer]#, default: node['current_user']
 
 action_class do
   include IloHelper
