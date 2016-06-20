@@ -7,6 +7,7 @@ if defined?(ChefSpec)
     ilo_boot_settings:            [:revert, :set, :dump],
     ilo_chassis:                  [:dump],
     ilo_computer_details:         [:dump],
+    ilo_computer_system:          [:set],
     ilo_date_time:                [:set],
     ilo_firmware_update:          [:upgrade],
     ilo_log_entry:                [:clear, :dump],
