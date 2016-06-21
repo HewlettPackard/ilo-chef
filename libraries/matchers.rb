@@ -12,7 +12,7 @@ if defined?(ChefSpec)
     ilo_log_entry:                [:clear, :dump],
     ilo_manager_network_protocol: [:set],
     ilo_power:                    [:poweron, :poweroff, :resetsys, :resetilo],
-    ilo_secure_boot:              [:secure_boot],
+    ilo_secure_boot:              [:set],
     ilo_service_root:             [:dump],
     ilo_snmp_service:             [:configure],
     ilo_virtual_media:            [:insert, :eject]
