@@ -1,5 +1,4 @@
 if defined?(ChefSpec)
-  ChefSpec::Runner.define_runner_method(:ilo_account_service)
 
   ilo_resources = {
     ilo_account_service:          [:create, :delete, :changePassword],
