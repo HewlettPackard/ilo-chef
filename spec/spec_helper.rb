@@ -1,6 +1,7 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
 require 'pry'
+require 'ilo-sdk'
 require_relative 'support/fake_response'
 
 # General context for unit testing:

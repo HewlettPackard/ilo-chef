@@ -21,14 +21,14 @@ action :set do
         client.set_time_zone(time_zone)
       end
     end
-    if ntp_servers
+    unless use_ntp.nil?
       cur_val = client.get_ntp
       next if cur_val == use_ntp
       converge_by "Set ilo #{client.host} NTP use from '#{cur_val}' to '#{use_ntp}'" do
         client.set_ntp(use_ntp)
       end
     end
-    if use_ntp
+    if ntp_servers
       cur_val = client.get_ntp_servers
       next if cur_val == ntp_servers
       converge_by "Set ilo #{client.host} NTP Servers from '#{cur_val}' to '#{ntp_servers}'" do
