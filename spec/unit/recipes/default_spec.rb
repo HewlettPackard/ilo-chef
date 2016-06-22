@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2016 Hewlett Packard Enterprise
 
-require 'spec_helper'
+require_relative './../../spec_helper'
 
 describe 'ilo_test::default' do
 

@@ -360,7 +360,7 @@ The following resources are available for usage in your recipes:
   ilo_secure_boot 'enable secure boot' do
     ilos [ilo1, ilo2]
     enable true
-    action :secure_boot
+    action :set
   end
   ```
 

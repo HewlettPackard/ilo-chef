@@ -9,7 +9,7 @@ version          '0.1.0'
 source_url       'https://github.com/HewlettPackard/chef-ilo'
 issues_url       'https://github.com/HewlettPackard/chef-ilo/issues'
 
-chef_version     '>= 12'
+chef_version     '>= 12' if respond_to?(:chef_version)
 
 supports         'windows'
 supports         'mac_os_x'

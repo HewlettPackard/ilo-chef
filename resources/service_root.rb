@@ -6,8 +6,8 @@ property :schema_prefix, String
 property :registry_prefix, String
 property :schema_file, String
 property :registry_file, String
-property :owner, [String, Integer], default: node['current_user']
-property :group, [String, Integer], default: node['current_user']
+property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
+property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
 
 action_class do
   include IloHelper
