@@ -22,7 +22,7 @@ describe 'ilo_test::account_service_create' do
   end
 end
 
-describe 'ilo_test::account_service_changePassword' do
+describe 'ilo_test::account_service_change_password' do
   let(:resource_name) { 'account_service' }
   include_context 'chef context'
 

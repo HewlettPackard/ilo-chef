@@ -13,5 +13,5 @@ source 'https://supermarket.chef.io'
 metadata
 
 group :test do
-  cookbook 'ilo_test', path: './test/fixtures/cookbooks/ilo_test'
+  cookbook 'ilo_test', path: './spec/fixtures/cookbooks/ilo_test'
 end
