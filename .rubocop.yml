@@ -44,6 +44,10 @@ Style/EmptyLinesAroundBlockBody:
 Style/EmptyLinesAroundClassBody:
   Enabled: false
 
+Style/FileName:
+  Exclude:
+  - 'test/fixtures/cookbooks/ilo_test/recipes/account_service_changePassword.rb'
+
 Style/Next:
   Enabled: false
 

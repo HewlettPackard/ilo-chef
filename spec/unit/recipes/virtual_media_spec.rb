@@ -6,15 +6,13 @@ describe 'ilo_test::virtual_media_insert' do
 
   it 'insert virtual media' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_virtual_media).and_return(
-      {
-        0 => {
-          'Image' => '',
-          'MediaTypes' => ['CD', 'DVD']
-        },
-        1 => {
-          'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['NotCD', 'NotDVD']
-        }
+      0 => {
+        'Image' => '',
+        'MediaTypes' => ['CD', 'DVD']
+      },
+      1 => {
+        'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['NotCD', 'NotDVD']
       }
     )
     expect_any_instance_of(ILO_SDK::Client).to receive(:virtual_media_inserted?).with(0).and_return(false)
@@ -24,15 +22,13 @@ describe 'ilo_test::virtual_media_insert' do
 
   it 'does not insert virtual media' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_virtual_media).and_return(
-      {
-        0 => {
-          'Image' => 'http://1.1.1.1:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['CD', 'DVD']
-        },
-        1 => {
-          'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['NotCD', 'NotDVD']
-        }
+      0 => {
+        'Image' => 'http://1.1.1.1:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['CD', 'DVD']
+      },
+      1 => {
+        'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['NotCD', 'NotDVD']
       }
     )
     expect_any_instance_of(ILO_SDK::Client).to receive(:virtual_media_inserted?).with(0).and_return(true)
@@ -46,15 +42,13 @@ describe 'ilo_test::virtual_media_eject' do
 
   it 'eject virtual media' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_virtual_media).and_return(
-      {
-        0 => {
-          'Image' => 'http://1.1.1.1:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['CD', 'DVD']
-        },
-        1 => {
-          'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['NotCD', 'NotDVD']
-        }
+      0 => {
+        'Image' => 'http://1.1.1.1:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['CD', 'DVD']
+      },
+      1 => {
+        'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['NotCD', 'NotDVD']
       }
     )
     expect_any_instance_of(ILO_SDK::Client).to receive(:virtual_media_inserted?).with(0).and_return(true)
@@ -64,15 +58,13 @@ describe 'ilo_test::virtual_media_eject' do
 
   it 'does not eject virtual media' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_virtual_media).and_return(
-      {
-        0 => {
-          'Image' => '',
-          'MediaTypes' => ['CD', 'DVD']
-        },
-        1 => {
-          'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
-          'MediaTypes' => ['NotCD', 'NotDVD']
-        }
+      0 => {
+        'Image' => '',
+        'MediaTypes' => ['CD', 'DVD']
+      },
+      1 => {
+        'Image' => 'http://2.2.2.2:5000/ubuntu-15.04-desktop-amd64.iso',
+        'MediaTypes' => ['NotCD', 'NotDVD']
       }
     )
     expect_any_instance_of(ILO_SDK::Client).to receive(:virtual_media_inserted?).with(0).and_return(false)
