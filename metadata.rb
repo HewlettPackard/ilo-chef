@@ -4,7 +4,7 @@ maintainer_email 'you@example.com'
 license          'Apache v2.0'
 description      'Configure HPE iLO'
 long_description 'Configure HPE iLO using the iLO APIs.'
-version          '0.1.0'
+version          '1.0.0'
 
 source_url       'https://github.com/HewlettPackard/chef-ilo'
 issues_url       'https://github.com/HewlettPackard/chef-ilo/issues'

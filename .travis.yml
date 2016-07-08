@@ -1,7 +1,7 @@
 language: ruby
 rvm:
   - 2.1
-  - 2.2
+  - 2.2.5
 
 before_script:
 - eval "$(/opt/chefdk/bin/chef shell-init bash)"
