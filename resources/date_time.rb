@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :set
-default_action :set
 
 property :ilos, Array, required: true
 property :time_zone, String

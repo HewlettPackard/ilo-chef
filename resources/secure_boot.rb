@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :set
-default_action :secure_boot
 
 property :ilos, Array, required: true
 property :enable, [TrueClass, FalseClass], default: false

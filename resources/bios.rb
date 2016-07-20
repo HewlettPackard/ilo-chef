@@ -12,7 +12,6 @@
 require 'resolv'
 
 actions :revert, :set
-default_action :set
 
 property :ilos, Array, required: true
 property :uefi_shell_startup, String, equal_to: ['Enabled', 'Disabled']
@@ -30,18 +29,6 @@ property :service_email, String
 
 action_class do
   include IloHelper
-end
-
-action :revert do
-  load_sdk
-  ilos.each do |ilo|
-    client = build_client(ilo)
-    cur_val = client.get_bios_baseconfig
-    next if cur_val == 'default'
-    converge_by "Reverting ilo #{ilo} to default bios base configuration" do
-      client.revert_bios
-    end
-  end
 end
 
 action :set do
@@ -102,6 +89,18 @@ action :set do
           client.set_bios_service(service_name, service_email)
         end
       end
+    end
+  end
+end
+
+action :revert do
+  load_sdk
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_bios_baseconfig
+    next if cur_val == 'default'
+    converge_by "Reverting ilo #{ilo} to default bios base configuration" do
+      client.revert_bios
     end
   end
 end

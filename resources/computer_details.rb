@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :dump
-default_action :dump
 
 property :ilos, Array, required: true
 property :dump_file, String

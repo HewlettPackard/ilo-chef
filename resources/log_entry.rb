@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :clear, :dump
-default_action :dump
 
 property :ilos, Array, required: true
 property :log_type, String, required: true, equal_to: ['IEL', 'IML']
@@ -22,17 +21,6 @@ property :duration, Integer, default: 24
 
 action_class do
   include IloHelper
-end
-
-action :clear do
-  load_sdk
-  ilos.each do |ilo|
-    client = build_client(ilo)
-    next if client.logs_empty?(log_type)
-    converge_by "Clear ilo #{client.host} #{log_type} logs" do
-      client.clear_logs(log_type)
-    end
-  end
 end
 
 action :dump do
@@ -47,5 +35,16 @@ action :dump do
     owner owner
     group group
     content dump_content.to_yaml
+  end
+end
+
+action :clear do
+  load_sdk
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    next if client.logs_empty?(log_type)
+    converge_by "Clear ilo #{client.host} #{log_type} logs" do
+      client.clear_logs(log_type)
+    end
   end
 end

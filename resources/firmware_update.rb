@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :upgrade
-default_action :upgrade
 
 property :ilos, Array, required: true
 property :fw_uri, String, required: true

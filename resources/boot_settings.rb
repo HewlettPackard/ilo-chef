@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :revert, :set, :dump
-default_action :set
 
 action_class do
   include IloHelper
@@ -22,18 +21,6 @@ property :boot_order, Array
 property :boot_target, String
 property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
 property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
-
-action :revert do
-  load_sdk
-  ilos.each do |ilo|
-    client = build_client(ilo)
-    cur_val = client.get_boot_baseconfig
-    next if cur_val == 'default'
-    converge_by "Reverting ilo #{ilo} to default boot base configuration" do
-      client.revert_boot
-    end
-  end
-end
 
 action :set do
   load_sdk
@@ -62,6 +49,18 @@ action :set do
           client.set_temporary_boot_order(boot_target)
         end
       end
+    end
+  end
+end
+
+action :revert do
+  load_sdk
+  ilos.each do |ilo|
+    client = build_client(ilo)
+    cur_val = client.get_boot_baseconfig
+    next if cur_val == 'default'
+    converge_by "Reverting ilo #{ilo} to default boot base configuration" do
+      client.revert_boot
     end
   end
 end

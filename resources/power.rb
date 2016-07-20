@@ -10,7 +10,6 @@
 # specific language governing permissions and limitations under the License.
 
 actions :poweron, :poweroff, :resetsys, :resetilo
-default_action :poweron
 
 property :ilos, Array, required: true
 
