@@ -27,13 +27,13 @@ end
 
 action :import do
   load_sdk
-  raise "Please provide certificate String or my_file!" unless certificate || my_file
-  warn "WARNING: Both certificate and my_file provided. Defaulting to certificate." if certificate && my_file
+  raise 'Please provide certificate String or my_file!' unless certificate || my_file
+  warn 'WARNING: Both certificate and my_file provided. Defaulting to certificate.' if certificate && my_file
   client = build_client(ilo)
   cur_certificate = client.get_certificate.to_s
   if certificate
     next if cur_certificate.gsub(/\s+/, '') == certificate.gsub(/\s+/, '')
-    converge_by "Importing new certificate" do
+    converge_by 'Importing new certificate' do
       client.import_certificate(certificate)
     end
   elsif file
@@ -48,7 +48,7 @@ end
 action :generate_csr do
   load_sdk
   client = build_client(ilo)
-  converge_by "Generating CSR" do
+  converge_by 'Generating CSR' do
     client.generate_csr(country, state, city, orgName, orgUnit, commonName)
   end
 end
