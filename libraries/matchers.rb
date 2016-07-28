@@ -27,7 +27,7 @@ if defined?(ChefSpec)
     ilo_service_root:             [:dump],
     ilo_snmp_service:             [:configure],
     ilo_virtual_media:            [:insert, :eject],
-    ilo_https_cert:               [:import, :generate_csr]
+    ilo_https_cert:               [:import, :generate_csr, :dump_csr]
   }
 
   ilo_resources.each do |resource_type, actions|

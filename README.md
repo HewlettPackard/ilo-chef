@@ -273,6 +273,55 @@ The following resources are available for usage in your recipes:
   ```
 
 
+### ilo_https_cert
+
+ - **Import certificate:**
+
+  ```ruby
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    certificate '-----BEGIN CERTIFICATE-----
+    CertificateContent
+    -----END CERTIFICATE-----'
+    action :import
+  end
+  ```
+
+ - **Import certificate from file:**
+
+  ```ruby
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    my_file '/c/certificate_file.cert'
+    action :import
+  end
+  ```
+
+ - **Generate Certificate Signing Request (CSR):**
+
+  ```ruby
+  ilo_https_cert 'generate CSR' do
+    ilo ilo1
+    country 'USA'
+    state 'Texas'
+    city 'Houston'
+    orgName "Example Company"
+    orgUnit "Example"
+    commonName "example.net"
+    action :generate_csr
+  end
+  ```
+
+ - **Dump CSR to a file:**
+
+  ```ruby
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    my_file '/c/CSR.cert'
+    action :get_csr
+  end
+  ```
+
 ### ilo_log_entry
 
  - **Dump log entries to a file:**

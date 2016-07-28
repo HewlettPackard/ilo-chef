@@ -5,9 +5,8 @@ ilo1 =
     password: 'secret123'
   }
 
-ilo_https_cert 'import certificate' do
+ilo_https_cert 'dump csr' do
   ilo ilo1
-  certificate 'example_certificate'
   my_file '/c/example_file'
-  action :import
+  action :dump_csr
 end
