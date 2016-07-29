@@ -3,4 +3,4 @@
 # Attributes:: default
 #
 
-default['ilo']['ruby_sdk_version'] = '~> 1.0'
+default['ilo']['ruby_sdk_version'] = '~> 1.0.1'
