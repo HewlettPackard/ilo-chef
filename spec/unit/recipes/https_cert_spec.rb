@@ -5,7 +5,8 @@ describe 'ilo_test::https_cert_generate_csr' do
   include_context 'chef context'
 
   it 'generate csr' do
-    expect_any_instance_of(ILO_SDK::Client).to receive(:generate_csr).with('US', 'Texas', 'Houston', 'Example Company', 'Example', 'ILO.americas.example.net').and_return(true)
+    expect_any_instance_of(ILO_SDK::Client).to receive(:generate_csr)
+      .with('US', 'Texas', 'Houston', 'Example Company', 'Example', 'ILO.americas.example.net').and_return(true)
     expect(real_chef_run).to generate_csr_ilo_https_cert('generate csr')
   end
 end

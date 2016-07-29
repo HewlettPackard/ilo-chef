@@ -275,28 +275,6 @@ The following resources are available for usage in your recipes:
 
 ### ilo_https_cert
 
- - **Import certificate:**
-
-  ```ruby
-  ilo_https_cert 'import certificate' do
-    ilo ilo1
-    certificate '-----BEGIN CERTIFICATE-----
-    CertificateContent
-    -----END CERTIFICATE-----'
-    action :import
-  end
-  ```
-
- - **Import certificate from file:**
-
-  ```ruby
-  ilo_https_cert 'import certificate' do
-    ilo ilo1
-    my_file '/c/certificate_file.cert'
-    action :import
-  end
-  ```
-
  - **Generate Certificate Signing Request (CSR):**
 
   ```ruby
@@ -305,9 +283,9 @@ The following resources are available for usage in your recipes:
     country 'USA'
     state 'Texas'
     city 'Houston'
-    orgName "Example Company"
-    orgUnit "Example"
-    commonName "example.net"
+    orgName 'Example Company'
+    orgUnit 'Example'
+    commonName 'example.com'
     action :generate_csr
   end
   ```
@@ -315,12 +293,94 @@ The following resources are available for usage in your recipes:
  - **Dump CSR to a file:**
 
   ```ruby
-  ilo_https_cert 'import certificate' do
+  ilo_https_cert 'dump CSR to file' do
     ilo ilo1
-    my_file '/c/CSR.cert'
+    file_path '/c/CSR.cert'
     action :get_csr
   end
   ```
+
+ - **Import certificate:**
+
+  ```ruby
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    certificate '-----BEGIN CERTIFICATE-----
+    SecretCertificateContent
+    -----END CERTIFICATE-----'
+    action :import
+  end
+  ```
+
+ - **Import certificate from file:**
+
+  ```ruby
+  ilo_https_cert 'import certificate from file' do
+    ilo ilo1
+    file_path '/c/certificate_file.cert'
+    action :import
+  end
+  ```
+
+ - **Complete HTTPS Certificate Replacement Example**
+
+  ```ruby
+  require 'ilo-sdk'
+
+  ilo1 = {
+    host: 'ilo1.example.com',  # Required. IP or hostname
+    user: 'Administrator',     # Optional. Defaults to 'Administrator'
+    password: 'secret123',     # Required
+    ssl_enabled: false         # Optional
+  }
+
+  client = ILO_SDK::Client.new(
+    host: ilo1[:host],
+    user: ilo1[:user],
+    password: ilo1[:password],
+    ssl_enabled: ilo1[:ssl_enabled]
+  )
+
+  # Get the current SSL Certificate and check to see if expires within 24 hours
+  expiration = client.get_certificate.not_after.to_datetime
+  tomorrow = DateTime.now + 1
+
+  valid = expiration > tomorrow
+  ilo_https_cert 'generate CSR' do
+    ilo ilo1
+    country 'USA'
+    state 'Texas'
+    city 'Houston'
+    orgName 'Example Company'
+    orgUnit 'Example'
+    commonName 'example.com'
+    action :generate_csr
+    not_if { valid || client.get_csr }
+  end
+
+  ilo_https_cert 'dump CSR to file' do
+    ilo ilo1
+    file_path '~/certs/CSR.cert'
+    action :get_csr
+    not_if { valid || client.get_csr.nil? }
+  end
+
+  # Here you'll need to have a step that submits the CSR to a certificate authority
+  # (or self-signs it) and gets back the signed certificate. It will look something like:
+  # -----BEGIN CERTIFICATE-----
+  # lines_of_secret_text
+  # -----END CERTIFICATE-----
+  # For this example, we're assuming we've read in the content of the certificate to the
+  # "cert" variable (as a string).
+
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    certificate cert
+    action :import
+    not_if { valid || cert.nil? }
+  end
+  ```
+
 
 ### ilo_log_entry
 

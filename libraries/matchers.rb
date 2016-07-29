@@ -20,14 +20,14 @@ if defined?(ChefSpec)
     ilo_computer_system:          [:set],
     ilo_date_time:                [:set],
     ilo_firmware_update:          [:upgrade],
+    ilo_https_cert:               [:import, :generate_csr, :dump_csr],
     ilo_log_entry:                [:clear, :dump],
     ilo_manager_network_protocol: [:set],
     ilo_power:                    [:poweron, :poweroff, :resetsys, :resetilo],
     ilo_secure_boot:              [:set],
     ilo_service_root:             [:dump],
     ilo_snmp_service:             [:configure],
-    ilo_virtual_media:            [:insert, :eject],
-    ilo_https_cert:               [:import, :generate_csr, :dump_csr]
+    ilo_virtual_media:            [:insert, :eject]
   }
 
   ilo_resources.each do |resource_type, actions|
