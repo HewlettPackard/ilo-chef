@@ -37,7 +37,7 @@ ilos = [
   {
     host: 'ilo1.example.com',  # Required. IP or hostname
     user: 'Administrator',     # Optional. Defaults to 'Administrator'
-    password: 'secret123'      # Required
+    password: 'secret123',     # Required
     ssl_enabled: false         # Optional
   },
   {
@@ -77,7 +77,7 @@ The following resources are available for usage in your recipes:
     ilos [ilo1, ilo2]
     username 'test'
     password 'password123'
-    action :create
+    action :create # Not necessary, as this is the default
   end
   ```
 
@@ -131,7 +131,7 @@ The following resources are available for usage in your recipes:
     url_boot_file 'http://www.urlbootfile.iso'
     service_name 'John Doe'
     service_email 'john.doe@hpe.com'
-    action :set
+    action :set # Not necessary, as this is the default
   end
   ```
 
@@ -161,7 +161,7 @@ The following resources are available for usage in your recipes:
       "NIC.LOM.1.1.IPv6"
     ]
     boot_target 'None'
-    action :set
+    action :set # Not necessary, as this is the default
   end
   ```
 
@@ -231,7 +231,7 @@ The following resources are available for usage in your recipes:
   ilo_date_time 'set time zone' do
     ilos [ilo1, ilo2]
     time_zone 'Africa/Abidjan'
-    action :set
+    action :set # Not necessary, as this is the default
   end
   ```
 
@@ -264,7 +264,7 @@ The following resources are available for usage in your recipes:
  - **Upgrade firmware:**
 
   ```ruby
-  ilo_date_time 'upgrade firmware' do
+  ilo_firmware_update 'upgrade firmware' do
     ilos [ilo1, ilo2]
     fw_version '2.5'
     fw_uri 'www.firmwareuri.com'
@@ -285,7 +285,7 @@ The following resources are available for usage in your recipes:
     owner 'JohnDoe'
     group 'Administrators'
     duration 30 # up to hours back from now
-    action :dump
+    action :dump # Not necessary, as this is the default
   end
   ```
 
@@ -320,7 +320,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_power 'power on' do
     ilos [ilo1, ilo2]
-    action :poweron
+    action :poweron # Not necessary, as this is the default
   end
   ```
 
@@ -405,7 +405,7 @@ The following resources are available for usage in your recipes:
   ilo_virtual_media 'insert virtual media' do
     ilos [ilo1, ilo2]
     iso_uri 'http://10.254.224.38:5000/ubuntu-15.04-desktop-amd64.iso'
-    action :insert
+    action :insert # Not necessary, as this is the default
   end
   ```
 

@@ -4,7 +4,7 @@ RSpec.describe 'IloHelper' do
   include_context 'shared context'
 
   let(:helper) do
-    (Class.new { include IloHelper }).new
+    (Class.new { include IloCookbook::Helper }).new
   end
 
   let(:sdk_version) do
