@@ -11,8 +11,9 @@
 module IloCookbook
   # Class for Ilo Chassis Actions
   class Chassis < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
     resource_name :ilo_chassis
 
     property :ilos, Array, required: true
@@ -20,10 +21,6 @@ module IloCookbook
     property :thermal_metrics_file, String
     property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
     property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
-
-    action_class do
-      include IloHelper
-    end
 
     action :dump do
       raise 'Please provide a power_metrics_file and/or thermal_metrics_file!' unless power_metrics_file || thermal_metrics_file

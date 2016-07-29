@@ -12,9 +12,9 @@ module IloCookbook
   # Class for Ilo Bios Actions
   class Bios < ChefCompat::Resource
     require 'resolv'
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
-
+    action_class do
+      include IloCookbook::Helper
+    end
     resource_name :ilo_bios
 
     property :ilos, Array, required: true
@@ -30,10 +30,6 @@ module IloCookbook
     property :url_boot_file, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$}
     property :service_name, String
     property :service_email, String
-
-    action_class do
-      include IloHelper
-    end
 
     action :set do
       load_sdk

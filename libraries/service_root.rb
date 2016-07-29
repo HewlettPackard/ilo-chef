@@ -11,8 +11,9 @@
 module IloCookbook
   # Class for Service Root Actions
   class ServiceRoot < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_service_root
 
@@ -23,10 +24,6 @@ module IloCookbook
     property :registry_file, String
     property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
     property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
-
-    action_class do
-      include IloHelper
-    end
 
     action :dump do
       raise 'Please provide a schema_file and/or registry_file!' unless schema_file || registry_file

@@ -11,8 +11,9 @@
 module IloCookbook
   # Class for Ilo Log Actions
   class LogEntry < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_log_entry
 
@@ -23,10 +24,6 @@ module IloCookbook
     property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
     property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
     property :duration, Integer, default: 24
-
-    action_class do
-      include IloHelper
-    end
 
     action :dump do
       load_sdk

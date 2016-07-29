@@ -11,16 +11,13 @@
 module IloCookbook
   # Class for Ilo Power Actions
   class Power < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_power
 
     property :ilos, Array, required: true
-
-    action_class do
-      include IloHelper
-    end
 
     action :poweron do
       load_sdk

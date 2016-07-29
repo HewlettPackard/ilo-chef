@@ -11,18 +11,15 @@
 module IloCookbook
   # Class for Ilo Firmware Actions
   class FirmwareUpdate < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_firmware_update
 
     property :ilos, Array, required: true
     property :fw_uri, String, required: true
     property :fw_version, Float, required: true
-
-    action_class do
-      include IloHelper
-    end
 
     action :upgrade do
       load_sdk

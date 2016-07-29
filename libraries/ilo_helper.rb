@@ -12,7 +12,7 @@
 # Module to load the ilo-ruby-sdk gem and build the client object
 module IloCookbook
   ## Helper module
-  module IloHelper
+  module Helper
     # Load (and install if necessary) the ilo-sdk
     def load_sdk
       gem 'ilo-sdk', node['ilo']['ruby_sdk_version']

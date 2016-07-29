@@ -11,14 +11,11 @@
 module IloCookbook
   # Class for Ilo BootSettings actions
   class BiosSettings < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_boot_settings
-
-    action_class do
-      include IloHelper
-    end
 
     property :ilos, Array, required: true
     property :dump_file, String

@@ -11,17 +11,14 @@
 module IloCookbook
   # Class for Network Protocol actions
   class ManagerNetworkProtocol < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_manager_network_protocol
 
     property :ilos, Array, required: true
     property :timeout, Fixnum, equal_to: [15, 30, 60, 120, 0]
-
-    action_class do
-      include IloHelper
-    end
 
     action :set do
       load_sdk

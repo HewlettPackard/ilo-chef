@@ -11,18 +11,15 @@
 module IloCookbook
   # Class for Ilo Computer System Actions
   class ComputerSystem < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_computer_system
 
     property :ilos, Array
     property :asset_tag, String
     property :led_state, [String, Symbol], default: 'Lit', equal_to: ['Lit', 'Off', :Lit, :Off]
-
-    action_class do
-      include IloHelper
-    end
 
     action :set do
       raise 'Please provide an asset_tag and/or led_state!' unless asset_tag || led_state

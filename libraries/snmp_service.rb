@@ -11,18 +11,15 @@
 module IloCookbook
   # Class for Ilo SNMP Service Actions
   class SnmpService < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_snmp_service
 
     property :ilos, Array, required: true
     property :snmp_mode, String, default: 'Agentless', equal_to: ['Agentless', 'Passthru']
     property :snmp_alerts, [TrueClass, FalseClass], default: false
-
-    action_class do
-      include IloHelper
-    end
 
     action :configure do
       load_sdk

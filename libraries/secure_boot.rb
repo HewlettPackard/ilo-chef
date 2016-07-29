@@ -11,17 +11,15 @@
 module IloCookbook
   # Class for Secure Boot Actions
   class SecureBoot < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_secure_boot
 
     property :ilos, Array, required: true
     property :enable, [TrueClass, FalseClass], default: false
 
-    action_class do
-      include IloHelper
-    end
     # The Unified Extensible Firmware Interface (UEFI) provides a higher level of security by protecting against unauthorized Operating Systems
     # and malware rootkit attacks, validating that only authenticated ROMs, pre-boot applications, and OS boot loaders that have been
     # digitally signed are run.

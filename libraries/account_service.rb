@@ -11,8 +11,6 @@
 module IloCookbook
   ## Class for Ilo Account Service Actions
   class AccountService < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
     resource_name :ilo_account_service
 
     property :ilos, Array, required: true
@@ -20,7 +18,7 @@ module IloCookbook
     property :password, String
 
     action_class do
-      include IloHelper
+      include IloCookbook::Helper
     end
 
     action :create do

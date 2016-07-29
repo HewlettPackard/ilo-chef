@@ -11,8 +11,9 @@
 module IloCookbook
   # Class for Ilo Date Time Actions
   class DateTime < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_date_time
 
@@ -20,10 +21,6 @@ module IloCookbook
     property :time_zone, String
     property :ntp_servers, Array
     property :use_ntp, [TrueClass, FalseClass]
-
-    action_class do
-      include IloHelper
-    end
 
     action :set do
       load_sdk

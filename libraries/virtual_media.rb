@@ -11,17 +11,14 @@
 module IloCookbook
   # Class for Ilo Virtual Media Actions
   class VirtualMedia < ChefCompat::Resource
-    require_relative 'ilo_helper'
-    include IloCookbook::IloHelper
+    action_class do
+      include IloCookbook::Helper
+    end
 
     resource_name :ilo_virtual_media
 
     property :ilos, Array, required: true
     property :iso_uri, String, required: true, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w:]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso)$}
-
-    action_class do
-      include IloHelper
-    end
 
     action :insert do
       load_sdk
