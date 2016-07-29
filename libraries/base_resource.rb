@@ -9,27 +9,24 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
-require_relative 'base_resource'
-
 module IloCookbook
-  # Class for Network Protocol actions
-  class ManagerNetworkProtocol < BaseResource
-    resource_name :ilo_manager_network_protocol
+  # Base class for iLO resources
+  class BaseResource < ChefCompat::Resource
+    require_relative 'ilo_helper'
 
-    load_base_properties
-    property :timeout, Fixnum, equal_to: [15, 30, 60, 120, 0]
+    action_class do
+      # Include the helpers
+      include IloCookbook::Helper
 
-    action :set do
-      load_sdk
-      ilos.each do |ilo|
-        client = build_client(ilo)
-        cur_val = client.get_timeout
-        next if cur_val == timeout
-        converge_by "Set ilo #{client.host} session timeout from '#{cur_val}' to '#{timeout}'" do
-          client.set_timeout(timeout)
-        end
+      # Let Chef know that the why-run flag is supported
+      def whyrun_supported?
+        true
       end
     end
 
+    # Loads the default properties for resources
+    def self.load_base_properties
+      property :ilos, Array, required: true
+    end
   end
 end
