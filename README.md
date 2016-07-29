@@ -264,7 +264,7 @@ The following resources are available for usage in your recipes:
  - **Upgrade firmware:**
 
   ```ruby
-  ilo_date_time 'upgrade firmware' do
+  ilo_firmware_update 'upgrade firmware' do
     ilos [ilo1, ilo2]
     fw_version '2.5'
     fw_uri 'www.firmwareuri.com'
