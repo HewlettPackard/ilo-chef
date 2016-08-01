@@ -23,4 +23,4 @@ bin/*
 .kitchen.local.yml
 
 # Recipes
-recipes/
+/recipes/

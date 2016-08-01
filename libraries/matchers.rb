@@ -20,6 +20,7 @@ if defined?(ChefSpec)
     ilo_computer_system:          [:set],
     ilo_date_time:                [:set],
     ilo_firmware_update:          [:upgrade],
+    ilo_https_cert:               [:import, :generate_csr, :dump_csr],
     ilo_log_entry:                [:clear, :dump],
     ilo_manager_network_protocol: [:set],
     ilo_power:                    [:poweron, :poweroff, :resetsys, :resetilo],

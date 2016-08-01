@@ -273,6 +273,107 @@ The following resources are available for usage in your recipes:
   ```
 
 
+### ilo_https_cert
+
+ - **Generate Certificate Signing Request (CSR):**
+
+  ```ruby
+  ilo_https_cert 'generate CSR' do
+    ilo ilo1
+    country 'USA'
+    state 'Texas'
+    city 'Houston'
+    orgName 'Example Company'
+    orgUnit 'Example'
+    commonName 'example.com'
+    action :generate_csr
+  end
+  ```
+
+ - **Dump CSR to a file:**
+
+  ```ruby
+  ilo_https_cert 'dump CSR to file' do
+    ilo ilo1
+    file_path '/c/CSR.cert'
+    action :get_csr
+  end
+  ```
+
+ - **Import certificate:**
+
+  ```ruby
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    certificate '-----BEGIN CERTIFICATE-----
+    SecretCertificateContent
+    -----END CERTIFICATE-----'
+    action :import
+  end
+  ```
+
+ - **Import certificate from file:**
+
+  ```ruby
+  ilo_https_cert 'import certificate from file' do
+    ilo ilo1
+    file_path '/c/certificate_file.cert'
+    action :import
+  end
+  ```
+
+ - **Complete HTTPS Certificate Replacement Example**
+
+  ```ruby
+  require 'ilo-sdk'
+
+  ilo1 = ILO_SDK::Client.new(
+    host: 'ilo1.example.com',
+    user: 'Administrator',
+    password: 'secret123'
+  )
+
+  # Get the current SSL Certificate and check to see if expires within 24 hours
+  expiration = ilo1.get_certificate.not_after.to_datetime
+  tomorrow = DateTime.now + 1
+
+  valid = expiration > tomorrow
+  ilo_https_cert 'generate CSR' do
+    ilo ilo1
+    country 'USA'
+    state 'Texas'
+    city 'Houston'
+    orgName 'Example Company'
+    orgUnit 'Example'
+    commonName 'example.com'
+    action :generate_csr
+    not_if { valid || ilo1.get_csr } # Only generate if the cert is expiring soon and the CSR has not already been generated
+  end
+
+  ilo_https_cert 'dump CSR to file' do
+    ilo ilo1
+    file_path '~/certs/CSR.cert'
+    action :get_csr
+    not_if { valid || ilo1.get_csr.nil? }
+  end
+
+  # Here you'll need to have a step that submits the CSR to a certificate authority
+  # (or self-signs it) and gets back the signed certificate. It will look something like:
+  # -----BEGIN CERTIFICATE-----
+  # lines_of_secret_text
+  # -----END CERTIFICATE-----
+  # For this example, we're assuming we've read in the content of the certificate to the
+  # "cert" variable (as a string).
+
+  ilo_https_cert 'import certificate' do
+    ilo ilo1
+    certificate cert
+    action :import
+    not_if { valid || cert.nil? }
+  end
+  ```
+
+
 ### ilo_log_entry
 
  - **Dump log entries to a file:**
