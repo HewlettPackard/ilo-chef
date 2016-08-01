@@ -347,7 +347,7 @@ The following resources are available for usage in your recipes:
     orgUnit 'Example'
     commonName 'example.com'
     action :generate_csr
-    not_if { valid || ilo1.get_csr }
+    not_if { valid || ilo1.get_csr } # Only generate if the cert is expiring soon and the CSR has not already been generated
   end
 
   ilo_https_cert 'dump CSR to file' do
