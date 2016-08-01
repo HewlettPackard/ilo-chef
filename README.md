@@ -327,22 +327,14 @@ The following resources are available for usage in your recipes:
   ```ruby
   require 'ilo-sdk'
 
-  ilo1 = {
-    host: 'ilo1.example.com',  # Required. IP or hostname
-    user: 'Administrator',     # Optional. Defaults to 'Administrator'
-    password: 'secret123',     # Required
-    ssl_enabled: false         # Optional
-  }
-
-  client = ILO_SDK::Client.new(
-    host: ilo1[:host],
-    user: ilo1[:user],
-    password: ilo1[:password],
-    ssl_enabled: ilo1[:ssl_enabled]
+  ilo1 = ILO_SDK::Client.new(
+    host: 'ilo1.example.com',
+    user: 'Administrator',
+    password: 'secret123'
   )
 
   # Get the current SSL Certificate and check to see if expires within 24 hours
-  expiration = client.get_certificate.not_after.to_datetime
+  expiration = ilo1.get_certificate.not_after.to_datetime
   tomorrow = DateTime.now + 1
 
   valid = expiration > tomorrow
@@ -355,14 +347,14 @@ The following resources are available for usage in your recipes:
     orgUnit 'Example'
     commonName 'example.com'
     action :generate_csr
-    not_if { valid || client.get_csr }
+    not_if { valid || ilo1.get_csr }
   end
 
   ilo_https_cert 'dump CSR to file' do
     ilo ilo1
     file_path '~/certs/CSR.cert'
     action :get_csr
-    not_if { valid || client.get_csr.nil? }
+    not_if { valid || ilo1.get_csr.nil? }
   end
 
   # Here you'll need to have a step that submits the CSR to a certificate authority
