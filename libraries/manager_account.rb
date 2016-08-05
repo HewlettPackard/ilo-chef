@@ -41,7 +41,7 @@ module IloCookbook
         next if cur_privileges == privileges
         converge_by "Change account privileges for #{username} on iLO #{client.host}" do
           client.set_account_privileges(username, login_priv, remote_console_priv, user_config_priv,
-            virtual_media_priv, virtual_power_and_reset_priv, ilo_config_priv)
+                                        virtual_media_priv, virtual_power_and_reset_priv, ilo_config_priv)
         end
       end
     end
