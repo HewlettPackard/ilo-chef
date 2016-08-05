@@ -22,6 +22,7 @@ if defined?(ChefSpec)
     ilo_firmware_update:          [:upgrade],
     ilo_https_cert:               [:import, :generate_csr, :dump_csr],
     ilo_log_entry:                [:clear, :dump],
+    ilo_manager_account:          [:set_privileges],
     ilo_manager_network_protocol: [:set],
     ilo_power:                    [:poweron, :poweroff, :resetsys, :resetilo],
     ilo_secure_boot:              [:set],

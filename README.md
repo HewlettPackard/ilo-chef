@@ -401,6 +401,24 @@ The following resources are available for usage in your recipes:
   ```
 
 
+### ilo_manager_account
+
+ - **Modify iLO Account Privileges:**
+
+  ```ruby
+  ilo_manager_account 'set privileges' do
+    ilos [ilo1, ilo2]
+    login_priv true
+    remote_console_priv true
+    user_config_priv true
+    virtual_media_priv true
+    virtual_power_and_reset_priv true
+    ilo_config_priv true
+    action :set_privileges
+  end
+  ```
+
+
 ### ilo_manager_network_protocol
 
  - **Set ilo session timeout:**

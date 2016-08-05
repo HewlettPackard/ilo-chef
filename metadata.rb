@@ -4,7 +4,7 @@ maintainer_email 'chef-cookbooks@groups.ext.hpe.com'
 license          'Apache v2.0'
 description      'Configure HPE iLO'
 long_description 'Configure HPE iLO using the iLO APIs.'
-version          '1.1.0'
+version          '1.2.0'
 
 source_url       'https://github.com/HewlettPackard/ilo-chef'
 issues_url       'https://github.com/HewlettPackard/ilo-chef/issues'

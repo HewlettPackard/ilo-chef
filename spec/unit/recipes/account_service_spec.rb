@@ -1,9 +1,3 @@
-#
-# Cookbook Name:: ilo
-# Spec:: default
-#
-# Copyright (c) 2016 Hewlett Packard Enterprise
-
 require_relative './../../spec_helper'
 
 describe 'ilo_test::account_service_create' do

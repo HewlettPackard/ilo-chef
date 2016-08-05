@@ -12,7 +12,7 @@
 require_relative 'base_resource'
 
 module IloCookbook
-  ## Class for Ilo Account Service Actions
+  ## Class for iLO  Account Service Actions
   class AccountService < BaseResource
     resource_name :ilo_account_service
 
