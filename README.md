@@ -68,41 +68,6 @@ ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
 
 The following resources are available for usage in your recipes:
 
-### ilo_account_service
-
- - **Create User:**
-
-  ```ruby
-  ilo_account_service 'user create' do
-    ilos [ilo1, ilo2]
-    username 'test'
-    password 'password123'
-    action :create # Not necessary, as this is the default
-  end
-  ```
-
- - **Delete User:**
-
-  ```ruby
-  ilo_account_service 'user delete' do
-    ilos [ilo1, ilo2]
-    username 'test'
-    action :delete
-  end
-  ```
-
- - **Update User Password:**
-
-  ```ruby
-  ilo_account_service 'update user password' do
-    ilos [ilo1, ilo2]
-    username 'test'
-    password 'newpassword123'
-    action :changePassword
-  end
-  ```
-
-
 ### ilo_bios
 
  - **Revert to default BIOS base configuration:**
@@ -401,24 +366,6 @@ The following resources are available for usage in your recipes:
   ```
 
 
-### ilo_manager_account
-
- - **Modify iLO Account Privileges:**
-
-  ```ruby
-  ilo_manager_account 'set privileges' do
-    ilos [ilo1, ilo2]
-    login_priv true
-    remote_console_priv true
-    user_config_priv true
-    virtual_media_priv true
-    virtual_power_and_reset_priv true
-    ilo_config_priv true
-    action :set_privileges
-  end
-  ```
-
-
 ### ilo_manager_network_protocol
 
  - **Set ilo session timeout:**
@@ -515,6 +462,35 @@ The following resources are available for usage in your recipes:
   end
   ```
 
+
+### ilo_user
+
+ - **Create or modify user:**
+
+  ```ruby
+  ilo_user 'creater user' do
+    ilos [ilo1, ilo2]
+    username 'test'
+    password 'password123'
+    login_priv true
+    remote_console_priv false
+    user_config_priv true
+    virtual_media_priv false
+    virtual_power_and_reset_priv true
+    ilo_config_priv false
+  action :create
+  end
+  ```
+
+ - **Delete user:**
+
+  ```ruby
+  ilo_user 'delete user' do
+    ilos [ilo1, ilo2]
+    username 'test'
+    action :delete
+  end
+  ```
 
 ### ilo_virtual_media
 
