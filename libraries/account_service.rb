@@ -12,7 +12,7 @@
 require_relative 'base_resource'
 
 module IloCookbook
-  ## Class for Ilo Account Service Actions
+  ## Class for iLO  Account Service Actions
   class AccountService < BaseResource
     resource_name :ilo_account_service
 
@@ -21,6 +21,7 @@ module IloCookbook
     property :password, String
 
     action :create do
+      warn '[Deprecated] `ilo_account_service` is deprecated. Please use `ilo_user` instead.'
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)
@@ -33,6 +34,7 @@ module IloCookbook
     end
 
     action :delete do
+      warn '[Deprecated] `ilo_account_service` is deprecated. Please use `ilo_user` instead.'
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)
@@ -45,6 +47,7 @@ module IloCookbook
     end
 
     action :changePassword do
+      warn '[Deprecated] `ilo_account_service` is deprecated. Please use `ilo_user` instead.'
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)

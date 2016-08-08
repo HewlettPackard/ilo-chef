@@ -27,6 +27,7 @@ if defined?(ChefSpec)
     ilo_secure_boot:              [:set],
     ilo_service_root:             [:dump],
     ilo_snmp_service:             [:configure],
+    ilo_user:                     [:create, :delete],
     ilo_virtual_media:            [:insert, :eject]
   }
 
