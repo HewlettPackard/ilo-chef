@@ -135,6 +135,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_boot_settings 'dump boot configuration' do
     ilos [ilo1, ilo2]
+    dump_file '/full/path/to/boot_settings.yml'
     owner 'JohnDoe'
     group 'Administrators'
     action :dump
@@ -149,8 +150,8 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_chassis 'dump power metrics and thermal metrics' do
     ilos [ilo1, ilo2]
-    power_metrics_file 'power_metrics.txt'
-    thermal_metrics_file 'thermal_metrics.txt'
+    power_metrics_file '/full/path/to/power_metrics.yml'
+    thermal_metrics_file '/full/path/to/thermal_metrics.yml'
     owner 'JohnDoe'
     group 'Administrators'
     action :dump
@@ -165,7 +166,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_computer_details 'dump computer details' do
     ilos [ilo1, ilo2]
-    dump_file 'computer_details.txt'
+    dump_file '/full/path/to/computer_details.yml'
     data_bag 'computer_details_bag'
     owner 'JohnDoe'
     group 'Administrators'
