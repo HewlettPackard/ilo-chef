@@ -25,6 +25,10 @@ describe 'ilo_test::https_cert_import' do
   let(:resource_name) { 'https_cert' }
   include_context 'chef context'
 
+  before :each do
+    expect_any_instance_of(Kernel).to receive(:warn).with(/Both certificate and file_path provided/)
+  end
+
   it 'import certificate' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_certificate).and_return('different_example_certificate')
     expect_any_instance_of(ILO_SDK::Client).to receive(:import_certificate).with('example_certificate').and_return(true)

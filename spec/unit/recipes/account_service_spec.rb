@@ -4,6 +4,10 @@ describe 'ilo_test::account_service_create' do
   let(:resource_name) { 'account_service' }
   include_context 'chef context'
 
+  before :each do
+    expect_any_instance_of(Kernel).to receive(:warn).with(/`ilo_account_service` is deprecated/)
+  end
+
   it 'create test account' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['user1', 'user2'])
     expect_any_instance_of(ILO_SDK::Client).to receive(:create_user).with('test', 'test123').and_return(true)
@@ -20,6 +24,10 @@ describe 'ilo_test::account_service_change_password' do
   let(:resource_name) { 'account_service' }
   include_context 'chef context'
 
+  before :each do
+    expect_any_instance_of(Kernel).to receive(:warn).with(/`ilo_account_service` is deprecated/)
+  end
+
   it 'change test account password' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['user1', 'user2', 'test'])
     expect_any_instance_of(ILO_SDK::Client).to receive(:change_password).with('test', 'newtest123').and_return(true)
@@ -35,6 +43,10 @@ end
 describe 'ilo_test::account_service_delete' do
   let(:resource_name) { 'account_service' }
   include_context 'chef context'
+
+  before :each do
+    expect_any_instance_of(Kernel).to receive(:warn).with(/`ilo_account_service` is deprecated/)
+  end
 
   it 'delete test account' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['user1', 'user2', 'test'])
