@@ -3,6 +3,8 @@ require 'chefspec/berkshelf'
 require 'pry'
 require 'ilo-sdk'
 
+
+at_exit { ChefSpec::Coverage.report! }
 # General context for unit testing:
 RSpec.shared_context 'chef context', a: :b do
   before :each do

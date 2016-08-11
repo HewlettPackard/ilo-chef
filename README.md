@@ -35,10 +35,12 @@ The basic structure accepted by the `ilos` property is an array of hashes (or `I
 ```ruby
 ilos = [
   {
-    host: 'ilo1.example.com',  # Required. IP or hostname
-    user: 'Administrator',     # Optional. Defaults to 'Administrator'
-    password: 'secret123',     # Required
-    ssl_enabled: false         # Optional
+    host: 'ilo1.example.com',      # Required. IP or hostname
+    user: 'Administrator',         # Optional. Defaults to 'Administrator'
+    password: 'secret123',         # Required
+    ssl_enabled: false,            # Optional
+    proxy_addr: 'your.proxy.host', # Optional
+    proxy_port: 'your.proxy.port'  # Optional
   },
   {
     host: '10.0.0.3',
