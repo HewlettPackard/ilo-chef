@@ -18,76 +18,38 @@ module IloCookbook
     resource_name :ilo_bios
 
     load_base_properties
-    property :uefi_shell_startup, String, equal_to: ['Enabled', 'Disabled']
-    property :uefi_shell_startup_location, String, equal_to: ['Auto', 'NetworkLocation', 'AttachedMedia']
-    property :uefi_shell_startup_url, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.nsh)$}
-    property :dhcpv4, String, equal_to: ['Enabled', 'Disabled']
-    property :ipv4_address, String, regex: Resolv::IPv4::Regex
-    property :ipv4_gateway, String, regex: Resolv::IPv4::Regex
-    property :ipv4_primary_dns, String, regex: Resolv::IPv4::Regex
-    property :ipv4_secondary_dns, String, regex: Resolv::IPv4::Regex
-    property :ipv4_subnet_mask, String, regex: Resolv::IPv4::Regex
-    property :url_boot_file, String, regex: %r{^$|^(ht|f)tp:\/\/[A-Za-z0-9]([.\w]*:?[A-Za-z0-9])([A-Za-z0-9\-\.\?,'\/\\\+&;%\$#~=_]*)?(.iso|.efi)$}
-    property :service_name, String
-    property :service_email, String
+    property :settings, Hash, required: true # See the API docs for what settings are available
 
     action :set do
+      if settings.empty?
+        Chef::Log.error 'BIOS settings hash is empty! Nothing will be set. Please check your recipe.'
+        return
+      end
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)
-        configs = {
-          'uefi_shell_startup' => {
-            'current' => client.get_uefi_shell_startup,
-            'new' => {
-              'UefiShellStartup' => uefi_shell_startup,
-              'UefiShellStartupLocation' => uefi_shell_startup_location,
-              'UefiShellStartupUrl' => uefi_shell_startup_url
-            }
-          },
-          'bios_dhcp' => {
-            'current' => client.get_bios_dhcp,
-            'new' => {
-              'Dhcpv4' => dhcpv4,
-              'Ipv4Address' => ipv4_address,
-              'Ipv4Gateway' => ipv4_gateway,
-              'Ipv4PrimaryDNS' => ipv4_primary_dns,
-              'Ipv4SecondaryDNS' => ipv4_secondary_dns,
-              'Ipv4SubnetMask' => ipv4_subnet_mask
-            }
-          },
-          'url_boot_file' => {
-            'current' => client.get_url_boot_file,
-            'new' => url_boot_file
-          },
-          'bios_service' => {
-            'current' => client.get_bios_service,
-            'new' => {
-              'ServiceName' => service_name,
-              'ServiceEmail' => service_email
-            }
-          }
-        }
-        configs.each do |key, value|
-          next if value['current'] == value['new']
-          next if value['new'].nil?
-          case key
-          when 'uefi_shell_startup'
-            converge_by "Set ilo #{client.host} UEFI Shell Startup from '#{value['current']}' to '#{value['new']}'" do
-              client.set_uefi_shell_startup(uefi_shell_startup, uefi_shell_startup_location, uefi_shell_startup_url)
-            end
-          when 'bios_dhcp'
-            converge_by "Set ilo #{client.host} Bios DHCP from '#{value['current']}' to '#{value['new']}'" do
-              client.set_bios_dhcp(dhcpv4, ipv4_address, ipv4_gateway, ipv4_primary_dns, ipv4_secondary_dns, ipv4_subnet_mask) if dhcpv4 == 'Disabled'
-              client.set_bios_dhcp(dhcpv4) if dhcpv4 == 'Enabled'
-            end
-          when 'url_boot_file'
-            converge_by "Set ilo #{client.host} URL Boot File from '#{value['current']}' to '#{value['new']}'" do
-              client.set_url_boot_file(url_boot_file)
-            end
-          when 'bios_service'
-            converge_by "Set ilo #{client.host} Bios Service from '#{value['current']}' to '#{value['new']}'" do
-              client.set_bios_service(service_name, service_email)
-            end
+        begin
+          current = client.get_bios_settings
+          raise unless current && current.is_a?(Hash)
+        rescue StandardError => e
+          Chef::Log.error "Failed to get iLO BIOS settings for #{client.host}. Details:"
+          Chef::Log.error e.message
+          next
+        end
+        changes = []
+        set = JSON.parse(settings.to_json) # Convert to/from JSON to match types from API response
+        set.each do |key, val|
+          next if val == current[key]
+          changes.push(key: key, desired: val, current: current[key])
+        end
+        if changes.empty?
+          Chef::Log.info "BIOS settings for iLO at #{client.host} are similar. No update necessary."
+          next
+        else
+          text = ''
+          changes.each { |c| text << "\n    #{c[:key]}: #{c[:current] || 'nil'} > #{c[:desired] || 'nil'}" }
+          converge_by "Set BIOS settings on iLO at #{client.host}#{text}\n" do
+            client.set_bios_settings(settings)
           end
         end
       end

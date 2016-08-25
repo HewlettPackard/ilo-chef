@@ -70,6 +70,31 @@ The following resources are available for usage in your recipes:
 
 ### ilo_bios
 
+ - **Set BIOS configuration:**
+
+  ```ruby
+  ilo_bios 'set BIOS configuration' do
+    ilos [ilo1, ilo2]
+    settings(
+      UefiShellStartup: 'Enabled',
+      UefiShellStartupLocation: 'Auto',
+      UefiShellStartupUrl: 'http://www.uefi.nsh',
+      Dhcpv4: 'Enabled',
+      Ipv4Address: '10.1.1.0',
+      Ipv4Gateway: '10.1.1.11',
+      Ipv4PrimaryDNS: '10.1.1.1',
+      Ipv4SecondaryDNS: '10.1.1.2',
+      Ipv4SubnetMask: '255.255.255.0',
+      UrlBootFile: 'http://www.urlbootfile.iso',
+      ServiceName: 'iLO Admin',
+      ServiceEmail: 'admin@domain.com'
+      # NOTE: This is just an example; you can set as many or as few settings as you want.
+      # (And there's a whole lot more you can set. See the API docs for the complete list.)
+    )
+    action :set # Not necessary, as this is the default
+  end
+  ```
+
  - **Revert to default BIOS base configuration:**
 
   ```ruby
@@ -79,38 +104,10 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Set BIOS configuration:**
-
-  ```ruby
-  ilo_bios 'set BIOS configuration' do
-    ilos [ilo1, ilo2]
-    uefi_shell_startup 'Enabled'
-    uefi_shell_startup_location 'Auto'
-    uefi_shell_startup_url 'http://www.uefi.nsh'
-    dhcpv4 'Disabled'
-    ipv4_address '10.1.1.0'
-    ipv4_gateway '10.1.1.11'
-    ipv4_primary_dns '10.1.1.1'
-    ipv4_secondary_dns '10.1.1.2'
-    ipv4_subnet_mask '255.255.255.0'
-    url_boot_file 'http://www.urlbootfile.iso'
-    service_name 'John Doe'
-    service_email 'john.doe@hpe.com'
-    action :set # Not necessary, as this is the default
-  end
-  ```
-
 
 ### ilo_boot_settings
 
  - **Revert to default Boot base configuration:**
-
-  ```ruby
-  ilo_boot_settings 'revert boot' do
-    ilos [ilo1, ilo2]
-    action :revert
-  end
-  ```
 
  - **Set boot configuration:**
 
@@ -127,6 +124,13 @@ The following resources are available for usage in your recipes:
     ]
     boot_target 'None'
     action :set # Not necessary, as this is the default
+  end
+  ```
+
+  ```ruby
+  ilo_boot_settings 'revert boot' do
+    ilos [ilo1, ilo2]
+    action :revert
   end
   ```
 
