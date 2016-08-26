@@ -262,7 +262,7 @@ The following resources are available for usage in your recipes:
   ilo_https_cert 'dump CSR to file' do
     ilo ilo1
     file_path '/c/CSR.cert'
-    action :get_csr
+    action :dump_csr
   end
   ```
 
