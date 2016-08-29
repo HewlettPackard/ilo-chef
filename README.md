@@ -325,7 +325,7 @@ The following resources are available for usage in your recipes:
     ilo ilo1
     file_path '~/certs/CSR.cert'
     action :dump_csr
-    not_if { valid || ilo1.get_csr.nil? }
+    not_if { valid || ilo1.get_csr.nil? } # Don't dump the CSR file if the cert is still valid or the csr is not finished being generated
   end
 
   # Here you'll need to have a step that submits the CSR to a certificate authority
