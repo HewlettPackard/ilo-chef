@@ -1,9 +1,8 @@
 ilo =
   {
-    host: '16.85.179.199',
+    host: 'ilo.example.com',
     user: 'Admin',
-    password: 'admin123',
-    ssl_enabled: false
+    password: 'secret123'
   }
 
 ilo_service_root 'dump schema and registry' do
