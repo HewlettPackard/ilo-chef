@@ -3,6 +3,8 @@ rvm:
   - 2.1
   - 2.2.5
 
+before_install: gem update bundler
+
 before_script:
 - eval "$(/opt/chefdk/bin/chef shell-init bash)"
 
