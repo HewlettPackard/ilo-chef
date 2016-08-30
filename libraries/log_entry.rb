@@ -17,7 +17,7 @@ module IloCookbook
     resource_name :ilo_log_entry
 
     load_base_properties
-    property :log_type, String, required: true, equal_to: ['IEL', 'IML']
+    property :log_type, String, required: true, equal_to: ['IEL', 'IML', :IEL, :IML]
     property :severity_level, String, equal_to: ['OK', 'Warning', 'Critical']
     property :dump_file, String
     property :owner, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
@@ -25,6 +25,7 @@ module IloCookbook
     property :duration, Integer, default: 24
 
     action :dump do
+      raise 'Please set the :dump_file property (String)' unless dump_file
       load_sdk
       dump_content = {}
       ilos.each do |ilo|

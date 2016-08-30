@@ -1,7 +1,7 @@
-# (C) Copyright 2016 Hewlett Packard Enterprise Development LP
+# (c) Copyright 2016 Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# You may not use this file except in compliance with the License.
+# you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software distributed
@@ -16,7 +16,7 @@ module IloCookbook
   class HTTPSCert < BaseResource
     resource_name :ilo_https_cert
 
-    property :ilo, Hash
+    property :ilo # Hash or ILO_SDK::Client
     property :certificate, String
     property :file_path, String
     property :country, String
@@ -28,7 +28,7 @@ module IloCookbook
 
     action :import do
       load_sdk
-      raise 'Please provide certificate or file_path!' unless certificate || file_path
+      raise 'Please provide the :certificate or :file_path property!' unless certificate || file_path
       warn 'WARNING: Both certificate and file_path provided. Defaulting to certificate.' if certificate && file_path
       client = build_client(ilo)
       cur_certificate = client.get_certificate.to_s
@@ -47,6 +47,9 @@ module IloCookbook
     end
 
     action :generate_csr do
+      %w(country state city orgName orgUnit commonName).each do |p|
+        raise "Please provide the :#{p} property (String)" unless property_is_set?(p)
+      end
       load_sdk
       client = build_client(ilo)
       converge_by 'Generating CSR' do
