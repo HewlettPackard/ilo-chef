@@ -265,7 +265,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_https_cert 'dump CSR to file' do
     ilo ilo1
-    file_path '/c/CSR.cert'
+    file_path '/full/path/to/CSR.cert'
     action :dump_csr
   end
   ```
@@ -287,7 +287,7 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_https_cert 'import certificate from file' do
     ilo ilo1
-    file_path '/c/certificate_file.cert'
+    file_path '/full/path/to/certificate_file.cert'
     action :import
   end
   ```
@@ -302,6 +302,7 @@ The following resources are available for usage in your recipes:
     user: 'Administrator',
     password: 'secret123'
   )
+  # NOTE: The ILO_SDK::Client class is required here instead of a hash because we'll be calling the #get_csr method on it.
 
   # Get the current SSL Certificate and check to see if expires within 24 hours
   expiration = ilo1.get_certificate.not_after.to_datetime
@@ -323,8 +324,8 @@ The following resources are available for usage in your recipes:
   ilo_https_cert 'dump CSR to file' do
     ilo ilo1
     file_path '~/certs/CSR.cert'
-    action :get_csr
-    not_if { valid || ilo1.get_csr.nil? }
+    action :dump_csr
+    not_if { valid || ilo1.get_csr.nil? } # Don't dump the CSR file if the cert is still valid or the csr is not finished being generated
   end
 
   # Here you'll need to have a step that submits the CSR to a certificate authority
@@ -352,7 +353,7 @@ The following resources are available for usage in your recipes:
   ilo_log_entry 'dump log entries' do
     ilos [ilo1, ilo2]
     log_type 'IEL'
-    dump_file 'IEL_logs.txt'
+    dump_file '/full/path/to/IEL_logs.txt'
     owner 'JohnDoe'
     group 'Administrators'
     duration 30 # up to hours back from now
@@ -444,9 +445,9 @@ The following resources are available for usage in your recipes:
   ilo_service_root 'dump schema and registry' do
     ilos [ilo1, ilo2]
     schema_prefix 'Account'
-    schema_file 'schema.txt'
+    schema_file '/full/path/to/schema.txt'
     registry_prefix 'Base'
-    registry_file 'registry.txt'
+    registry_file '/full/path/to/registry.txt'
     owner 'JohnDoe'
     group 'Administrators'
     action :dump
