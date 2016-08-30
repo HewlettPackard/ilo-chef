@@ -4,10 +4,10 @@ describe 'ilo_test::user_create' do
   let(:resource_name) { 'user' }
   include_context 'chef context'
 
-  it 'create user' do
+  it 'creates a user' do
     new_privileges = {
       'LoginPriv' => true,
-      'RemoteConsolePriv' => true,
+      # 'RemoteConsolePriv' => true,
       'UserConfigPriv' => true,
       'VirtualMediaPriv' => true,
       'VirtualPowerAndResetPriv' => true,
@@ -19,7 +19,7 @@ describe 'ilo_test::user_create' do
     expect(real_chef_run).to create_ilo_user('create user')
   end
 
-  it 'modify user' do
+  it 'modifies a user' do
     cur_privileges = {
       'LoginPriv' => false,
       'RemoteConsolePriv' => false,
@@ -30,7 +30,7 @@ describe 'ilo_test::user_create' do
     }
     new_privileges = {
       'LoginPriv' => true,
-      'RemoteConsolePriv' => true,
+      # 'RemoteConsolePriv' => true,
       'UserConfigPriv' => true,
       'VirtualMediaPriv' => true,
       'VirtualPowerAndResetPriv' => true,
@@ -39,6 +39,22 @@ describe 'ilo_test::user_create' do
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['test1', 'test2'])
     expect_any_instance_of(ILO_SDK::Client).to receive(:get_account_privileges).and_return(cur_privileges)
     expect_any_instance_of(ILO_SDK::Client).to receive(:set_account_privileges).with('test1', new_privileges).and_return(true)
+    expect_any_instance_of(ILO_SDK::Client).to receive(:change_password).with('test1', 'password').and_return(true)
+    expect(real_chef_run).to create_ilo_user('create user')
+  end
+
+  it 'modifies a user only if their permissions have changed' do
+    cur_privileges = {
+      'LoginPriv' => true,
+      'RemoteConsolePriv' => true,
+      'UserConfigPriv' => true,
+      'VirtualMediaPriv' => true,
+      'VirtualPowerAndResetPriv' => true,
+      'iLOConfigPriv' => true
+    }
+    expect_any_instance_of(ILO_SDK::Client).to receive(:get_users).and_return(['test1', 'test2'])
+    expect_any_instance_of(ILO_SDK::Client).to receive(:get_account_privileges).and_return(cur_privileges)
+    expect_any_instance_of(ILO_SDK::Client).to_not receive(:set_account_privileges)
     expect_any_instance_of(ILO_SDK::Client).to receive(:change_password).with('test1', 'password').and_return(true)
     expect(real_chef_run).to create_ilo_user('create user')
   end

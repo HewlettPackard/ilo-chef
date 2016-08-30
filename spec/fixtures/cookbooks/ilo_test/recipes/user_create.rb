@@ -18,7 +18,7 @@ ilo_user 'create user' do
   username 'test1'
   password 'password'
   login_priv true
-  remote_console_priv true
+  # remote_console_priv true
   user_config_priv true
   virtual_media_priv true
   virtual_power_and_reset_priv true

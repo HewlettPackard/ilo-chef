@@ -44,7 +44,7 @@ module IloCookbook
           next
         else
           text = ''
-          changes.each { |c| text << "\n    #{c[:key]}: #{c[:current] || 'nil'} > #{c[:desired] || 'nil'}" }
+          changes.each { |c| text << "\n    #{c[:key]}: #{c[:current] || 'nil'} -> #{c[:desired] || 'nil'}" }
           converge_by "Set BIOS settings on iLO at #{client.host}#{text}\n" do
             client.set_bios_settings(settings)
           end

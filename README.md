@@ -473,12 +473,12 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
     ilos [ilo1, ilo2]
     username 'test'                   # Defaults to the resource's name attribute
     password 'password123'
-    login_priv true                   # Optional. Default is false
-    remote_console_priv false         # Optional. Default is false
-    user_config_priv true             # Optional. Default is false
-    virtual_media_priv false          # Optional. Default is false
-    virtual_power_and_reset_priv true # Optional. Default is false
-    ilo_config_priv false             # Optional. Default is false
+    login_priv true                   # Optional
+    remote_console_priv false         # Optional
+    user_config_priv true             # Optional
+    virtual_media_priv false          # Optional
+    virtual_power_and_reset_priv true # Optional
+    ilo_config_priv false             # Optional
     action :create                    # Not necessary, as this is the default
   end
   ```

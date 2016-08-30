@@ -19,31 +19,39 @@ module IloCookbook
     load_base_properties
     property :username, String, required: true, name_property: true
     property :password, String
-    property :login_priv, [TrueClass, FalseClass], default: false
-    property :remote_console_priv, [TrueClass, FalseClass], default: false
-    property :user_config_priv, [TrueClass, FalseClass], default: false
-    property :virtual_media_priv, [TrueClass, FalseClass], default: false
-    property :virtual_power_and_reset_priv, [TrueClass, FalseClass], default: false
-    property :ilo_config_priv, [TrueClass, FalseClass], default: false
+    property :login_priv, [TrueClass, FalseClass]
+    property :remote_console_priv, [TrueClass, FalseClass]
+    property :user_config_priv, [TrueClass, FalseClass]
+    property :virtual_media_priv, [TrueClass, FalseClass]
+    property :virtual_power_and_reset_priv, [TrueClass, FalseClass]
+    property :ilo_config_priv, [TrueClass, FalseClass]
 
     action :create do
       load_sdk
-      privileges = {
-        'LoginPriv' => login_priv,
-        'RemoteConsolePriv' => remote_console_priv,
-        'UserConfigPriv' => user_config_priv,
-        'VirtualMediaPriv' => virtual_media_priv,
-        'VirtualPowerAndResetPriv' => virtual_power_and_reset_priv,
-        'iLOConfigPriv' => ilo_config_priv
-      }
+      privileges = {}
+      privileges['LoginPriv'] = login_priv if property_is_set?(:login_priv)
+      privileges['RemoteConsolePriv'] = remote_console_priv if property_is_set?(:remote_console_priv)
+      privileges['UserConfigPriv'] = user_config_priv if property_is_set?(:user_config_priv)
+      privileges['VirtualMediaPriv'] = virtual_media_priv if property_is_set?(:virtual_media_priv)
+      privileges['VirtualPowerAndResetPriv'] = virtual_power_and_reset_priv if property_is_set?(:virtual_power_and_reset_priv)
+      privileges['iLOConfigPriv'] = ilo_config_priv if property_is_set?(:ilo_config_priv)
       ilos.each do |ilo|
         client = build_client(ilo)
         cur_users = client.get_users
         if cur_users.include? username # User exists
-          cur_privileges = client.get_account_privileges(username)
-          if cur_privileges != privileges
-            converge_by "Update account privileges for user #{username} on iLO #{client.host}" do
-              client.set_account_privileges(username, privileges)
+          unless privileges.empty? # Don't set them if they aren't specified in the recipe
+            cur_privileges = client.get_account_privileges(username)
+            changes = []
+            privileges.each do |key, val|
+              next if val == cur_privileges[key]
+              changes.push(key: key, desired: val, current: cur_privileges[key])
+            end
+            unless changes.empty?
+              text = "Update account privileges for user #{username} on iLO #{client.host}"
+              changes.each { |c| text << "\n    #{c[:key]}: #{c[:current]} -> #{c[:desired]}" }
+              converge_by text do
+                client.set_account_privileges(username, privileges)
+              end
             end
           end
           next unless password
