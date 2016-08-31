@@ -497,7 +497,16 @@ The following resources are available for usage in your recipes:
     action :delete
   end
   ```
-
+  -**Change Password:**
+  ```ruby
+  ilo_user 'change user password' do
+    ilos [ilo1, ilo2]
+    username 'test'
+    password 'password123'
+      action :create
+  end
+    ```ruby
+    
 ### ilo_virtual_media
 
  - **Insert virtual media:**
