@@ -58,6 +58,7 @@ module IloCookbook
     end
 
     action :dump_csr do
+      raise 'Please provide the :file_path property!' unless file_path
       load_sdk
       client = build_client(ilo)
       converge_by "Returning CSR and placing it in '#{file_path}'" do
