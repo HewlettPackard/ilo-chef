@@ -61,11 +61,10 @@ module IloCookbook
       raise 'Please provide the :file_path property!' unless file_path
       load_sdk
       client = build_client(ilo)
-      converge_by "Returning CSR and placing it in '#{file_path}'" do
-        csr = client.get_csr
-        file file_path do
-          content csr
-        end
+      Chef::Log.info "Fetching CSR from #{client.host} and placing it in '#{file_path}'"
+      csr = client.get_csr
+      file file_path do
+        content csr
       end
     end
   end
