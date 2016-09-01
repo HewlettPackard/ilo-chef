@@ -37,7 +37,7 @@ module IloCookbook
         converge_by 'Importing new certificate' do
           client.import_certificate(certificate)
         end
-      elsif file
+      else
         cert = ::File.open(file_path).read
         next if cur_certificate.gsub(/\s+/, '') == cert.gsub(/\s+/, '')
         converge_by "Importing new certificate from '#{file_path}'" do

@@ -492,6 +492,17 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
     action :delete
   end
   ```
+ 
+ -**Change Password:**
+ 
+  ```ruby
+  ilo_user 'change user password' do
+    ilos [ilo1, ilo2]
+    username 'test'
+    password 'password123'
+    action :create
+  end
+  ```
 
 ### ilo_virtual_media
 
