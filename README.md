@@ -125,13 +125,6 @@ The following resources are available for usage in your recipes:
   end
   ```
 
-  ```ruby
-  ilo_boot_settings 'revert boot' do
-    ilos [ilo1, ilo2]
-    action :revert
-  end
-  ```
-
  - ####Revert to default boot configuration:
 
   ```ruby
@@ -493,7 +486,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
   end
   ```
  
- -**Change Password:**
+ - ####Change Password:
  
   ```ruby
   ilo_user 'change user password' do
