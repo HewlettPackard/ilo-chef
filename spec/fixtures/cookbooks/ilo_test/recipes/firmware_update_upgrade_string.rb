@@ -1,5 +1,5 @@
 # Cookbook Name:: ilo_test
-# Recipe:: https_cert_import
+# Recipe:: firmware_update_upgrade_string
 #
 # (c) Copyright 2016 Hewlett Packard Enterprise Development LP
 #
@@ -13,9 +13,8 @@
 # specific language governing permissions and limitations under the License.
 #
 
-ilo_https_cert 'import certificate' do
-  ilo node['ilo_test']['ilo1']
-  certificate 'example_certificate'
-  file_path '/c/example_file'
-  action :import
+ilo_firmware_update 'upgrade firmware' do
+  ilos node['ilo_test']['ilos']
+  fw_version '2.51'
+  fw_uri 'www.firmwareURI.com'
 end

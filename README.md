@@ -70,7 +70,7 @@ The following resources are available for usage in your recipes:
 
 ### ilo_bios
 
- - **Set BIOS configuration:**
+ - ####Set BIOS configuration:
 
   ```ruby
   ilo_bios 'set BIOS configuration' do
@@ -95,7 +95,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Revert to default BIOS base configuration:**
+ - ####Revert to default BIOS base configuration:
 
   ```ruby
   ilo_bios 'revert BIOS' do
@@ -107,14 +107,12 @@ The following resources are available for usage in your recipes:
 
 ### ilo_boot_settings
 
- - **Revert to default Boot base configuration:**
-
- - **Set boot configuration:**
+ - ####Set boot configuration:
 
   ```ruby
   ilo_boot_settings 'set boot configuration' do
     ilos [ilo1, ilo2]
-    boot_order [
+    boot_order [       # Optional
       "FD.Virtual.1.1",
       "Generic.USB.1.1",
       "HD.Emb.1.1",
@@ -122,26 +120,28 @@ The following resources are available for usage in your recipes:
       "NIC.LOM.1.1.IPv4",
       "NIC.LOM.1.1.IPv6"
     ]
-    boot_target 'None'
-    action :set # Not necessary, as this is the default
+    boot_target 'None' # Optional
+    action :set        # Not necessary, as this is the default
   end
   ```
 
+ - ####Revert to default boot configuration:
+
   ```ruby
-  ilo_boot_settings 'revert boot' do
+  ilo_boot_settings 'revert boot configuration' do
     ilos [ilo1, ilo2]
     action :revert
   end
   ```
 
- - **Dump the boot configuration to a file:**
+ - ####Dump the boot configuration to a file:
 
   ```ruby
   ilo_boot_settings 'dump boot configuration' do
     ilos [ilo1, ilo2]
     dump_file '/full/path/to/boot_settings.yml'
-    owner 'JohnDoe'
-    group 'Administrators'
+    owner 'JohnDoe'        # Optional: Owner of the file. Defaults to the current user
+    group 'Administrators' # Optional: Group ownership for the file. Defaults to the current user
     action :dump
   end
   ```
@@ -149,103 +149,88 @@ The following resources are available for usage in your recipes:
 
 ### ilo_chassis
 
- - **Dump power metrics and thermal metrics information to a file:**
+ - ####Dump power metrics and thermal metrics information to a file:
 
   ```ruby
   ilo_chassis 'dump power metrics and thermal metrics' do
     ilos [ilo1, ilo2]
     power_metrics_file '/full/path/to/power_metrics.yml'
     thermal_metrics_file '/full/path/to/thermal_metrics.yml'
-    owner 'JohnDoe'
-    group 'Administrators'
-    action :dump
+    owner 'JohnDoe'        # Optional: Owner of the file. Defaults to the current user
+    group 'Administrators' # Optional: Owner of the file. Defaults to the current user
+    action :dump           # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_computer_details
 
- - **Dump computer details to a file and data bag:**
+ - ####Dump computer details to a file and data bag:
 
   ```ruby
   ilo_computer_details 'dump computer details' do
     ilos [ilo1, ilo2]
     dump_file '/full/path/to/computer_details.yml'
     data_bag 'computer_details_bag'
-    owner 'JohnDoe'
-    group 'Administrators'
-    action :dump
+    owner 'JohnDoe'        # Optional: Owner of the file. Defaults to the current user
+    group 'Administrators' # Optional: Owner of the file. Defaults to the current user
+    action :dump           # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_computer_system
 
- - **Set computer system information:**
+ - ####Set computer system information:
 
   ```ruby
   ilo_computer_system 'set computer system info' do
     ilos [ilo1, ilo2]
-    asset_tag 'HPE001'
-    led_state 'Lit'
-    action :set
+    asset_tag 'HPE001' # Optional
+    led_state 'Lit'    # Optional: 'Lit' or 'Off'
+    action :set        # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_date_time
 
- - **Set the time zone:**
+ - ####Set the time zone and NTP settings:
 
   ```ruby
   ilo_date_time 'set time zone' do
     ilos [ilo1, ilo2]
-    time_zone 'Africa/Abidjan'
-    action :set # Not necessary, as this is the default
-  end
-  ```
-
- - **Set whether or not to use NTP:**
-
-  ```ruby
-  ilo_date_time 'use NTP' do
-    ilos [ilo1, ilo2]
-    use_ntp true
-    action :set_ntp
-  end
-  ```
-
- - **Set the NTP servers:**
-
-  ```ruby
-  ilo_date_time 'set NTP servers' do
-    ilos [ilo1, ilo2]
-    ntp_servers [
+    time_zone 'Africa/Abidjan' # Optional
+    use_ntp true  # Optional
+    ntp_servers [ # Optional
       "10.168.0.2",
       "10.168.0.3"
     ]
-    action :set_ntp_servers
+    action :set   # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_firmware_update
 
- - **Upgrade firmware:**
+ - ####Upgrade firmware:
 
   ```ruby
   ilo_firmware_update 'upgrade firmware' do
     ilos [ilo1, ilo2]
-    fw_version '2.5'
-    fw_uri 'www.firmwareuri.com'
-    action :upgrade
+    fw_version '2.51'
+    fw_uri 'www.firmware.domain.com/2.51'
+    action :upgrade # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_https_cert
 
- - **Generate Certificate Signing Request (CSR):**
+Note that this resource requires an `ilo` property (Hash or ILO_SDK::Client) instead of an `ilos` property (Array).
+You'll need seperate ilo_https_cert resources for each ilo you'd like to perform a task on.
+
+ - ####Generate Certificate Signing Request (CSR):
 
   ```ruby
   ilo_https_cert 'generate CSR' do
@@ -260,7 +245,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Dump CSR to a file:**
+ - ####Dump CSR to a file:
 
   ```ruby
   ilo_https_cert 'dump CSR to file' do
@@ -270,7 +255,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Import certificate:**
+ - ####Import certificate:
 
   ```ruby
   ilo_https_cert 'import certificate' do
@@ -282,7 +267,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Import certificate from file:**
+ - ####Import certificate from file:
 
   ```ruby
   ilo_https_cert 'import certificate from file' do
@@ -292,7 +277,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Complete HTTPS Certificate Replacement Example**
+ - ####Complete HTTPS Certificate Replacement Example
 
   ```ruby
   require 'ilo-sdk'
@@ -347,21 +332,22 @@ The following resources are available for usage in your recipes:
 
 ### ilo_log_entry
 
- - **Dump log entries to a file:**
+ - ####Dump log entries to a file:
 
   ```ruby
   ilo_log_entry 'dump log entries' do
     ilos [ilo1, ilo2]
-    log_type 'IEL'
     dump_file '/full/path/to/IEL_logs.txt'
-    owner 'JohnDoe'
-    group 'Administrators'
-    duration 30 # up to hours back from now
-    action :dump # Not necessary, as this is the default
+    log_type 'IEL'         # 'IEL' or 'IML
+    owner 'JohnDoe'        # Optional: Owner of the dump file. Defaults to the current user
+    group 'Administrators' # Optional: Owner of the dump file. Defaults to the current user
+    duration 30            # Optional: Number of hours ago to begin collection at (until now)
+    severity_level 'OK'    # Optional: Exclude this property to get all serverities
+    action :dump           # Not necessary, as this is the default
   end
   ```
 
- - **Clear log entries:**
+ - ####Clear log entries:
 
   ```ruby
   ilo_log_entry 'clear log entries' do
@@ -374,20 +360,20 @@ The following resources are available for usage in your recipes:
 
 ### ilo_manager_network_protocol
 
- - **Set ilo session timeout:**
+ - ####Set ilo session timeout:
 
   ```ruby
   ilo_manager_network_protocol 'set timeout' do
     ilos [ilo1, ilo2]
-    timeout 60 # minutes
-    action :set
+    timeout 60  # Minutes
+    action :set # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_power
 
- - **Power on the system:**
+ - ####Power on the system:
 
   ```ruby
   ilo_power 'power on' do
@@ -396,7 +382,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Power off the system:**
+ - ####Power off the system:
 
   ```ruby
   ilo_power 'power off' do
@@ -405,7 +391,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Reset the system:**
+ - ####Reset the system:
 
   ```ruby
   ilo_power 'reset system' do
@@ -414,7 +400,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Reset ilo:**
+ - ####Reset ilo:
 
   ```ruby
   ilo_power 'reset ilo' do
@@ -426,20 +412,20 @@ The following resources are available for usage in your recipes:
 
 ### ilo_secure_boot
 
- - **Set whether or not to enable UEFI secure boot:**
+ - ####Set whether or not to enable UEFI secure boot:
 
   ```ruby
   ilo_secure_boot 'enable secure boot' do
     ilos [ilo1, ilo2]
-    enable true
-    action :set
+    enable true # Optional: Defaults to false
+    action :set # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_service_root
 
- - **Dump schema and registry information to a file:**
+ - ####Dump schema and registry information to a file:
 
   ```ruby
   ilo_service_root 'dump schema and registry' do
@@ -448,47 +434,49 @@ The following resources are available for usage in your recipes:
     schema_file '/full/path/to/schema.txt'
     registry_prefix 'Base'
     registry_file '/full/path/to/registry.txt'
-    owner 'JohnDoe'
-    group 'Administrators'
-    action :dump
+    owner 'JohnDoe'        # Optional: Owner of the dump file(s). Defaults to the current user
+    group 'Administrators' # Optional: Owner of the dump file(s). Defaults to the current user
+    action :dump           # Not necessary, as this is the default
   end
+  
+  # Note: You must set the :schema_file or :registry_file property, but are not required to set both
   ```
 
 
 ### ilo_snmp_service
 
- - **Configure SNMP service:**
+ - ####Configure SNMP service:
 
   ```ruby
   ilo_snmp_service 'set snmp mode and turn alerts on' do
     ilos [ilo1, ilo2]
-    snmp_mode 'Agentless'
-    snmp_alerts true
-    action :configure
+    snmp_mode 'Agentless' # Optional: Defaults to 'Agentless'
+    snmp_alerts true      # Optional: Defaults to  false
+    action :configure     # Not necessary, as this is the default
   end
   ```
 
 
 ### ilo_user
 
- - **Create or modify user:**
+ - ####Create or modify user:
 
   ```ruby
   ilo_user 'creater user' do
     ilos [ilo1, ilo2]
-    username 'test'
+    username 'test'                   # Defaults to the resource's name attribute
     password 'password123'
-    login_priv true
-    remote_console_priv false
-    user_config_priv true
-    virtual_media_priv false
-    virtual_power_and_reset_priv true
-    ilo_config_priv false
-  action :create
+    login_priv true                   # Optional
+    remote_console_priv false         # Optional
+    user_config_priv true             # Optional
+    virtual_media_priv false          # Optional
+    virtual_power_and_reset_priv true # Optional
+    ilo_config_priv false             # Optional
+    action :create                    # Not necessary, as this is the default
   end
   ```
 
- - **Delete user:**
+ - ####Delete user:
 
   ```ruby
   ilo_user 'delete user' do
@@ -498,7 +486,7 @@ The following resources are available for usage in your recipes:
   end
   ```
  
- -**Change Password:**
+ - ####Change Password:
  
   ```ruby
   ilo_user 'change user password' do
@@ -511,7 +499,7 @@ The following resources are available for usage in your recipes:
 
 ### ilo_virtual_media
 
- - **Insert virtual media:**
+ - ####Insert virtual media:
 
   ```ruby
   ilo_virtual_media 'insert virtual media' do
@@ -521,7 +509,7 @@ The following resources are available for usage in your recipes:
   end
   ```
 
- - **Eject virtual media:**
+ - ####Eject virtual media:
 
   ```ruby
   ilo_virtual_media 'eject virtual media' do

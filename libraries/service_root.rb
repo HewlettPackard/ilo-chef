@@ -25,9 +25,9 @@ module IloCookbook
     property :group, [String, Integer], default: ENV['USER'] || ENV['USERNAME']
 
     action :dump do
-      raise 'Please provide a schema_file and/or registry_file!' unless schema_file || registry_file
-      raise 'Please provide a schema_prefix' if schema_file && !schema_prefix
-      raise 'Please provide a registry_prefix' if registry_file && !registry_prefix
+      raise 'Please provide the :schema_file and/or :registry_file properties!' unless schema_file || registry_file
+      raise 'Please provide the :schema_prefix property!' if schema_file && schema_prefix.nil?
+      raise 'Please provide the :registry_prefix property!' if registry_file && registry_prefix.nil?
       load_sdk
       schema_content = {}
       registry_content = {}

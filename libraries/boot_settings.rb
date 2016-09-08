@@ -67,6 +67,7 @@ module IloCookbook
     end
 
     action :dump do
+      raise 'Please provide a :dump_file property (String)' unless dump_file
       load_sdk
       dump_content = ''
       ilos.each do |ilo|

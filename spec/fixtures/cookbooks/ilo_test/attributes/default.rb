@@ -1,5 +1,5 @@
 # Cookbook Name:: ilo_test
-# Recipe:: https_cert_import
+# Attributes:: default
 #
 # (c) Copyright 2016 Hewlett Packard Enterprise Development LP
 #
@@ -13,9 +13,8 @@
 # specific language governing permissions and limitations under the License.
 #
 
-ilo_https_cert 'import certificate' do
-  ilo node['ilo_test']['ilo1']
-  certificate 'example_certificate'
-  file_path '/c/example_file'
-  action :import
-end
+default['ilo_test']['ilo1'] = { host: 'ilo.example.com', user: 'Admin', password: 'secret123' }
+
+default['ilo_test']['ilos'] = [
+  default['ilo_test']['ilo1']
+]

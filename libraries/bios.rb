@@ -18,13 +18,10 @@ module IloCookbook
     resource_name :ilo_bios
 
     load_base_properties
-    property :settings, Hash, required: true # See the API docs for what settings are available
+    property :settings, Hash # See the API docs for what settings are available
 
     action :set do
-      if settings.empty?
-        Chef::Log.error 'BIOS settings hash is empty! Nothing will be set. Please check your recipe.'
-        return
-      end
+      raise 'Please provide a :settings property (Hash)' unless settings
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)
@@ -47,7 +44,7 @@ module IloCookbook
           next
         else
           text = ''
-          changes.each { |c| text << "\n    #{c[:key]}: #{c[:current] || 'nil'} > #{c[:desired] || 'nil'}" }
+          changes.each { |c| text << "\n    #{c[:key]}: #{c[:current] || 'nil'} -> #{c[:desired] || 'nil'}" }
           converge_by "Set BIOS settings on iLO at #{client.host}#{text}\n" do
             client.set_bios_settings(settings)
           end
