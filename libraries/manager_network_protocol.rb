@@ -17,7 +17,7 @@ module IloCookbook
     resource_name :ilo_manager_network_protocol
 
     load_base_properties
-    property :timeout, Fixnum, equal_to: [15, 30, 60, 120, 0]
+    property :timeout, Fixnum, required: true, equal_to: [15, 30, 60, 120, 0]
 
     action :set do
       load_sdk

@@ -22,6 +22,7 @@ module IloCookbook
     property :use_ntp, [TrueClass, FalseClass]
 
     action :set do
+      raise 'Please provide the :time_zone, :ntp_servers and/or :use_ntp properties!' unless time_zone || ntp_servers || !use_ntp.nil?
       load_sdk
       ilos.each do |ilo|
         client = build_client(ilo)
