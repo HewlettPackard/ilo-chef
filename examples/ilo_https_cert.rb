@@ -89,14 +89,14 @@ ca_pass = "#{certs_dir}/ca.passphrase"
 ca_key = "#{certs_dir}/ca.key"
 ilo1_cert = "#{certs_dir}/ilo1.cert"
 file ca_pass do
-  content (0...48).map { (65 + rand(26)).chr }.join # Randomly generated string
+  content((0...48).map { (65 + rand(26)).chr }.join) # Randomly generated string
   sensitive true
   action :create_if_missing
 end
 
 execute 'create private CA key' do
   command "openssl genrsa -des3 -out #{ca_key} -passout file:#{ca_pass} 2048"
-  not_if { File.exists?(ca_key) }
+  not_if { File.exist?(ca_key) }
 end
 
 execute 'write RSA key' do
@@ -106,7 +106,7 @@ end
 
 execute 'sign csr' do
   command "openssl x509 -req -days 365 -in #{certs_dir}/ilo1.csr -signkey #{ca_key} -out #{ilo1_cert}"
-  not_if { File.exists?(ilo1_cert) }
+  not_if { File.exist?(ilo1_cert) }
 end
 # --------------------END CERT SIGN SECTION--------------------
 
@@ -117,7 +117,7 @@ ilo_https_cert 'import certificate' do
   ilo ilo1
   file_path "#{ENV['HOME']}/certs/ilo1.cert"
   action :import
-  not_if { valid || !File.exists?(ilo1_cert) } # Only if the cert file exists and the cert is not valid
+  not_if { valid || !File.exist?(ilo1_cert) } # Only if the cert file exists and the cert is not valid
   notifies :resetilo, 'ilo_power[reset_ilo1]', :delayed
   notifies :delete, 'file[delete ilo1.csr]'  # Optional: Clean-up csr file
   notifies :delete, 'file[delete ilo1_cert]' # Optional: Clean-up cert file
