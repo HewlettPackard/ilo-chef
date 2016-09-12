@@ -202,13 +202,13 @@ You may also find the [recipes in the cookbook used for testing](spec/fixtures/c
   ```ruby
   ilo_date_time 'set time zone' do
     ilos [ilo1, ilo2]
-    time_zone 'Africa/Abidjan' # Optional
-    use_ntp true  # Optional
-    ntp_servers [ # Optional
+    use_dhcpv4 false           # Optional. Set to true to use the DHCPv4-supplied time settings
+    time_zone 'Africa/Abidjan' # Optional. To use this, you must set :use_dhcpv4 to false
+    ntp_servers [              # Optional. To use this, you must set :use_dhcpv4 to false
       "10.168.0.2",
       "10.168.0.3"
     ]
-    action :set   # Not necessary, as this is the default
+    action :set                # Not necessary, as this is the default
   end
   ```
 
