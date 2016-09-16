@@ -82,7 +82,7 @@ About the only thing you'll need to get started developing is some basic termina
   $ chef-client -z -o my_ilo::default
   ```
 
-  a. You'll see an error saying it can't find the correct cookbook. This is because we haven't told Chef where to find our cookbooks, and we haven't downloaded the ilo cookbook. Fix this by creating a knife.rb file at `chef-repo/.chef/knife.rb` and adding:
+  a. You'll see an error saying it can't find the correct cookbook. This is because we haven't told Chef where to find our cookbooks, and we haven't downloaded our cookbook dependencies (ilo and compat_resource). Fix this by creating a knife.rb file at `chef-repo/.chef/knife.rb` and adding:
 
     ```ruby
     # See http://docs.getchef.com/config_rb_knife.html for more information on knife configuration options
@@ -93,7 +93,7 @@ About the only thing you'll need to get started developing is some basic termina
     # If you're behind a proxy, you'll need to set the http_proxy environment variable or set the http_proxy option here
     ```
 
-  b. And download the ilo cookbook by running:
+  b. And download the ilo and compat_resource cookbooks by running:
 
     ```bash
     $ cd ..
