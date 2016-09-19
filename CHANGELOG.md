@@ -1,3 +1,7 @@
+### New (Unreleased)
+ - Fixed bugs in ilo_date_time resource and renamed `use_ntp` property to `use_dhcpv4` (breaking change).
+ - Added examples
+
 ### 1.3.1
  - Fixed bug in ilo_https_cert resource: Accept `ILO_SDK::Client` object for ilo property.
  - Fixed bug in ilo_firmware_update resource: Accept String for fw_version property.
