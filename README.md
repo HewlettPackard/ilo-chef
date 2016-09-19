@@ -66,7 +66,9 @@ ilo_list3 = YAML.load_file('/root/ilo_secrets.yml')
 
 ## iLO Resources
 
-The following resources are available for usage in your recipes:
+The following resources are available for usage in your recipes.
+We give examples to show how to use each resource, but there are much more detailed examples in the [examples](examples) directory.
+You may also find the [recipes in the cookbook used for testing](spec/fixtures/cookbooks/ilo_test/recipes) helpful as examples.
 
 ### ilo_bios
 
@@ -200,13 +202,13 @@ The following resources are available for usage in your recipes:
   ```ruby
   ilo_date_time 'set time zone' do
     ilos [ilo1, ilo2]
-    time_zone 'Africa/Abidjan' # Optional
-    use_ntp true  # Optional
-    ntp_servers [ # Optional
+    use_dhcpv4 false           # Optional. Set to true to use the DHCPv4-supplied time settings
+    time_zone 'Africa/Abidjan' # Optional. To use this, you must set :use_dhcpv4 to false
+    ntp_servers [              # Optional. To use this, you must set :use_dhcpv4 to false
       "10.168.0.2",
       "10.168.0.3"
     ]
-    action :set   # Not necessary, as this is the default
+    action :set                # Not necessary, as this is the default
   end
   ```
 
@@ -228,14 +230,14 @@ The following resources are available for usage in your recipes:
 ### ilo_https_cert
 
 Note that this resource requires an `ilo` property (Hash or ILO_SDK::Client) instead of an `ilos` property (Array).
-You'll need seperate ilo_https_cert resources for each ilo you'd like to perform a task on.
+You'll need separate ilo_https_cert resources for each iLO you'd like to perform a task on.
 
  - ####Generate Certificate Signing Request (CSR):
 
   ```ruby
   ilo_https_cert 'generate CSR' do
     ilo ilo1
-    country 'USA'
+    country 'US'
     state 'Texas'
     city 'Houston'
     orgName 'Example Company'
@@ -260,10 +262,8 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
   ```ruby
   ilo_https_cert 'import certificate' do
     ilo ilo1
-    certificate '-----BEGIN CERTIFICATE-----
-    SecretCertificateContent
-    -----END CERTIFICATE-----'
-    action :import
+    certificate '-----BEGIN CERTIFICATE-----...'
+    action :import # Not necessary, as this is the default
   end
   ```
 
@@ -273,59 +273,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
   ilo_https_cert 'import certificate from file' do
     ilo ilo1
     file_path '/full/path/to/certificate_file.cert'
-    action :import
-  end
-  ```
-
- - ####Complete HTTPS Certificate Replacement Example
-
-  ```ruby
-  require 'ilo-sdk'
-
-  ilo1 = ILO_SDK::Client.new(
-    host: 'ilo1.example.com',
-    user: 'Administrator',
-    password: 'secret123'
-  )
-  # NOTE: The ILO_SDK::Client class is required here instead of a hash because we'll be calling the #get_csr method on it.
-
-  # Get the current SSL Certificate and check to see if expires within 24 hours
-  expiration = ilo1.get_certificate.not_after.to_datetime
-  tomorrow = DateTime.now + 1
-
-  valid = expiration > tomorrow
-  ilo_https_cert 'generate CSR' do
-    ilo ilo1
-    country 'USA'
-    state 'Texas'
-    city 'Houston'
-    orgName 'Example Company'
-    orgUnit 'Example'
-    commonName 'example.com'
-    action :generate_csr
-    not_if { valid || ilo1.get_csr } # Only generate if the cert is expiring soon and the CSR has not already been generated
-  end
-
-  ilo_https_cert 'dump CSR to file' do
-    ilo ilo1
-    file_path '~/certs/CSR.cert'
-    action :dump_csr
-    not_if { valid || ilo1.get_csr.nil? } # Don't dump the CSR file if the cert is still valid or the csr is not finished being generated
-  end
-
-  # Here you'll need to have a step that submits the CSR to a certificate authority
-  # (or self-signs it) and gets back the signed certificate. It will look something like:
-  # -----BEGIN CERTIFICATE-----
-  # lines_of_secret_text
-  # -----END CERTIFICATE-----
-  # For this example, we're assuming we've read in the content of the certificate to the
-  # "cert" variable (as a string).
-
-  ilo_https_cert 'import certificate' do
-    ilo ilo1
-    certificate cert
-    action :import
-    not_if { valid || cert.nil? }
+    action :import # Not necessary, as this is the default
   end
   ```
 
@@ -342,7 +290,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
     owner 'JohnDoe'        # Optional: Owner of the dump file. Defaults to the current user
     group 'Administrators' # Optional: Owner of the dump file. Defaults to the current user
     duration 30            # Optional: Number of hours ago to begin collection at (until now)
-    severity_level 'OK'    # Optional: Exclude this property to get all serverities
+    severity_level 'OK'    # Optional: Exclude this property to get all severities
     action :dump           # Not necessary, as this is the default
   end
   ```
@@ -391,7 +339,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
   end
   ```
 
- - ####Reset the system:
+ - ####Reset/Restart the system:
 
   ```ruby
   ilo_power 'reset system' do
@@ -400,7 +348,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
   end
   ```
 
- - ####Reset ilo:
+ - ####Reset/Restart the iLO:
 
   ```ruby
   ilo_power 'reset ilo' do
@@ -462,10 +410,10 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
  - ####Create or modify user:
 
   ```ruby
-  ilo_user 'creater user' do
+  ilo_user 'create user' do
     ilos [ilo1, ilo2]
     username 'test'                   # Defaults to the resource's name attribute
-    password 'password123'
+    password 'password123'            # Optional for updates, but needed to create
     login_priv true                   # Optional
     remote_console_priv false         # Optional
     user_config_priv true             # Optional
@@ -485,17 +433,7 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
     action :delete
   end
   ```
- 
- - ####Change Password:
- 
-  ```ruby
-  ilo_user 'change user password' do
-    ilos [ilo1, ilo2]
-    username 'test'
-    password 'password123'
-    action :create
-  end
-  ```
+
 
 ### ilo_virtual_media
 
@@ -517,6 +455,12 @@ You'll need seperate ilo_https_cert resources for each ilo you'd like to perform
     action :eject
   end
   ```
+
+
+## Examples
+
+See the [examples](examples) directory for examples with more detailed descriptions of using these resources.
+It may also be helpful to take a look at [recipes in the cookbook used for testing](spec/fixtures/cookbooks/ilo_test/recipes).
 
 
 ## Contributing & Feature Requests

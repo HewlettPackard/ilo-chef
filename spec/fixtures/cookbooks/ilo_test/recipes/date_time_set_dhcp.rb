@@ -1,5 +1,5 @@
 # Cookbook Name:: ilo_test
-# Recipe:: date_time_set
+# Recipe:: date_time_set_dhcp
 #
 # (c) Copyright 2016 Hewlett Packard Enterprise Development LP
 #
@@ -13,10 +13,7 @@
 # specific language governing permissions and limitations under the License.
 #
 
-ilo_date_time 'set time zone and NTP servers' do
+ilo_date_time 'use DHCPv4 to set time settings' do
   ilos node['ilo_test']['ilos']
-  use_dhcpv4 false
-  time_zone 'Africa/Abidjan'
-  ntp_servers ['1.1.1.1', '2.2.2.2']
-  action :set
+  use_dhcpv4 true
 end
