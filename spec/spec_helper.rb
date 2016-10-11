@@ -3,6 +3,12 @@ require 'chefspec/berkshelf'
 require 'pry'
 require 'ilo-sdk'
 
+RSpec.configure do |config|
+  # Set the default platform and version
+  config.platform = 'redhat'
+  config.version = '7.2'
+end
+
 # General context for unit testing:
 RSpec.shared_context 'chef context', a: :b do
   before :each do

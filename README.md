@@ -1,6 +1,7 @@
 # iLO Cookbook
 
 [![Cookbook Version](https://img.shields.io/cookbook/v/ilo.svg)](https://supermarket.chef.io/cookbooks/ilo)
+[![Build Status](https://travis-ci.org/HewlettPackard/ilo-chef.svg?branch=master)](https://travis-ci.org/HewlettPackard/ilo-chef)
 
 Enables configuration of HPE iLOs via their APIs.
 
