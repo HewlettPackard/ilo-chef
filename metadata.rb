@@ -1,7 +1,7 @@
 name             'ilo'
 maintainer       'Hewlett Packard Enterprise'
 maintainer_email 'chef-cookbooks@groups.ext.hpe.com'
-license          'Apache v2.0'
+license          'Apache-2.0'
 description      'Configure HPE iLO'
 long_description 'Configure HPE iLO using the iLO APIs.'
 version          '1.3.1'
