@@ -11,7 +11,7 @@
 
 module IloCookbook
   # Base class for iLO resources
-  class BaseResource < ChefCompat::Resource
+  class BaseResource < Chef::Resource
     require_relative 'ilo_helper'
 
     action_class do

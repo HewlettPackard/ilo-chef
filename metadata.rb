@@ -9,7 +9,7 @@ version          '1.3.1'
 source_url       'https://github.com/HewlettPackard/ilo-chef'
 issues_url       'https://github.com/HewlettPackard/ilo-chef/issues'
 
-chef_version     '>= 12' if respond_to?(:chef_version)
+chef_version     '>= 12.7' if respond_to?(:chef_version)
 
 supports         'windows'
 supports         'mac_os_x'
@@ -26,5 +26,3 @@ supports         'suse'
 supports         'xenserver'
 supports         'smartos'
 supports         'oracle'
-
-depends          'compat_resource'
