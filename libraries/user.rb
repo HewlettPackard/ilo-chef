@@ -17,7 +17,7 @@ module IloCookbook
     resource_name :ilo_user
 
     load_base_properties
-    property :username, String, required: true, name_property: true
+    property :username, String, name_property: true
     property :password, String
     property :login_priv, [TrueClass, FalseClass]
     property :remote_console_priv, [TrueClass, FalseClass]
