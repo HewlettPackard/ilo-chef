@@ -8,12 +8,12 @@ Enables configuration of HPE iLOs via their APIs.
 
 ### Requirements
 
- - Chef 12+
- - iLO 4
+- Chef 12.7+
+- iLO 4
 
 ### Cookbook Dependencies
 
- - compat_resource
+- none
 
 ### How to use the iLO Cookbook:
 

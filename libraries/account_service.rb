@@ -17,7 +17,7 @@ module IloCookbook
     resource_name :ilo_account_service
 
     load_base_properties
-    property :username, String, required: true, name_property: true
+    property :username, String, name_property: true
     property :password, String
 
     action :create do
