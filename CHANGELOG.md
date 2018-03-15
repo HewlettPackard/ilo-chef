@@ -1,5 +1,6 @@
-### New (Unreleased)
+### 1.4.0
  - Fixed bugs in ilo_date_time resource and renamed `use_ntp` property to `use_dhcpv4` (breaking change).
+ - Remove dependency on compat_resource and bumped minimum Chef client version to 12.7
  - Added examples
 
 ### 1.3.1
