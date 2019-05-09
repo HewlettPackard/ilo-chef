@@ -6,7 +6,7 @@ require 'ilo-sdk'
 RSpec.configure do |config|
   # Set the default platform and version
   config.platform = 'redhat'
-  config.version = '7.2'
+  config.version = '7.6'
 end
 
 # General context for unit testing:
